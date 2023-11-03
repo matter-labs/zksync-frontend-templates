@@ -3,12 +3,12 @@
 import { verifyTypedData } from 'ethers/lib/utils';
 
 import { useAsync } from '../hooks/useAsync';
-import { chains, useEthereum } from './Context';
+import { defaultChain, useEthereum } from './Context';
 
 const domain = {
   name: 'Ether Mail',
   version: '1',
-  chainId: chains[0].id,
+  chainId: defaultChain.id,
   verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
 } as const
 

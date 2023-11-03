@@ -1,7 +1,7 @@
 <template>
   <div>
     <details>
-      <summary>{{ events.length }} USDC `Transfer`s logged</summary>
+      <summary>{{ events.length }} DAI `Transfer`s logged</summary>
       
       {{
         events
@@ -26,7 +26,7 @@ type TransferLog = {
 }
 const events = ref<TransferLog[]>([]);
 
-const contract = new Contract(usdcContractConfig.address, usdcContractConfig.abi, getProvider()!);
+const contract = new Contract(daiContractConfig.address, daiContractConfig.abi, getProvider()!);
 contract.on('Transfer', (from, to, amount, event) => {
   events.value.push({
     from,

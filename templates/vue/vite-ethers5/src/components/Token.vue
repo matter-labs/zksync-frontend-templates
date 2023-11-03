@@ -20,11 +20,11 @@ import { ref } from 'vue';
 import { Contract } from 'zksync-web3';
 
 import { stringify } from '@/utils/formatters';
-import { erc20ABI, usdcContractConfig } from '@/utils/contracts';
+import { erc20ABI, daiContractConfig } from '@/utils/contracts';
 import { useAsync } from '@/composables/useAsync';
 import { getProvider } from "@/ethers"
 
-const tokenAddress = ref(usdcContractConfig.address)
+const tokenAddress = ref(daiContractConfig.address)
 
 const { result: token, execute: fetchToken, inProgress, error} = useAsync(async (address: string) => {
   const contract = new Contract(address, erc20ABI, getProvider()!);

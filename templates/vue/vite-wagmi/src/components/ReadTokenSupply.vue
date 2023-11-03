@@ -11,12 +11,12 @@
 <script lang="ts" setup>
 import { readContract } from '@wagmi/core';
 
-import { usdcContractConfig } from '@/utils/contracts';
+import { daiContractConfig } from '@/utils/contracts';
 import { useAsync } from '@/composables/useAsync';
 
 const { result: supply, execute: fetchTotalSupply, inProgress, error} = useAsync(async () => {
   return await readContract({
-    ...usdcContractConfig,
+    ...daiContractConfig,
     functionName: 'totalSupply',
   })
 });

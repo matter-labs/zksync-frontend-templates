@@ -4,12 +4,12 @@ import { useState } from 'react';
 import { Contract } from 'zksync-web3';
 
 import { useAsync } from '../hooks/useAsync';
-import { erc20ABI, usdcContractConfig } from './contracts'
+import { erc20ABI, daiContractConfig } from './contracts'
 import { useEthereum } from './Context';
 
 export function Token() {
   const { getProvider } = useEthereum();
-  const [tokenAddress, setTokenAddress] = useState<string>(usdcContractConfig.address);
+  const [tokenAddress, setTokenAddress] = useState<string>(daiContractConfig.address);
 
   const fetchTokenData = async (address: string) => {
     const contract = new Contract(address, erc20ABI, getProvider()!);

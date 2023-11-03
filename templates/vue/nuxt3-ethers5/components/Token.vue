@@ -20,7 +20,7 @@ import { Contract } from 'zksync-web3';
 
 const { getProvider } = useEthers()
 
-const tokenAddress = ref(usdcContractConfig.address)
+const tokenAddress = ref(daiContractConfig.address)
 
 const { result: token, execute: fetchToken, inProgress, error} = useAsync(async (address: string) => {
   const contract = new Contract(address, erc20ABI, getProvider()!);

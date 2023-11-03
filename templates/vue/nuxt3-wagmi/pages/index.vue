@@ -7,6 +7,11 @@
     <Connected>
       <hr />
       <h2>Network</h2>
+      <p>
+        <strong>Make sure to connect your wallet to zkSync Testnet for full functionality</strong>
+        <br />
+        or update to a different contract address
+      </p>
       <NetworkSwitcher />
       <br />
       <hr />

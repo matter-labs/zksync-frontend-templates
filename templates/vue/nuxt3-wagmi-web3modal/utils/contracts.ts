@@ -1,6 +1,6 @@
 import { erc20ABI } from '@wagmi/core'
 
-export const usdcContractConfig = {
-  address: '0x3355df6D4c9C3035724Fd0e3914dE96A5a83aaf4', // zkSync Era Mainnet USDC token address
+export const daiContractConfig = {
+  address: '0x3e7676937A7E96CFB7616f255b9AD9FF47363D4b', // zkSync Era Goerli Testnet DAI token address
   abi: erc20ABI,
 } as const

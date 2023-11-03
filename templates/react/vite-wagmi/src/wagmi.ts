@@ -52,6 +52,7 @@ export const chains: Chain[] = [
       : []
     ),
 ];
+export const defaultChain = import.meta.env.MODE === "development" ? zkSyncTestnet : zkSync;
 
 const { publicClient, webSocketPublicClient } = configureChains(
   chains,

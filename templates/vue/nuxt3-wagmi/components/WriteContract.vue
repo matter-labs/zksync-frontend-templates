@@ -24,14 +24,16 @@
 <script lang="ts" setup>
 import { writeContract as wagmiWriteContract, waitForTransaction } from '@wagmi/core';
 
-const { account } = storeToRefs(useWagmi());
 const amount = ref<string | null>(null);
 
 const { result: transaction, execute: writeContract, inProgress, error} = useAsync(async () => {
+  // random address for testing, replace with contract address that you want to allow to spend your tokens
+  const spender = "0xa1cf087DB965Ab02Fb3CFaCe1f5c63935815f044"
+
   const result = await wagmiWriteContract({
-    ...usdcContractConfig,
+    ...daiContractConfig,
     functionName: 'approve',
-    args: [account.value.address!, BigInt(amount.value!)]
+    args: [spender, BigInt(amount.value!)]
   })
   waitForReceipt(result.hash);
   return result;

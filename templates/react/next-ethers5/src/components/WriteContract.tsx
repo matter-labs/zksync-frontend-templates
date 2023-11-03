@@ -4,17 +4,18 @@ import { useState } from 'react';
 import { Contract } from 'zksync-web3';
 
 import { useAsync } from '../hooks/useAsync';
-import { usdcContractConfig } from './contracts'
+import { daiContractConfig } from './contracts'
 import { useEthereum } from './Context';
 
 export function WriteContract() {
   const [amount, setAmount] = useState('');
   const { getSigner, getProvider } = useEthereum();
   const { result: transaction, execute: writeContract, inProgress, error } = useAsync(async () => {
-    const contract = new Contract(usdcContractConfig.address, usdcContractConfig.abi, getSigner());
+    const contract = new Contract(daiContractConfig.address, daiContractConfig.abi, getSigner());
 
-    // Replace with the actual spender address you want to allow to spend your tokens
-    const spender = "0xa1cf087DB965Ab02Fb3CFaCe1f5c63935815f044";
+    // random address for testing, replace with contract address that you want to allow to spend your tokens
+    const spender = "0xa1cf087DB965Ab02Fb3CFaCe1f5c63935815f044"
+  
     const tx = await contract.approve(spender, amount);
 
     waitForReceipt(tx.hash);

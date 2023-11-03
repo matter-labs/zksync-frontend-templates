@@ -57,6 +57,7 @@ export const chains: Chain[] = [
       : []
     ),
 ];
+export const defaultChain = import.meta.env.MODE === "development" ? zkSyncTestnet : zkSync;
 
 export const config = defaultWagmiConfig(
   {
@@ -71,7 +72,7 @@ const modal = createWeb3Modal( // Initiate modal instance
     wagmiConfig: config,
     projectId: walletConnectProjectId,
     chains,
-    defaultChain: zkSync, 
+    defaultChain, 
     themeMode: "light"
   }
 );

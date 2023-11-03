@@ -48,6 +48,8 @@ export const chains: Chain[] = [
       : []
     ),
 ];
+export const defaultChain = import.meta.env.MODE === "development" ? zkSyncTestnet : zkSync;
+
 export const useWagmi = defineStore("wagmi", () => {
   const projectId = useAppConfig().walletConnectProjectID;
   if (!projectId) throw new Error("Missing WalletConnect project ID in .env file");
@@ -65,7 +67,7 @@ export const useWagmi = defineStore("wagmi", () => {
     wagmiConfig,
     projectId,
     chains,
-    defaultChain: zkSync, 
+    defaultChain, 
     themeMode: "light"
   })
 

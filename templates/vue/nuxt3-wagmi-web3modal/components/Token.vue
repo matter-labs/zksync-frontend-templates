@@ -18,7 +18,7 @@
 <script lang="ts" setup>
 import { fetchToken as wagmiFetchToken } from '@wagmi/core';
 
-const tokenAddress = ref(usdcContractConfig.address)
+const tokenAddress = ref(daiContractConfig.address)
 
 const { result: token, execute: fetchToken, inProgress, error} = useAsync(wagmiFetchToken)
 const fetchCurrentToken = () => fetchToken({ address: tokenAddress.value })

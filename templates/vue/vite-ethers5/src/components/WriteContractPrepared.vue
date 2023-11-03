@@ -26,14 +26,14 @@ import { ref, watch } from 'vue';
 import { Contract } from 'zksync-web3';
 
 import { stringify } from '@/utils/formatters';
-import { usdcContractConfig } from '@/utils/contracts';
+import { daiContractConfig } from '@/utils/contracts';
 import { useAsync } from '@/composables/useAsync';
 import { getProvider, getSigner } from "@/ethers"
 
 const amount = ref<string | null>(null);
 
 const getContractInstance = () => {
-  return new Contract(usdcContractConfig.address, usdcContractConfig.abi, getSigner()!);
+  return new Contract(daiContractConfig.address, daiContractConfig.abi, getSigner()!);
 }
 
 // Preparing the transaction

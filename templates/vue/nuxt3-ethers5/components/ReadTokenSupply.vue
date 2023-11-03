@@ -14,7 +14,7 @@ import { Contract } from 'zksync-web3';
 const { getProvider } = useEthers()
 
 const { result: supply, execute: fetchTotalSupply, inProgress, error} = useAsync(async () => {
-  const contract = new Contract(usdcContractConfig.address, usdcContractConfig.abi, getProvider()!);
+  const contract = new Contract(daiContractConfig.address, daiContractConfig.abi, getProvider()!);
   return await contract.totalSupply();
 });
 

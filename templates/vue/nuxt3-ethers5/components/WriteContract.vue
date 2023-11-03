@@ -28,10 +28,11 @@ const { getSigner, getProvider } = useEthers()
 const amount = ref<string | null>(null);
 
 const { result: transaction, execute: writeContract, inProgress, error} = useAsync(async () => {
-  const contract = new Contract(usdcContractConfig.address, usdcContractConfig.abi, getSigner()!);
+  const contract = new Contract(daiContractConfig.address, daiContractConfig.abi, getSigner()!);
 
   // random address for testing, replace with contract address that you want to allow to spend your tokens
   const spender = "0xa1cf087DB965Ab02Fb3CFaCe1f5c63935815f044"
+  
   const transaction = await contract.approve(spender, amount.value);
 
   waitForReceipt(transaction.hash);

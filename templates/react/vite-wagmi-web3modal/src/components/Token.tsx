@@ -1,10 +1,10 @@
 import { useState } from 'react'
 import { type Address, useToken } from 'wagmi'
-import { usdcContractConfig } from './contracts'
+import { daiContractConfig } from './contracts'
 
 export function Token() {
   const [address, setAddress] = useState<Address>(
-    usdcContractConfig.address,
+    daiContractConfig.address,
   )
   const { data, error, isError, isLoading, refetch } = useToken({ address })
 

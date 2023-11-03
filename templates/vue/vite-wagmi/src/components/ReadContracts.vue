@@ -13,7 +13,7 @@
 import { readContracts } from '@wagmi/core';
 
 import { stringify } from '@/utils/formatters';
-import { usdcContractConfig } from '@/utils/contracts';
+import { daiContractConfig } from '@/utils/contracts';
 import { useAsync } from '@/composables/useAsync';
 import { account } from '@/wagmi';
 
@@ -21,16 +21,16 @@ const { result: results, execute: fetchContracts, inProgress, error} = useAsync(
   return await readContracts({
     contracts: [
       {
-        ...usdcContractConfig,
+        ...daiContractConfig,
         functionName: 'balanceOf',
         args: [account.value.address!],
       },
       {
-        ...usdcContractConfig,
+        ...daiContractConfig,
         functionName: 'name',
       },
       {
-        ...usdcContractConfig,
+        ...daiContractConfig,
         functionName: 'totalSupply',
       },
     ]

@@ -15,14 +15,14 @@
 import { ref } from "vue";
 import { Contract } from 'zksync-web3';
 
-import { usdcContractConfig } from '@/utils/contracts';
+import { daiContractConfig } from '@/utils/contracts';
 import { useAsync } from '@/composables/useAsync';
 import { getProvider, account } from "@/ethers"
 
 const address = ref(account.value.address);
 
 const { result: balance, execute: fetchBalance, inProgress, error} = useAsync(async () => {
-  const contract = new Contract(usdcContractConfig.address, usdcContractConfig.abi, getProvider()!);
+  const contract = new Contract(daiContractConfig.address, daiContractConfig.abi, getProvider()!);
   return contract.balanceOf(address.value!);
 });
 

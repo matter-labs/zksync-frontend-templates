@@ -3,26 +3,27 @@
 import { useState } from 'react'
 import { BaseError } from 'viem'
 import {
-  useAccount,
   useContractWrite,
   usePrepareContractWrite,
   useWaitForTransaction,
 } from 'wagmi'
 
-import { usdcContractConfig } from './contracts'
+import { daiContractConfig } from './contracts'
 import { useDebounce } from '../hooks/useDebounce'
 import { stringify } from '../utils/stringify'
 
 export function WriteContractPrepared() {
-  const { address } = useAccount()
   const [amount, setAmount] = useState('')
   const debouncedAmount = useDebounce(amount)
 
+  // random address for testing, replace with contract address that you want to allow to spend your tokens
+  const spender = "0xa1cf087DB965Ab02Fb3CFaCe1f5c63935815f044"
+
   const { config } = usePrepareContractWrite({
-    ...usdcContractConfig,
+    ...daiContractConfig,
     functionName: 'approve',
     enabled: Boolean(debouncedAmount),
-    args: [address!, BigInt(debouncedAmount)],
+    args: [spender, BigInt(debouncedAmount)],
   })
   const { write, data, error, isLoading, isError } = useContractWrite(config)
   const {

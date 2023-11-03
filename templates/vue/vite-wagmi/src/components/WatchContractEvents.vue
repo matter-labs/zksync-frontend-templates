@@ -1,7 +1,7 @@
 <template>
   <div>
     <details>
-      <summary>{{ events.length }} USDC `Transfer`s logged</summary>
+      <summary>{{ events.length }} DAI `Transfer`s logged</summary>
       
       {{
         events
@@ -19,12 +19,12 @@ import type { Log } from 'viem';
 import { watchContractEvent } from '@wagmi/core';
 
 import { stringify } from '@/utils/formatters';
-import { usdcContractConfig } from '@/utils/contracts';
+import { daiContractConfig } from '@/utils/contracts';
 
 const events = ref<Log[]>([]);
 
 watchContractEvent({
-  ...usdcContractConfig,
+  ...daiContractConfig,
   eventName: 'Transfer'
 }, (logs) => {
   events.value.push(...logs);

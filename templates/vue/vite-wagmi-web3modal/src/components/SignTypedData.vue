@@ -18,12 +18,12 @@ import { recoverTypedDataAddress } from 'viem';
 import { signTypedData as wagmiSignTypedData } from '@wagmi/core';
 
 import { useAsync } from '@/composables/useAsync';
-import { chains } from '@/wagmi';
+import { defaultChain } from '@/wagmi';
 
 const domain = {
   name: 'Ether Mail',
   version: '1',
-  chainId: chains[0].id,
+  chainId: defaultChain.id,
   verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
 } as const
 

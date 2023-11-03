@@ -1,6 +1,6 @@
 import { useAccount, useContractReads } from 'wagmi'
 
-import { usdcContractConfig } from './contracts'
+import { daiContractConfig } from './contracts'
 import { stringify } from '../utils/stringify'
 
 export function ReadContracts() {
@@ -8,16 +8,16 @@ export function ReadContracts() {
   const { data, isSuccess, isLoading } = useContractReads({
     contracts: [
       {
-        ...usdcContractConfig,
+        ...daiContractConfig,
         functionName: 'balanceOf',
         args: [address!],
       },
       {
-        ...usdcContractConfig,
+        ...daiContractConfig,
         functionName: 'name',
       },
       {
-        ...usdcContractConfig,
+        ...daiContractConfig,
         functionName: 'totalSupply',
       },
     ],

@@ -28,7 +28,7 @@ const { getSigner, getProvider } = useEthers()
 const amount = ref<string | null>(null);
 
 const getContractInstance = () => {
-  return new Contract(usdcContractConfig.address, usdcContractConfig.abi, getSigner()!);
+  return new Contract(daiContractConfig.address, daiContractConfig.abi, getSigner()!);
 }
 
 // Preparing the transaction

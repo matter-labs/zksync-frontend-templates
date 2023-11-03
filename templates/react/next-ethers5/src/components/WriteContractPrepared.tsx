@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { Contract } from 'zksync-web3';
 
 import { useAsync } from '../hooks/useAsync';
-import { usdcContractConfig } from './contracts';
+import { daiContractConfig } from './contracts';
 import { useEthereum } from './Context';
 
 export function WriteContractPrepared() {
@@ -12,12 +12,14 @@ export function WriteContractPrepared() {
   const { getSigner, getProvider } = useEthereum();
 
   const getContractInstance = () => {
-    return new Contract(usdcContractConfig.address, usdcContractConfig.abi, getSigner()!);
+    return new Contract(daiContractConfig.address, daiContractConfig.abi, getSigner()!);
   }
 
   const { result: preparedTransaction, execute: prepareTransaction, inProgress: prepareInProgress, error: prepareError } = useAsync(async () => {
     const contract = getContractInstance();
-    const spender = "0xa1cf087DB965Ab02Fb3CFaCe1f5c63935815f044";  // random address for testing
+    
+    // random address for testing, replace with contract address that you want to allow to spend your tokens
+    const spender = "0xa1cf087DB965Ab02Fb3CFaCe1f5c63935815f044"
 
     const gasPrice = await getProvider()!.getGasPrice();
     const gasLimit = await contract.estimateGas.approve(spender, amount);

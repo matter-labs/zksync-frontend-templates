@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { Contract } from 'zksync-web3';
 import type { BigNumber } from 'ethers';
 
-import { usdcContractConfig } from './contracts'
+import { daiContractConfig } from './contracts'
 import { useEthereum } from './Context';
 
 type TransferLog = {
@@ -21,7 +21,7 @@ export function WatchContractEvents() {
     const provider = getProvider();
     if (!provider) return;
 
-    const contract = new Contract(usdcContractConfig.address, usdcContractConfig.abi, provider);
+    const contract = new Contract(daiContractConfig.address, daiContractConfig.abi, provider);
     const handleTransfer = (from: string, to: string, amount: BigNumber) => {
       setEvents(prevEvents => [...prevEvents, { from, to, amount }]);
     };
@@ -42,7 +42,7 @@ export function WatchContractEvents() {
   return (
     <div>
       <details>
-        <summary>{events.length} USDC `Transfer`s logged</summary>
+        <summary>{events.length} DAI `Transfer`s logged</summary>
         <pre>{logs}</pre>
       </details>
     </div>

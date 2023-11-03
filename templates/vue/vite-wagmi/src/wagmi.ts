@@ -52,9 +52,7 @@ export const chains: Chain[] = [
       : []
     ),
 ];
-
-const projectId = import.meta.env.VITE_WALLET_CONNECT_PROJECT_ID;
-if (!projectId) throw new Error("Missing WalletConnect project ID in .env file");
+export const defaultChain = import.meta.env.MODE === "development" ? zkSyncTestnet : zkSync;
 
 const { publicClient, webSocketPublicClient } = configureChains(
   chains,

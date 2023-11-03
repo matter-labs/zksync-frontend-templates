@@ -20,7 +20,7 @@ import { signTypedData as wagmiSignTypedData } from '@wagmi/core';
 const domain = {
   name: 'Ether Mail',
   version: '1',
-  chainId: chains[0].id,
+  chainId: defaultChain.id,
   verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
 } as const
 

@@ -12,7 +12,7 @@ To make navigation easier, the templates are structured based on their respectiv
 
 ### Vue
 
-- **Vuem** – Harness the power of Vue with these templates for a seamless zkSync integration, suitable for all Vue enthusiasts and projects using Vue frameworks.
+- **Vue** – Harness the power of Vue with these templates for a seamless zkSync integration, suitable for all Vue enthusiasts and projects using Vue framework.
   - Nuxt
     - [Wagmi](./templates/vue/nuxt3-wagmi/)
     - [Wagmi + Web3Modal](./templates/vue/nuxt3-wagmi-web3modal/)

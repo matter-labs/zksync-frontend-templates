@@ -20,7 +20,7 @@ const { account } = storeToRefs(useEthers());
 const address = ref(account.value.address);
 
 const { result: balance, execute: fetchBalance, inProgress, error} = useAsync(async () => {
-  const contract = new Contract(usdcContractConfig.address, usdcContractConfig.abi, getProvider()!);
+  const contract = new Contract(daiContractConfig.address, daiContractConfig.abi, getProvider()!);
   return contract.balanceOf(address.value!);
 });
 

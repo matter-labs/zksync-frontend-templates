@@ -1,13 +1,15 @@
 import { BaseError } from 'viem'
-import { useAccount, useContractWrite, useWaitForTransaction } from 'wagmi'
+import { useContractWrite, useWaitForTransaction } from 'wagmi'
 
-import { usdcContractConfig } from './contracts'
+import { daiContractConfig } from './contracts'
 import { stringify } from '../utils/stringify'
 
 export function WriteContract() {
-  const { address } = useAccount()
+  // random address for testing, replace with contract address that you want to allow to spend your tokens
+  const spender = "0xa1cf087DB965Ab02Fb3CFaCe1f5c63935815f044"
+
   const { write, data, error, isLoading, isError } = useContractWrite({
-    ...usdcContractConfig,
+    ...daiContractConfig,
     functionName: 'approve',
   })
   const {
@@ -25,7 +27,7 @@ export function WriteContract() {
           const formData = new FormData(e.target as HTMLFormElement)
           const amount = formData.get('amount') as string
           write({
-            args: [address!, BigInt(amount)],
+            args: [spender, BigInt(amount)],
           })
         }}
       >

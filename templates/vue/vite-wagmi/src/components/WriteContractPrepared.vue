@@ -26,17 +26,20 @@ import { ref, watch } from "vue"
 import { prepareWriteContract as wagmiPrepareWriteContract, writeContract as wagmiWriteContract, waitForTransaction } from '@wagmi/core';
 
 import { stringify } from '@/utils/formatters';
-import { usdcContractConfig } from '@/utils/contracts';
+import { daiContractConfig } from '@/utils/contracts';
 import { useAsync } from '@/composables/useAsync';
 import { account } from '@/wagmi';
 
 const amount = ref<string | null>(null);
 
 const { result: preparedWriteContract, execute: prepareTransaction, inProgress: prepareInProgress, error: prepareError} = useAsync(async () => {
+  // random address for testing, replace with contract address that you want to allow to spend your tokens
+  const spender = "0xa1cf087DB965Ab02Fb3CFaCe1f5c63935815f044"
+
   return await wagmiPrepareWriteContract({
-    ...usdcContractConfig,
+    ...daiContractConfig,
     functionName: 'approve',
-    args: [account.value.address!, BigInt(amount.value!)]
+    args: [spender, BigInt(amount.value!)]
   });
 });
 const { result: transaction, execute: sendTransaction, inProgress, error} = useAsync(async () => {

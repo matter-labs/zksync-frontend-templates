@@ -49,6 +49,7 @@ export const chains: Chain[] = [
       : []
     ),
 ];
+export const defaultChain = import.meta.env.MODE === "development" ? zkSyncTestnet : zkSync;
 
 const projectId = import.meta.env.VITE_WALLET_CONNECT_PROJECT_ID;
 if (!projectId) throw new Error("Missing WalletConnect project ID in .env file");
@@ -65,7 +66,7 @@ const web3Modal = createWeb3Modal({
   wagmiConfig,
   projectId,
   chains,
-  defaultChain: zkSync, 
+  defaultChain, 
   themeMode: "light"
 })
 

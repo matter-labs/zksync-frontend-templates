@@ -20,10 +20,10 @@ import { ref } from "vue"
 import { fetchToken as wagmiFetchToken } from '@wagmi/core';
 
 import { stringify } from '@/utils/formatters';
-import { usdcContractConfig } from '@/utils/contracts';
+import { daiContractConfig } from '@/utils/contracts';
 import { useAsync } from '@/composables/useAsync';
 
-const tokenAddress = ref(usdcContractConfig.address)
+const tokenAddress = ref(daiContractConfig.address)
 
 const { result: token, execute: fetchToken, inProgress, error} = useAsync(wagmiFetchToken)
 const fetchCurrentToken = () => fetchToken({ address: tokenAddress.value })

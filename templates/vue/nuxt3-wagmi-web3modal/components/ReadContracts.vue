@@ -18,16 +18,16 @@ const { result: results, execute: fetchContracts, inProgress, error} = useAsync(
   return await readContracts({
     contracts: [
       {
-        ...usdcContractConfig,
+        ...daiContractConfig,
         functionName: 'balanceOf',
         args: [account.value.address!],
       },
       {
-        ...usdcContractConfig,
+        ...daiContractConfig,
         functionName: 'name',
       },
       {
-        ...usdcContractConfig,
+        ...daiContractConfig,
         functionName: 'totalSupply',
       },
     ]

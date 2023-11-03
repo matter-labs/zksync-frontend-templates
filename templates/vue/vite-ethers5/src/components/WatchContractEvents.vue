@@ -1,7 +1,7 @@
 <template>
   <div>
     <details>
-      <summary>{{ events.length }} USDC `Transfer`s logged</summary>
+      <summary>{{ events.length }} DAI `Transfer`s logged</summary>
       
       {{
         events
@@ -19,7 +19,7 @@ import { Contract } from 'zksync-web3';
 import type { BigNumber } from 'ethers';
 
 import { stringify } from '@/utils/formatters';
-import { usdcContractConfig } from '@/utils/contracts';
+import { daiContractConfig } from '@/utils/contracts';
 import { getProvider } from "@/ethers"
 
 type TransferLog = {
@@ -29,7 +29,7 @@ type TransferLog = {
 }
 const events = ref<TransferLog[]>([]);
 
-const contract = new Contract(usdcContractConfig.address, usdcContractConfig.abi, getProvider()!);
+const contract = new Contract(daiContractConfig.address, daiContractConfig.abi, getProvider()!);
 contract.on('Transfer', (from, to, amount, event) => {
   events.value.push({
     from,

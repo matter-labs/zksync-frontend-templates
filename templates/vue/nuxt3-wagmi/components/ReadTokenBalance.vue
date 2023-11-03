@@ -19,7 +19,7 @@ const address = ref(account.value.address);
 
 const { result: balance, execute: fetchBalance, inProgress, error} = useAsync(async () => {
   return await readContract({
-    ...usdcContractConfig,
+    ...daiContractConfig,
     functionName: 'balanceOf',
     args: [address.value!],
   })

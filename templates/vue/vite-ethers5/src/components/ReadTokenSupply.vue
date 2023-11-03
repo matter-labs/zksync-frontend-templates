@@ -11,12 +11,12 @@
 <script lang="ts" setup>
 import { Contract } from 'zksync-web3';
 
-import { usdcContractConfig } from '@/utils/contracts';
+import { daiContractConfig } from '@/utils/contracts';
 import { useAsync } from '@/composables/useAsync';
 import { getProvider } from "@/ethers"
 
 const { result: supply, execute: fetchTotalSupply, inProgress, error} = useAsync(async () => {
-  const contract = new Contract(usdcContractConfig.address, usdcContractConfig.abi, getProvider()!);
+  const contract = new Contract(daiContractConfig.address, daiContractConfig.abi, getProvider()!);
   return await contract.totalSupply();
 });
 

@@ -2,22 +2,22 @@ import { useState } from 'react'
 import type { Log } from 'viem'
 import { useContractEvent } from 'wagmi'
 
-import { usdcContractConfig } from './contracts'
+import { daiContractConfig } from './contracts'
 import { stringify } from '../utils/stringify'
 
 export function WatchContractEvents() {
-  const [usdcLogs, setUsdcLogs] = useState<Log[]>([])
+  const [transferLogs, setTransferLog] = useState<Log[]>([])
   useContractEvent({
-    ...usdcContractConfig,
+    ...daiContractConfig,
     eventName: 'Transfer',
-    listener: (logs) => setUsdcLogs((x) => [...x, ...logs]),
+    listener: (logs) => setTransferLog((x) => [...x, ...logs]),
   })
 
   return (
     <div>
       <details>
-        <summary>{usdcLogs.length} USDC `Transfer`s logged</summary>
-        {usdcLogs
+        <summary>{transferLogs.length} DAI `Transfer`s logged</summary>
+        {transferLogs
           .reverse()
           .map((log) => stringify(log))
           .join('\n\n\n\n')}
