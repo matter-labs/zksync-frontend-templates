@@ -1,6 +1,6 @@
 # zkSync Frontend Templates
 
-Welcome to the `zkSync Frontend Templates` repository. This collection of frontend templates is designed to accelerate your zkSync project's setup across various popular frameworks.
+Welcome to the `zkSync Frontend Templates` repository. This collection of frontend templates is designed to accelerate your zkSync project's setup, including templates tailored for all your favorite frameworks like Vue and React.
 
 ## 📘 Overview
 
@@ -12,7 +12,7 @@ To make navigation easier, the templates are structured based on their respectiv
 
 ### Vue
 
-- **Viem**
+- **Vuem** – Harness the power of Vue with these templates for a seamless zkSync integration, suitable for all Vue enthusiasts and projects using Vue frameworks.
   - Nuxt
     - [Wagmi](./templates/vue/nuxt3-wagmi/)
     - [Wagmi + Web3Modal](./templates/vue/nuxt3-wagmi-web3modal/)
@@ -25,17 +25,17 @@ To make navigation easier, the templates are structured based on their respectiv
 
 ### React
 
-- **Viem**
+- **React Templates** – Jumpstart your zkSync project with our React templates, providing out-of-the-box solutions for React-based applications.
   - Next
     - [Wagmi](./templates/react/next-wagmi/)
-    - [Wagmi + Web3Modal](./templates/react/vite-wagmi-web3modal/)
+    - [Wagmi + Web3Modal](./templates/react/next-wagmi-web3modal/)
     - [Wagmi + RainbowKit](./templates/react/next-wagmi-rainbowkit/)
   - Vite
     - [Wagmi](./templates/react/vite-wagmi/)
     - [Wagmi + Web3Modal](./templates/react/vite-wagmi-web3modal/)
 - **Ethers v5**
-  - (Work in progress)
-
+  - [Next](./templates/react/next-ethers5/)
+  - [Vite](./templates/react/vite-ethers5/)
 
 ## 🤝 Contribution
 

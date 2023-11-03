@@ -14,7 +14,7 @@
 </template>
 
 <script lang="ts" setup>
-import { verifyMessage, verifyTypedData } from 'ethers/lib/utils';
+import { verifyTypedData } from 'ethers/lib/utils';
 
 const { getSigner } = useEthers()
 
