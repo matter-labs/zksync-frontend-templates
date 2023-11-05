@@ -121,21 +121,23 @@ export const EthereumProvider = ({ children }: { children: React.ReactNode }) =>
         method: "wallet_switchEthereumChain",
         params: [{ chainId: hexChainId }],
       });
-    } catch {
-      getEthereumContext()?.request({
-        method: "wallet_addEthereumChain",
-        params: [{
-          chainId: "0x" + chain.id.toString(16),
-          rpcUrls: [chain.rpcUrl],
-          chainName: chain.name,
-          nativeCurrency: {
-            name: "Ether",
-            symbol: "ETH",
-            decimals: 18
-          },
-          blockExplorerUrls: chain.blockExplorerUrl ? [chain.blockExplorerUrl] : null
-        }]
-      });
+    } catch (error) {
+      if ((error as any)?.code === 4902) { // 4902 - chain not added
+        getEthereumContext()?.request({
+          method: "wallet_addEthereumChain",
+          params: [{
+            chainId: "0x" + chain.id.toString(16),
+            rpcUrls: [chain.rpcUrl],
+            chainName: chain.name,
+            nativeCurrency: {
+              name: "Ether",
+              symbol: "ETH",
+              decimals: 18
+            },
+            blockExplorerUrls: chain.blockExplorerUrl ? [chain.blockExplorerUrl] : null
+          }]
+        });
+      }
     }
   }
 
