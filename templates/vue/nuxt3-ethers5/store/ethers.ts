@@ -34,7 +34,7 @@ export const chains: Chain[] = [
         {
           id: 260,
           name: "In-memory local node",
-          rpcUrl: 'http://localhost:8011',
+          rpcUrl: 'http://127.0.0.1:8011',
         },
       ]
       : []
