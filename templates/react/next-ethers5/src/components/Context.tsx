@@ -12,19 +12,26 @@ type Chain = {
 };
 const zkSync: Chain = {
   id: 324,
-  name: "zkSync Era",
+  name: "zkSync",
   rpcUrl: "https://mainnet.era.zksync.io",
   blockExplorerUrl: "https://explorer.zksync.io"
 }
-const zkSyncTestnet: Chain = {
+const zkSyncSepoliaTestnet: Chain = {
+  id: 300,
+  name: "zkSync Sepolia Testnet",
+  rpcUrl: "https://rpc.ankr.com/eth_sepolia",
+  blockExplorerUrl: "https://sepolia.etherscan.io"
+}
+const zkSyncGoerliTestnet: Chain = {
   id: 280,
-  name: "zkSync Era Testnet",
+  name: "zkSync Goerli Testnet",
   rpcUrl: "https://testnet.era.zksync.dev",
   blockExplorerUrl: "https://goerli.explorer.zksync.io"
 }
 export const chains: Chain[] = [
   zkSync,
-  zkSyncTestnet,
+  zkSyncSepoliaTestnet,
+  zkSyncGoerliTestnet,
   ...(
     process.env.NODE_ENV === "development" ?
     [
@@ -43,7 +50,7 @@ export const chains: Chain[] = [
       : []
     ),
 ];
-export const defaultChain = process.env.NODE_ENV === "development" ? zkSyncTestnet : zkSync;
+export const defaultChain = process.env.NODE_ENV === "development" ? zkSyncSepoliaTestnet : zkSync;
 
 let web3Provider: Web3Provider | null = null;
 

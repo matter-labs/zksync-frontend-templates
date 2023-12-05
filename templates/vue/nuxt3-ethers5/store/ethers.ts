@@ -9,19 +9,26 @@ type Chain = {
 };
 const zkSync: Chain = {
   id: 324,
-  name: "zkSync Era",
+  name: "zkSync",
   rpcUrl: "https://mainnet.era.zksync.io",
   blockExplorerUrl: "https://explorer.zksync.io"
 }
-const zkSyncTestnet: Chain = {
+const zkSyncSepoliaTestnet: Chain = {
+  id: 300,
+  name: "zkSync Sepolia Testnet",
+  rpcUrl: "https://rpc.ankr.com/eth_sepolia",
+  blockExplorerUrl: "https://sepolia.etherscan.io"
+}
+const zkSyncGoerliTestnet: Chain = {
   id: 280,
-  name: "zkSync Era Testnet",
+  name: "zkSync Goerli Testnet",
   rpcUrl: "https://testnet.era.zksync.dev",
   blockExplorerUrl: "https://goerli.explorer.zksync.io"
 }
 export const chains: Chain[] = [
   zkSync,
-  zkSyncTestnet,
+  zkSyncSepoliaTestnet,
+  zkSyncGoerliTestnet,
   ...(
     import.meta.env.MODE === "development" ?
     [
@@ -40,7 +47,7 @@ export const chains: Chain[] = [
       : []
     ),
 ];
-export const defaultChain = import.meta.env.MODE === "development" ? zkSyncTestnet : zkSync;
+export const defaultChain = import.meta.env.MODE === "development" ? zkSyncSepoliaTestnet : zkSync;
 
 export const useEthers = defineStore("ethers", () => {
   let web3Provider: Web3Provider | null = null;
