@@ -13,15 +13,21 @@ const zkSync: Chain = {
   rpcUrl: "https://mainnet.era.zksync.io",
   blockExplorerUrl: "https://explorer.zksync.io"
 }
-const zkSyncTestnet: Chain = {
-  id: 280,
-  name: "zkSync Era Testnet",
-  rpcUrl: "https://testnet.era.zksync.dev",
-  blockExplorerUrl: "https://goerli.explorer.zksync.io"
+const zkSyncTestnetSepolia: Chain = {
+  id: 300,
+  name: "zkSync Era Sepolia Testnet",
+  rpcUrl: "https://sepolia.era.zksync.dev",
+  blockExplorerUrl: "https://sepolia.explorer.zksync.io"
 }
+// const zkSyncTestnetGoerli: Chain = {
+//   id: 280,
+//   name: "zkSync Era Testnet",
+//   rpcUrl: "https://testnet.era.zksync.dev",
+//   blockExplorerUrl: "https://goerli.explorer.zksync.io"
+// }
 export const chains: Chain[] = [
   zkSync,
-  zkSyncTestnet,
+  zkSyncTestnetSepolia,
   ...(
     import.meta.env.MODE === "development" ?
     [
