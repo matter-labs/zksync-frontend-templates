@@ -1,4 +1,4 @@
-import { type Chain, zkSync, zkSyncTestnet } from '@wagmi/core/chains'
+import { type Chain, zkSync, zkSyncSepoliaTestnet } from '@wagmi/core/chains'
 import { getAccount, getNetwork, watchAccount, watchNetwork, configureChains, createConfig } from '@wagmi/core';
 import { InjectedConnector } from '@wagmi/core/connectors/injected';
 import { MetaMaskConnector } from '@wagmi/core/connectors/metaMask';
@@ -7,7 +7,7 @@ import { publicProvider } from '@wagmi/core/providers/public';
 
 export const chains: Chain[] = [
   zkSync,
-  zkSyncTestnet,
+  zkSyncSepoliaTestnet,
   ...(
       import.meta.env.MODE === "development" ?
       [
@@ -51,7 +51,7 @@ export const chains: Chain[] = [
       : []
     ),
 ];
-export const defaultChain = import.meta.env.MODE === "development" ? zkSyncTestnet : zkSync;
+export const defaultChain = import.meta.env.MODE === "development" ? zkSyncSepoliaTestnet : zkSync;
 
 export const useWagmi = defineStore("wagmi", () => {
   const { publicClient, webSocketPublicClient } = configureChains(

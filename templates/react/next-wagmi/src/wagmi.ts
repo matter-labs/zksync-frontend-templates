@@ -1,5 +1,5 @@
 import { configureChains, createConfig } from 'wagmi'
-import { type Chain, zkSync, zkSyncTestnet } from 'wagmi/chains'
+import { type Chain, zkSync, zkSyncSepoliaTestnet } from 'wagmi/chains'
 import { CoinbaseWalletConnector } from 'wagmi/connectors/coinbaseWallet'
 import { InjectedConnector } from 'wagmi/connectors/injected'
 import { MetaMaskConnector } from 'wagmi/connectors/metaMask'
@@ -8,7 +8,7 @@ import { publicProvider } from 'wagmi/providers/public'
 
 export const chains: Chain[] = [
   zkSync,
-  zkSyncTestnet,
+  zkSyncSepoliaTestnet,
   ...(
       process.env.NODE_ENV === "development" ?
       [
@@ -52,7 +52,7 @@ export const chains: Chain[] = [
       : []
     ),
 ]
-export const defaultChain = process.env.NODE_ENV === "development" ? zkSyncTestnet : zkSync;
+export const defaultChain = process.env.NODE_ENV === "development" ? zkSyncSepoliaTestnet : zkSync;
 
 const { publicClient, webSocketPublicClient } = configureChains(
   chains,
