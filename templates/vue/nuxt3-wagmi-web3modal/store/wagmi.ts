@@ -1,10 +1,10 @@
 import { createWeb3Modal, defaultWagmiConfig } from '@web3modal/wagmi/vue'
-import { type Chain, zkSync, zkSyncTestnet } from '@wagmi/core/chains'
+import { type Chain, zkSync, zkSyncSepoliaTestnet } from '@wagmi/core/chains'
 import { getAccount, getNetwork, watchAccount, watchNetwork } from '@wagmi/core';
 
 export const chains: Chain[] = [
   zkSync,
-  zkSyncTestnet,
+  zkSyncSepoliaTestnet,
   ...(
       import.meta.env.MODE === "development" ?
       [
@@ -48,7 +48,7 @@ export const chains: Chain[] = [
       : []
     ),
 ];
-export const defaultChain = import.meta.env.MODE === "development" ? zkSyncTestnet : zkSync;
+export const defaultChain = import.meta.env.MODE === "development" ? zkSyncSepoliaTestnet : zkSync;
 
 export const useWagmi = defineStore("wagmi", () => {
   const projectId = useAppConfig().walletConnectProjectID;

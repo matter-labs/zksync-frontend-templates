@@ -1,11 +1,11 @@
 import { createWeb3Modal, defaultWagmiConfig } from '@web3modal/wagmi/vue'
-import { type Chain, zkSync, zkSyncTestnet } from '@wagmi/core/chains'
+import { type Chain, zkSync, zkSyncSepoliaTestnet } from '@wagmi/core/chains'
 import { getAccount, getNetwork, watchAccount, watchNetwork } from '@wagmi/core';
 import { ref } from 'vue';
 
 export const chains: Chain[] = [
   zkSync,
-  zkSyncTestnet,
+  zkSyncSepoliaTestnet,
   ...(
       import.meta.env.MODE === "development" ?
       [
@@ -49,7 +49,7 @@ export const chains: Chain[] = [
       : []
     ),
 ];
-export const defaultChain = import.meta.env.MODE === "development" ? zkSyncTestnet : zkSync;
+export const defaultChain = import.meta.env.MODE === "development" ? zkSyncSepoliaTestnet : zkSync;
 
 const projectId = import.meta.env.VITE_WALLET_CONNECT_PROJECT_ID;
 if (!projectId) throw new Error("Missing WalletConnect project ID in .env file");

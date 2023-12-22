@@ -1,13 +1,13 @@
 import { getDefaultWallets } from '@rainbow-me/rainbowkit'
 import { Chain, configureChains, createConfig } from 'wagmi'
-import { zkSync, zkSyncTestnet } from 'wagmi/chains'
+import { zkSync, zkSyncSepoliaTestnet } from 'wagmi/chains'
 import { publicProvider } from 'wagmi/providers/public'
 
 const walletConnectProjectId = process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID!;
 
 const chains: Chain[] = [
   zkSync,
-  zkSyncTestnet,
+  zkSyncSepoliaTestnet,
   ...(
       process.env.NODE_ENV === "development" ?
       [
@@ -51,7 +51,7 @@ const chains: Chain[] = [
       : []
     ),
 ];
-export const defaultChain = process.env.NODE_ENV === "development" ? zkSyncTestnet : zkSync; 
+export const defaultChain = process.env.NODE_ENV === "development" ? zkSyncSepoliaTestnet : zkSync; 
 
 const { publicClient } = configureChains(
   chains,

@@ -1,6 +1,6 @@
 import { createWeb3Modal, defaultWagmiConfig } from "@web3modal/wagmi/react";
 
-import { type Chain, zkSync, zkSyncTestnet } from "wagmi/chains";
+import { type Chain, zkSync, zkSyncSepoliaTestnet } from "wagmi/chains";
 
 const walletConnectProjectId = import.meta.env.VITE_WALLET_CONNECT_PROJECT_ID
 
@@ -13,7 +13,7 @@ const metadata = {
 
 export const chains: Chain[] = [
   zkSync,
-  zkSyncTestnet,
+  zkSyncSepoliaTestnet,
   ...(
       import.meta.env.MODE === "development" ?
       [
@@ -57,7 +57,7 @@ export const chains: Chain[] = [
       : []
     ),
 ];
-export const defaultChain = import.meta.env.MODE === "development" ? zkSyncTestnet : zkSync;
+export const defaultChain = import.meta.env.MODE === "development" ? zkSyncSepoliaTestnet : zkSync;
 
 export const config = defaultWagmiConfig(
   {
