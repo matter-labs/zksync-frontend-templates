@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, createContext, useContext } from 'react';
-import { Signer, Web3Provider } from 'zksync-web3';
+import { Signer, Web3Provider } from 'zksync-ethers';
 
 type Chain = {
   id: number;

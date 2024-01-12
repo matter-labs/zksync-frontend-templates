@@ -14,7 +14,7 @@
 </template>
 
 <script lang="ts" setup>
-import { Contract } from 'zksync-web3';
+import { Contract } from 'zksync-ethers';
 import type { BigNumber } from 'ethers';
 
 const { getProvider } = useEthers()

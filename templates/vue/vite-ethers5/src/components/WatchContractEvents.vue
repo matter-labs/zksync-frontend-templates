@@ -15,7 +15,7 @@
 
 <script lang="ts" setup>
 import { ref } from 'vue';
-import { Contract } from 'zksync-web3';
+import { Contract } from 'zksync-ethers';
 import type { BigNumber } from 'ethers';
 
 import { stringify } from '@/utils/formatters';

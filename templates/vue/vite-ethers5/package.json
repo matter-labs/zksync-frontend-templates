@@ -11,7 +11,7 @@
   "dependencies": {
     "ethers": "^5.7.2",
     "vue": "^3.3.4",
-    "zksync-web3": "^0.16.0"
+    "zksync-ethers": "^5.0.0"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^4.2.3",

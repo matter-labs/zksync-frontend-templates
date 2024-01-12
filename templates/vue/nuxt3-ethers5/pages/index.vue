@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>zkSync + ethers5 + Nuxt 3</h1>
+    <h1>zkSync + ethers v5 + Nuxt 3</h1>
 
     <Connect />
 

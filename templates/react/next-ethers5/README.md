@@ -11,5 +11,5 @@ Once the webpage has loaded, changes made to files inside the `src/` directory (
 To learn more about [zkSync](https://zksync.io) or [ethers v5](https://docs.ethers.org/v5/), check out the following resources:
 
 - [zkSync Documentation](https://era.zksync.io/docs/dev) – learn about zkSync features and API.
-- [wagmi Documentation](https://wagmi.sh) – learn about wagmi Hooks and API.
+- [ethers v5 Documentation](https://docs.ethers.org/v5/) – learn about Ethers v5 and API.
 - [Next.js Documentation](https://nextjs.org/docs) learn about Next.js features and API.

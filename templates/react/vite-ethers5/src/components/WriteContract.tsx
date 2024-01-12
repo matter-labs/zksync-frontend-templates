@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react';
-import { Contract } from 'zksync-web3';
+import { Contract } from 'zksync-ethers';
 
 import { useAsync } from '../hooks/useAsync';
 import { daiContractConfig } from './contracts'

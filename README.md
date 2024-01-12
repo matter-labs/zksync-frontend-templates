@@ -19,6 +19,9 @@ To make navigation easier, the templates are structured based on their respectiv
   - Vite
     - [Wagmi](./templates/vue/vite-wagmi/)
     - [Wagmi + Web3Modal](./templates/vue/vite-wagmi-web3modal/)
+- **Ethers v6 (latest)**
+  - [Nuxt](./templates/vue/nuxt3-ethers/)
+  - [Vite](./templates/vue/vite-ethers/)
 - **Ethers v5**
   - [Nuxt](./templates/vue/nuxt3-ethers5/)
   - [Vite](./templates/vue/vite-ethers5/)
@@ -33,6 +36,9 @@ To make navigation easier, the templates are structured based on their respectiv
   - Vite
     - [Wagmi](./templates/react/vite-wagmi/)
     - [Wagmi + Web3Modal](./templates/react/vite-wagmi-web3modal/)
+- **Ethers v6 (latest)**
+  - [Next](./templates/react/next-ethers/)
+  - [Vite](./templates/react/vite-ethers/)
 - **Ethers v5**
   - [Next](./templates/react/next-ethers5/)
   - [Vite](./templates/react/vite-ethers5/)

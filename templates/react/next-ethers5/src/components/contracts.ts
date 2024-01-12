@@ -1,4 +1,4 @@
-import IERC20 from "zksync-web3/abi/IERC20.json";
+import IERC20 from "zksync-ethers/abi/IERC20.json";
 
 export const erc20ABI = IERC20.abi;
 

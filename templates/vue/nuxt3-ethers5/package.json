@@ -19,6 +19,6 @@
     "@pinia/nuxt": "^0.5.1",
     "ethers": "^5.7.2",
     "pinia": "^2.1.7",
-    "zksync-web3": "^0.16.0"
+    "zksync-ethers": "^5.0.0"
   }
 }
