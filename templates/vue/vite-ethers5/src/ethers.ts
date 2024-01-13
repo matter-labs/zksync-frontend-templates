@@ -1,5 +1,5 @@
 import { ref } from "vue";
-import { Web3Provider } from "zksync-web3";
+import { Web3Provider } from "zksync-ethers";
 
 type Chain = {
   id: number;

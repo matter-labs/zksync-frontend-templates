@@ -22,7 +22,7 @@
 </template>
 
 <script lang="ts" setup>
-import { Contract } from 'zksync-web3';
+import { Contract } from 'zksync-ethers';
 
 const { getSigner, getProvider } = useEthers()
 const amount = ref<string | null>(null);

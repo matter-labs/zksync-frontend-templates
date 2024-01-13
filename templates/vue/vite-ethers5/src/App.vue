@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>zkSync + wagmi + Vite</h1>
+    <h1>zkSync + ethers v5 + Vite</h1>
 
     <Connect />
 
