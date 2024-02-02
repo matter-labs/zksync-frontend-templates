@@ -1,18 +1,26 @@
 'use client'
 
 import { useState } from 'react'
-import type { Log } from 'viem'
-import { useContractEvent } from 'wagmi'
+import type { Abi, Log } from 'viem'
+import { useWatchContractEvent } from 'wagmi'
 
 import { daiContractConfig } from './contracts'
 import { stringify } from '../utils/stringify'
 
 export function WatchContractEvents() {
   const [transferLogs, setTransferLog] = useState<Log[]>([])
-  useContractEvent({
+  useWatchContractEvent({
     ...daiContractConfig,
     eventName: 'Transfer',
     listener: (logs) => setTransferLog((x) => [...x, ...logs]),
+  } as {
+    address?: `0x${string}` | `0x${string}`[] | undefined;
+    abi?: readonly unknown[] | Abi | undefined;
+    args?: {} | undefined;
+    eventName?: string | undefined;
+    onError?: ((error: Error) => void) | undefined;
+    listener?: (logs: Log[]) => void;
+    enabled?: boolean | undefined;
   })
 
   return (

@@ -7,10 +7,9 @@ import { NetworkSwitcher } from '../components/NetworkSwitcher'
 import { ReadContract } from '../components/ReadContract'
 import { ReadContracts } from '../components/ReadContracts'
 import { SendTransaction } from '../components/SendTransaction'
-import { SendTransactionPrepared } from '../components/SendTransactionPrepared'
+import { EstimateGas } from '../components/EstimateGas'
 import { SignMessage } from '../components/SignMessage'
 import { SignTypedData } from '../components/SignTypedData'
-import { Token } from '../components/Token'
 import { WatchContractEvents } from '../components/WatchContractEvents'
 import { WatchPendingTransactions } from '../components/WatchPendingTransactions'
 import { WriteContract } from '../components/WriteContract'
@@ -56,8 +55,8 @@ export default function Page() {
         <SendTransaction />
         <br />
         <hr />
-        <h2>Send Transaction (Prepared)</h2>
-        <SendTransactionPrepared />
+        <h2>Estimate Gas and Send</h2>
+        <EstimateGas />
         <br />
         <hr />
         <h2>Sign Message</h2>
@@ -66,10 +65,6 @@ export default function Page() {
         <hr />
         <h2>Sign Typed Data</h2>
         <SignTypedData />
-        <br />
-        <hr />
-        <h2>Token</h2>
-        <Token />
         <br />
         <hr />
         <h2>Watch Contract Events</h2>
