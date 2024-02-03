@@ -2,7 +2,7 @@
   <div>
     <div>
       Connected wallet balance:
-      {{ balance?.formatted }}
+      {{ formattedBalance }}
       <button @click="getAccountBalance">refetch</button>
     </div>
     <div v-if="error">Error: {{ error?.message }}</div>
@@ -10,15 +10,30 @@
 </template>
 
 <script lang="ts" setup>
-import { fetchBalance as wagmiFetchBalance } from '@wagmi/core';
+import { ref, watch } from 'vue';
+import { formatUnits } from 'viem';
+import { getBalance } from '@wagmi/core';
+import { useWagmi } from '../store/wagmi';
+import { storeToRefs } from 'pinia';
 
-const { account } = storeToRefs(useWagmi());
+const { account, wagmiConfig } = storeToRefs(useWagmi());
+const balance = ref(null);
+const error = ref(null);
+const formattedBalance = ref('');
 
-const { result: balance, execute: fetchBalance, inProgress, error} = useAsync(wagmiFetchBalance);
-const getAccountBalance = () => fetchBalance({ address: account.value.address! });
+const getAccountBalance = async () => {
+  if (!account.value) return;
+  try {
+    const balanceResult = await getBalance(wagmiConfig.value, { address: account.value.address });
+    balance.value = balanceResult;
+    formattedBalance.value = formatUnits(balanceResult.value, balanceResult.decimals);
+  } catch (err) {
+    error.value = err;
+  }
+};
 
-watch(account, ({ address }) => {
-  if (!address) return;
+watch(account, (newAccount) => {
+  if (!newAccount.address) return;
   getAccountBalance();
 }, { immediate: true });
 </script>

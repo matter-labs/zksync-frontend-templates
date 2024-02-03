@@ -17,8 +17,9 @@
   },
   "dependencies": {
     "@pinia/nuxt": "^0.5.1",
-    "@wagmi/core": "^1.4.12",
+    "@wagmi/connectors": "^4.1.12",
+    "@wagmi/core": "^2.6.3",
     "pinia": "^2.1.7",
-    "viem": "^1.20.3"
+    "viem": "^2.7.1"
   }
 }

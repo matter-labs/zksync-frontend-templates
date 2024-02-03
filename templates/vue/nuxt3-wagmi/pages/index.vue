@@ -29,7 +29,7 @@
       <BlockNumber />
       <br />
       <hr />
-      <h2>Read Contract</h2>
+      <!-- <h2>Read Contract</h2>
       <ReadTokenBalance />
       <br />
       <ReadTokenSupply />
@@ -72,7 +72,7 @@
       <br />
       <hr />
       <h2>Write Contract (Prepared)</h2>
-      <WriteContractPrepared />
+      <WriteContractPrepared /> -->
     </Connected>
   </div>
 </template>
