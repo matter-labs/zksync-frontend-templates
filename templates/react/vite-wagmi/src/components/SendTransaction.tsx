@@ -9,6 +9,7 @@ import { stringify } from '../utils/stringify'
 export function SendTransaction() {
   const { sendTransactionAsync, error: sendError, isError: isSendError } = useSendTransaction()
   const [transactionHash, setTransactionHash] = useState<string | undefined>(undefined);
+  const [isPreparingTransaction, setIsPreparingTransaction] = useState(false); 
 
   const {
     data: receipt,
@@ -23,13 +24,18 @@ export function SendTransaction() {
     const address = formData.get('address') as string
     const value = formData.get('value') as `${number}`
     
-    const transactionResponse = await sendTransactionAsync({
-      to: address as `0x${string}`,
-      value: parseEther(value),
-    })
+    setIsPreparingTransaction(true);
+    try {
+      const transactionResponse = await sendTransactionAsync({
+        to: address as `0x${string}`,
+        value: parseEther(value),
+      })
 
-    if (typeof transactionResponse !== 'undefined') {
-      setTransactionHash(transactionResponse);
+      if (typeof transactionResponse !== 'undefined') {
+        setTransactionHash(transactionResponse);
+      }
+    } finally {
+      setIsPreparingTransaction(false);
     }
   }
 
@@ -42,8 +48,7 @@ export function SendTransaction() {
       </form>
 
       {isSendError && <div>Error: {sendError?.message}</div>}
-      {!transactionHash && <div>Preparing transaction...</div>}
-      {transactionHash && !isSuccess && <div>Transaction pending...</div>}
+      {isPreparingTransaction && <div>Preparing transaction...</div>}
       {isSuccess && (
         <>
           <div>Transaction Hash: {transactionHash}</div>
