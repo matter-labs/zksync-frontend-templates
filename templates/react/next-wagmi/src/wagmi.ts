@@ -48,10 +48,6 @@ export const config = createConfig({
       chainId: defaultChain.id,
       appName: 'zkSync + wagmi',
     }),
-    injected({
-      target: 'metaMask',
-      shimDisconnect: true,
-    }),
   ],
   transports: {
     [zkSync.id]: http(),
