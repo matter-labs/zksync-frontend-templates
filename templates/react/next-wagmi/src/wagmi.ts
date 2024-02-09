@@ -1,84 +1,58 @@
-import { configureChains, createConfig } from 'wagmi'
+import { http, createConfig } from 'wagmi'
 import { type Chain, zkSync, zkSyncSepoliaTestnet } from 'wagmi/chains'
-import { CoinbaseWalletConnector } from 'wagmi/connectors/coinbaseWallet'
-import { InjectedConnector } from 'wagmi/connectors/injected'
-import { MetaMaskConnector } from 'wagmi/connectors/metaMask'
+import { coinbaseWallet } from 'wagmi/connectors'
+import { injected } from 'wagmi/connectors'
 
-import { publicProvider } from 'wagmi/providers/public'
+export const dockerizedLocalNode: Chain = {
+  id: 270,
+  name: "Dockerized local node",
+  nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
+  rpcUrls: {
+    default: {
+      http: ['http://localhost:3050'],
+    },
+    public: {
+      http: ['http://localhost:3050'],
+    },
+  },
+  blockExplorers: {
+    default: {
+      name: 'Local Explorer',
+      url: 'http://localhost:3010',
+    },
+  },
+  testnet: true
+} as const satisfies Chain;
 
-export const chains: Chain[] = [
-  zkSync,
-  zkSyncSepoliaTestnet,
-  ...(
-      process.env.NODE_ENV === "development" ?
-      [
-        {
-          id: 270,
-          name: "Dockerized local node",
-          network: "zksync-dockerized-node",
-          nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
-          rpcUrls: {
-            default: {
-              http: ['http://localhost:3050'],
-            },
-            public: {
-              http: ['http://localhost:3050'],
-            },
-          },
-          blockExplorers: {
-            default: {
-              name: 'Local Explorer',
-              url: 'http://localhost:3010',
-            },
-          },
-          testnet: true
-        },
-        {
-          id: 260,
-          name: "In-memory local node",
-          network: "zksync-in-memory-node",
-          nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
-          rpcUrls: {
-            default: {
-              http: ['http://127.0.0.1:8011'],
-            },
-            public: {
-              http: ['http://127.0.0.1:8011'],
-            },
-          },
-          testnet: true
-        },
-      ]
-      : []
-    ),
-]
+export const inMemoryLocalNode: Chain = {
+  id: 260,
+  name: "In-memory local node",
+  nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
+  rpcUrls: {
+    default: {
+      http: ['http://127.0.0.1:8011'],
+    },
+    public: {
+      http: ['http://127.0.0.1:8011'],
+    },
+  },
+  testnet: true
+} as const satisfies Chain;
+
 export const defaultChain = process.env.NODE_ENV === "development" ? zkSyncSepoliaTestnet : zkSync;
 
-const { publicClient, webSocketPublicClient } = configureChains(
-  chains,
-  [
-    publicProvider(),
-  ],
-)
-
 export const config = createConfig({
-  autoConnect: true,
+  chains: [zkSync, zkSyncSepoliaTestnet, dockerizedLocalNode, inMemoryLocalNode],
   connectors: [
-    new MetaMaskConnector({ chains }),
-    new CoinbaseWalletConnector({
-      chains,
-      options: {
-        appName: 'zkSync + wagmi',
-      },
-    }),
-    new InjectedConnector({
-      chains,
-      options: {
-        name: 'Injected',
-        shimDisconnect: true,
-      },
+    coinbaseWallet({
+      chainId: defaultChain.id,
+      appName: 'zkSync + wagmi',
     }),
   ],
-  publicClient,
-  webSocketPublicClient,
-})
+  transports: {
+    [zkSync.id]: http(),
+    [zkSyncSepoliaTestnet.id]: http(),
+    [dockerizedLocalNode.id]: http(),
+    [inMemoryLocalNode.id]: http()
+  },
+});

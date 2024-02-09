@@ -1,8 +1,8 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { recoverTypedDataAddress } from 'viem'
-import { type Address, useSignTypedData } from 'wagmi'
+import { useState } from 'react'
+import { recoverTypedDataAddress, Address } from 'viem'
+import { useAccount, useSignTypedData } from 'wagmi'
 import { defaultChain } from '../wagmi'
 
 const domain = {
@@ -37,42 +37,44 @@ const message = {
 } as const
 
 export function SignTypedData() {
-  const { data, error, isLoading, signTypedData } = useSignTypedData({
-    domain,
-    types,
-    message,
-    primaryType: 'Mail',
-  })
-
+  const { address } = useAccount()
+  const { signTypedDataAsync } = useSignTypedData();
   const [recoveredAddress, setRecoveredAddress] = useState<Address>()
-  useEffect(() => {
-    if (!data) return
-    ;(async () => {
-      setRecoveredAddress(
-        await recoverTypedDataAddress({
-          domain,
-          types,
-          message,
-          primaryType: 'Mail',
-          signature: data,
-        }),
-      )
-    })()
-  }, [data])
+  const [error, setError] = useState<Error | null>(null)
+
+  const handleSignMessage = async () => {
+    try {
+      const signature = await signTypedDataAsync({
+        domain,
+        types,
+        message,
+        primaryType: 'Mail',
+      })
+      const recovered = await recoverTypedDataAddress({
+        domain,
+        types,
+        message,
+        primaryType: 'Mail',
+        signature,
+      })
+      setRecoveredAddress(recovered)
+    } catch (error) {
+      setError(error as Error)
+    }
+  }
 
   return (
     <>
-      <button disabled={isLoading} onClick={() => signTypedData()}>
-        {isLoading ? 'Check Wallet' : 'Sign Message'}
+      <button onClick={handleSignMessage}>
+        Sign Message
       </button>
 
-      {data && (
+      {recoveredAddress && (
         <div>
-          <div>Signature: {data}</div>
-          <div>Recovered address {recoveredAddress}</div>
+          <div>Recovered address: {recoveredAddress}</div>
         </div>
       )}
-      {error && <div>Error: {error?.message}</div>}
+      {error && <div>Error: {error.message}</div>}
     </>
   )
 }
