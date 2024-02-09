@@ -13,10 +13,11 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "util": "^0.12.4",
-    "viem": "^1.20.3",
-    "wagmi": "^1.4.12"
+    "viem": "^2.7.1",
+    "wagmi": "^2.5.5"
   },
   "devDependencies": {
+    "@tanstack/react-query": "^5.18.1",
     "@types/react": "^18.0.9",
     "@types/react-dom": "^18.0.3",
     "@vitejs/plugin-react": "^4.0.0",

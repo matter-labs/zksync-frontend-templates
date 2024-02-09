@@ -1,13 +1,13 @@
 'use client'
 
-import { useAccount, useContractReads } from 'wagmi'
+import { useAccount, useReadContracts } from 'wagmi'
 
 import { daiContractConfig } from './contracts'
 import { stringify } from '../utils/stringify'
 
 export function ReadContracts() {
   const { address } = useAccount();
-  const { data, isSuccess, isLoading } = useContractReads({
+  const { data, isSuccess, isLoading } = useReadContracts({
     contracts: [
       {
         ...daiContractConfig,
