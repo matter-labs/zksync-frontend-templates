@@ -1,0 +1,27 @@
+# Svelte-kit dev/build outputs
+.output
+.data
+.svelte-kit
+.nitro
+.cache
+dist
+vite.config.js.timestamp-*
+vite.config.ts.timestamp-*
+
+# Node dependencies
+node_modules
+
+# Logs
+logs
+*.log
+
+# Misc
+.DS_Store
+.fleet
+.idea
+package-lock.json
+
+# Local env files
+.env
+.env.*
+!.env.example
