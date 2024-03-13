@@ -11,5 +11,5 @@ Once the webpage has loaded, changes made to files inside the project directory 
 To learn more about [zkSync](https://zksync.io) or [ethers v5](https://docs.ethers.org/v5/), check out the following resources:
 
 - [zkSync Documentation](https://era.zksync.io/docs/dev) – learn about zkSync features and API.
-- [ethers v6 Documentation](https://docs.ethers.org/v5/) – learn about Ethers v6 and API.
+- [ethers v5 Documentation](https://docs.ethers.org/v5/) – learn about Ethers v5 and API.
 - [SvelteKit Documentation](https://kit.svelte.dev/docs/introduction) learn about SvelteKit features and API.
