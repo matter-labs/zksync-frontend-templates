@@ -12,7 +12,7 @@
     return new Contract(
       daiContractConfig.address,
       daiContractConfig.abi,
-      await getSigner()!,
+      await getSigner()!
     );
   };
 
@@ -25,9 +25,7 @@
       const spender = "0xa1cf087DB965Ab02Fb3CFaCe1f5c63935815f044";
 
       const gasPrice = await getProvider()!.getGasPrice();
-      const gasLimit = await contract
-        .getFunction("approve")
-        .estimateGas(spender, amount);
+      const gasLimit = contract.estimateGas.approve(spender, amount);
 
       return {
         args: [spender, amount],
@@ -47,20 +45,20 @@
     async () => {
       const contract = await getContractInstance();
       const transaction = preparedTransaction!;
-      const result = await contract.approve(
+      const result = contract.approve(
         ...transaction.args,
-        transaction.overrides,
+        transaction.overrides
       );
       waitForReceipt(result.hash);
       return result;
-    },
+    }
   );
   $: ({ result: transaction, inProgress, error } = $transactionState);
 
   const { state: receiptState, execute: waitForReceipt } = useAsync(
     async (transactionHash) => {
       return await getProvider()!.waitForTransaction(transactionHash);
-    },
+    }
   );
   $: ({
     result: receipt,
@@ -107,5 +105,8 @@
   {/if}
   {#if receiptError}
     <div>Receipt Error: {receiptError?.message}</div>
+  {/if}
+  {#if prepareError}
+    <div>Prepare Error: {prepareError?.message}</div>
   {/if}
 </div>
