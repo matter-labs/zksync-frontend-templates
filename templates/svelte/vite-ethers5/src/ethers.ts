@@ -12,43 +12,42 @@ const zkSync: Chain = {
   id: 324,
   name: "zkSync",
   rpcUrl: "https://mainnet.era.zksync.io",
-  blockExplorerUrl: "https://explorer.zksync.io"
-}
+  blockExplorerUrl: "https://explorer.zksync.io",
+};
 const zkSyncSepoliaTestnet: Chain = {
   id: 300,
   name: "zkSync Sepolia Testnet",
   rpcUrl: "https://rpc.ankr.com/eth_sepolia",
-  blockExplorerUrl: "https://sepolia.etherscan.io"
-}
+  blockExplorerUrl: "https://sepolia.etherscan.io",
+};
 const zkSyncGoerliTestnet: Chain = {
   id: 280,
   name: "zkSync Goerli Testnet",
   rpcUrl: "https://testnet.era.zksync.dev",
-  blockExplorerUrl: "https://goerli.explorer.zksync.io"
-}
+  blockExplorerUrl: "https://goerli.explorer.zksync.io",
+};
 export const chains: Chain[] = [
   zkSync,
   zkSyncSepoliaTestnet,
   zkSyncGoerliTestnet,
-  ...(
-    import.meta.env.MODE === "development" ?
-    [
+  ...(import.meta.env.MODE === "development"
+    ? [
         {
           id: 270,
           name: "Dockerized local node",
-          rpcUrl: 'http://localhost:3050',
-          blockExplorerUrl: "http://localhost:3010"
+          rpcUrl: "http://localhost:3050",
+          blockExplorerUrl: "http://localhost:3010",
         },
         {
           id: 260,
           name: "In-memory local node",
-          rpcUrl: 'http://127.0.0.1:8011',
+          rpcUrl: "http://127.0.0.1:8011",
         },
       ]
-      : []
-    ),
+    : []),
 ];
-export const defaultChain = import.meta.env.MODE === "development" ? zkSyncSepoliaTestnet : zkSync;
+export const defaultChain =
+  import.meta.env.MODE === "development" ? zkSyncSepoliaTestnet : zkSync;
 
 type EthersStore = {
   account: {
@@ -79,10 +78,10 @@ export function createEthersStore() {
   const getEthereumContext = () => (window as any).ethereum;
 
   const connect = async () => {
-    if (!getEthereumContext()) throw new Error("No injected wallets found")
+    if (!getEthereumContext()) throw new Error("No injected wallets found");
 
     web3Provider = new Web3Provider((window as any).ethereum, "any");
-    const accounts = await web3Provider?.send("eth_requestAccounts", [])
+    const accounts = await web3Provider?.send("eth_requestAccounts", []);
     if (accounts.length > 0) {
       onAccountChange(accounts);
       getEthereumContext()?.on("accountsChanged", onAccountChange);
@@ -90,7 +89,7 @@ export function createEthersStore() {
     } else {
       throw new Error("No accounts found");
     }
-  }
+  };
   const disconnect = () => {
     setField("account", {
       isConnected: false,
@@ -99,7 +98,7 @@ export function createEthersStore() {
     setField("network", null);
     getEthereumContext()?.off("accountsChanged", onAccountChange);
     web3Provider?.off("network", onNetworkChange);
-  }
+  };
   connect();
 
   const onAccountChange = async (accounts: string[]) => {
@@ -111,7 +110,7 @@ export function createEthersStore() {
     } else {
       disconnect();
     }
-  }
+  };
   const onNetworkChange = async (data: { chainId: number; name: string }) => {
     const currentChain = chains.find((chain) => chain.id === data.chainId);
     setField(
@@ -123,7 +122,7 @@ export function createEthersStore() {
         unsupported: true,
       }
     );
-  }
+  };
   const switchNetwork = async (chainId: number) => {
     const chain = chains.find((chain) => chain.id === chainId);
     if (!chain) throw new Error("Unsupported chain");
@@ -134,25 +133,34 @@ export function createEthersStore() {
         method: "wallet_switchEthereumChain",
         params: [{ chainId: hexChainId }],
       });
+      await onNetworkChange({
+        chainId: chain.id,
+        name: chain.name || `${chain.id}`,
+      });
     } catch (error) {
-      if ((error as any)?.code === 4902) { // 4902 - chain not added
+      if ((error as any)?.code === 4902) {
+        // 4902 - chain not added
         getEthereumContext()?.request({
           method: "wallet_addEthereumChain",
-          params: [{
-            chainId: "0x" + chain.id.toString(16),
-            rpcUrls: [chain.rpcUrl],
-            chainName: chain.name,
-            nativeCurrency: {
-              name: "Ether",
-              symbol: "ETH",
-              decimals: 18
+          params: [
+            {
+              chainId: "0x" + chain.id.toString(16),
+              rpcUrls: [chain.rpcUrl],
+              chainName: chain.name,
+              nativeCurrency: {
+                name: "Ether",
+                symbol: "ETH",
+                decimals: 18,
+              },
+              blockExplorerUrls: chain.blockExplorerUrl
+                ? [chain.blockExplorerUrl]
+                : null,
             },
-            blockExplorerUrls: chain.blockExplorerUrl ? [chain.blockExplorerUrl] : null
-          }]
+          ],
         });
       }
     }
-  }
+  };
 
   return {
     ...ethers,
