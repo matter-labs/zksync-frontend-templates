@@ -43,6 +43,22 @@ To make navigation easier, the templates are structured based on their respectiv
   - [Next](./templates/react/next-ethers5/)
   - [Vite](./templates/react/vite-ethers5/)
 
+### Svelte
+
+- **Svelte Templates** – Kickstart your zkSync project using our Svelte templates, designed to offer ready-made solutions for applications built with Svelte.
+  - SvelteKit
+    - [Wagmi](./templates/svelte/sveltekit-wagmi/)
+    - [Wagmi + Web3Modal](./templates/svelte/sveltekit-wagmi-web3modal/)
+  - Vite
+    - [Wagmi](./templates/svelte/vite-wagmi/)
+    - [Wagmi + Web3Modal](./templates/svelte/vite-wagmi-web3modal/)
+- **Ethers v6 (latest)**
+  - [SvelteKit](./templates/svelte/sveltekit-ethers/)
+  - [Vite](./templates/svelte/vite-ethers/)
+- **Ethers v5**
+  - [SvelteKit](./templates/svelte/sveltekit-ethers5/)
+  - [Vite](./templates/svelte/vite-ethers5/)
+
 ## 🤝 Contribution
 
 Your contributions are always welcome! Whether it's submitting PRs, suggesting improvements, or reporting issues, your feedback is invaluable in refining these templates.
