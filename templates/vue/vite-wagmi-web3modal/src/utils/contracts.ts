@@ -1,6 +1,6 @@
-import { erc20ABI } from '@wagmi/core'
+import { erc20ABI } from "@wagmi/core";
 
 export const daiContractConfig = {
-  address: '0x3e7676937A7E96CFB7616f255b9AD9FF47363D4b', // zkSync Era Goerli Testnet DAI token address
+  address: "0x604F0416e788779edB06c1A74a75FAad38384C6E", // zkSync Era Sepolia Testnet DAI token address
   abi: erc20ABI,
-} as const
+} as const;
