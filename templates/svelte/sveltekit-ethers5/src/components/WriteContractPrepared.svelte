@@ -12,7 +12,7 @@
     return new Contract(
       daiContractConfig.address,
       daiContractConfig.abi,
-      await getSigner()!
+      await getSigner()!,
     );
   };
 
