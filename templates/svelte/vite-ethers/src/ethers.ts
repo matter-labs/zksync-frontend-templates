@@ -134,6 +134,10 @@ export function createEthersStore() {
         method: "wallet_switchEthereumChain",
         params: [{ chainId: hexChainId }],
       });
+      await onNetworkChange({
+        chainId: BigInt(chain.id),
+        name: chain.name || `${chain.id}`,
+      });
     } catch (error) {
       if ((error as any)?.code === 4902) {
         // 4902 - chain not added
