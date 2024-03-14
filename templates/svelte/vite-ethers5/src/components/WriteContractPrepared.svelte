@@ -25,7 +25,7 @@
       const spender = "0xa1cf087DB965Ab02Fb3CFaCe1f5c63935815f044";
 
       const gasPrice = await getProvider()!.getGasPrice();
-      const gasLimit = contract.estimateGas.approve(spender, amount);
+      const gasLimit = await contract.estimateGas.approve(spender, amount);
 
       return {
         args: [spender, amount],
@@ -45,7 +45,7 @@
     async () => {
       const contract = await getContractInstance();
       const transaction = preparedTransaction!;
-      const result = contract.approve(
+      const result = await contract.approve(
         ...transaction.args,
         transaction.overrides
       );
