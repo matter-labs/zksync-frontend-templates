@@ -9,17 +9,20 @@ export function SendTransaction() {
   const [address, setAddress] = useState<string | null>(null);
   const [value, setValue] = useState<string | null>(null);
 
-  const { getWeb3 } = useEthereum();
+  const { getWeb3, account } = useEthereum();
 
   const web3 = getWeb3();
 
   const { result: transaction, execute: sendTransaction, inProgress, error } = useAsync(async () => {
     if(web3 && value){
         console.log("Sending transaction to address: ", address, value);
+        console.log(account)
         const result = await web3.eth.sendTransaction({
-            to: address!,
-            value: web3.utils.toWei(value, 'ether')
-        }, DEFAULT_RETURN_FORMAT, { ignoreGasPricing: true});
+            to: address,
+            value: web3.utils.toWei(value, 'ether'),
+            from: account.address as string,
+        }, DEFAULT_RETURN_FORMAT, { ignoreGasPricing: true, 
+          checkRevertBeforeSending: false,});
         return result;   
     }
   });

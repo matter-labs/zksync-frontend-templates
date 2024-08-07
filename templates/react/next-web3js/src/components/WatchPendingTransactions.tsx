@@ -15,19 +15,17 @@ export function WatchPendingTransactions() {
     const onBlock = async () => {
       if (!web3)
       return;
-      const blockSubscription = await web3.eth.subscribe("newPendingTransactions");
+      const blockSubscription = await web3.eth.subscribe("newHeads");
       console.log("subscripbed");
       blockSubscription.on("data", (block) => {
         console.log(block);
-        if (block  != undefined){
-            setTransactionHashes(prevHashes => [...prevHashes, ...(block) as unknown as string[]]);
-
+        if (block && block.hash) {
+          setTransactionHashes(prevHashes => [...prevHashes, block.hash as unknown as string]);
         }
       });
       return blockSubscription.off("data", (block) => {
-        if (block != undefined){
-            setTransactionHashes(prevHashes => [...prevHashes, ...(block) as unknown as string[]]);
-
+        if (block && block.hash) {
+          setTransactionHashes(prevHashes => [...prevHashes, block.hash as unknown as string]);
         }
     });
     };

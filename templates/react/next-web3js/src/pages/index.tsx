@@ -18,6 +18,9 @@ import { SignTypedData } from '../components/SignTypedData';
 import { WatchContractEvents } from '../components/WatchContractEvents';
 import { Token } from '../components/Token';
 import { WatchPendingTransactions } from '../components/WatchPendingTransactions'
+import { SendTransactionPrepared } from '../components/SendTransactionPrepared';
+import { WriteContract } from '../components/WriteContract';
+import { WriteContractPrepared } from '../components/WriteContractPrepared';
 
 // import { SendTransactionPrepared } from '../components/SendTransactionPrepared';
 const inter = Inter({ subsets: ["latin"] });
@@ -67,8 +70,8 @@ export default function Home() {
               <SendTransaction />
               <br />
               <hr />
-              {/* <h2>Send Transaction (Prepared)</h2>
-              <SendTransactionPrepared /> */}
+              <h2>Send Transaction (Prepared)</h2>
+              <SendTransactionPrepared />
               <h2>Sign Message</h2>
               <SignMessage />
               <br />
@@ -86,6 +89,14 @@ export default function Home() {
               <br />
               <hr />
               <WatchPendingTransactions />
+              <br />
+              <hr />
+              <h2>Write Contract</h2>
+              <WriteContract />
+              <br />
+              <hr />
+              <h2>Write Contract (Prepared)</h2>
+              <WriteContractPrepared />
             </>
           }
         </div>

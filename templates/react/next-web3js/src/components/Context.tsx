@@ -169,7 +169,7 @@ interface EthereumContextValue {
     }
   
     const getWeb3 = () => web3;
-    const getProvider = () => MetaMaskProvider;
+    // const getProvider = () => MetaMaskProvider;
     return (
       <EthereumContext.Provider value={{
         account,
