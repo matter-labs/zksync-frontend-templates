@@ -71,7 +71,6 @@ function BalanceOf() {
     {
       const contract = new web3.eth.Contract( daiContractConfig.abi, daiContractConfig.address);
       const b = await contract.methods.balanceOf(address).call();
-      console.log(b)
       return b
 
     }

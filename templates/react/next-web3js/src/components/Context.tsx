@@ -3,6 +3,7 @@
 import { Web3, EIP1193Provider } from 'web3';
 import { ZkSyncPlugin } from 'web3-plugin-zksync';
 import React, { useState, useEffect, createContext, useContext } from 'react';
+import { on } from 'events';
 
 type Chain = {
     id: string;
@@ -86,10 +87,11 @@ interface EthereumContextValue {
     }
   
     const onNetworkChange = async (chainId: string) => {
-
-      const currentChain = chains.find((chain: any) => chain.id === chainId);
-      const strChainId = String(web3?.utils.hexToNumber(chainId));
-      setNetwork(currentChain ?? { id: strChainId, name: null, rpcUrl: null, unsupported: true });
+      console.log("CHAINID");
+      console.log(chainId);
+      const chainIdStr = web3?.utils.hexToNumberString(chainId)
+      const currentChain = chains.find((chain: any) => chain.id === chainIdStr);
+      setNetwork(currentChain ?? { id: chainIdStr, name: null, rpcUrl: null, unsupported: true });
     }
 
     const blockHandler = async (block: string) => {
@@ -106,10 +108,12 @@ interface EthereumContextValue {
       const zkSyncPlugin = new ZkSyncPlugin(getEthereumContext());
       web3.registerPlugin(zkSyncPlugin);
       const accounts = await web3.eth.requestAccounts();
-      console.log("accounts")
+      const chain = await web3.eth.getChainId();
+      // console.log("chainzz", web3.utils.toHex(chain))
       getEthereumContext()?.on("block", blockHandler);
       if (accounts.length > 0) {
         onAccountChange(accounts);
+        onNetworkChange(web3.utils.toHex(chain));
         getEthereumContext()?.on("accountsChanged", onAccountChange);
         getEthereumContext()?.on("chainChanged", onNetworkChange);
       } else {

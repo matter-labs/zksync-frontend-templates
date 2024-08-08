@@ -16,7 +16,7 @@ export function WatchPendingTransactions() {
       if (!web3)
       return;
       const blockSubscription = await web3.eth.subscribe("newHeads");
-      console.log("subscripbed");
+
       blockSubscription.on("data", (block) => {
         console.log(block);
         if (block && block.hash) {

@@ -7,6 +7,7 @@ import { Inter } from "next/font/google";
 import styles from "@/styles/Home.module.css";
 import { Web3 } from "web3";
 import { ZkSyncPlugin } from "web3-plugin-zksync";
+import { BlockNumber } from '../components/BlockNumber';
 import { NetworkSwitcher } from '../components/NetworkSwitcher';
 import { Account } from '../components/Account';
 import { Connect } from "../components/Connect";
@@ -21,8 +22,6 @@ import { WatchPendingTransactions } from '../components/WatchPendingTransactions
 import { SendTransactionPrepared } from '../components/SendTransactionPrepared';
 import { WriteContract } from '../components/WriteContract';
 import { WriteContractPrepared } from '../components/WriteContractPrepared';
-
-// import { SendTransactionPrepared } from '../components/SendTransactionPrepared';
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
@@ -59,7 +58,7 @@ export default function Home() {
               <br />
               <hr />
               <h2>Block Number</h2>
-              {/* <BlockNumber /> */}
+              <BlockNumber />
               <br />
               <hr />
               <h2>Read Contract</h2>

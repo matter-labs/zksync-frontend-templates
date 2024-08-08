@@ -1,32 +1,39 @@
-// 'use client'
+'use client'
 
-// import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 
-// import { useEthereum } from './Context';
+import { useEthereum } from './Context';
 
-// export function BlockNumber() {
-//   const { getProvider } = useEthereum();
-//   const [blockNumber, setBlockNumber] = useState<bigint | null>(null);
+export function BlockNumber() {
+  const { getWeb3 } = useEthereum();
+  const [blockNumber, setBlockNumber] = useState<bigint | null>(null);
 
-//   useEffect(() => {
-//     const provider = getProvider();
+  useEffect(() => {
+    const web3 = getWeb3();
 
-//     if (!provider) return;
+    if (!web3) return;
 
-//     const onBlockHandler = (block: bigint) => {
-//       setBlockNumber(block);
-//     };
+    const onBlock = async () => {
+        const subscription = await web3.eth.subscribe("newHeads");
+        subscription.on('data', (block) => {
+            console.log(block);
+            if (block && block.number) {
+                setBlockNumber(block.number as bigint);
+            }
+        })
+        return subscription.off("data", (block) => {
+              if (block && block.number) {
+                  setBlockNumber(block.number as bigint);
+              }
+            });
+        }
+    onBlock();
+    
+    }, [getWeb3]);
 
-//     provider.on("block", onBlockHandler);
-
-//     return () => {
-//       provider.off("block", onBlockHandler);
-//     };
-//   }, [getProvider]);
-
-//   return (
-//     <div>
-//       {blockNumber?.toString()}
-//     </div>
-//   );
-// }
+  return (
+    <div>
+      {blockNumber?.toString()}
+    </div>
+  );
+}
