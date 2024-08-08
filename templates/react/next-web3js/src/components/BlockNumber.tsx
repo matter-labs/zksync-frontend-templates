@@ -16,7 +16,6 @@ export function BlockNumber() {
     const onBlock = async () => {
         const subscription = await web3.eth.subscribe("newHeads");
         subscription.on('data', (block) => {
-            console.log(block);
             if (block && block.number) {
                 setBlockNumber(block.number as bigint);
             }

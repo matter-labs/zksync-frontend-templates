@@ -87,16 +87,11 @@ interface EthereumContextValue {
     }
   
     const onNetworkChange = async (chainId: string) => {
-      console.log("CHAINID");
-      console.log(chainId);
       const chainIdStr = web3?.utils.hexToNumberString(chainId)
       const currentChain = chains.find((chain: any) => chain.id === chainIdStr);
       setNetwork(currentChain ?? { id: chainIdStr, name: null, rpcUrl: null, unsupported: true });
     }
 
-    const blockHandler = async (block: string) => {
-      console.log("block",block);
-    }
   
     const connect = async () => {
       if (!getEthereumContext()) throw new Error("No injected wallets found");
@@ -109,8 +104,6 @@ interface EthereumContextValue {
       web3.registerPlugin(zkSyncPlugin);
       const accounts = await web3.eth.requestAccounts();
       const chain = await web3.eth.getChainId();
-      // console.log("chainzz", web3.utils.toHex(chain))
-      getEthereumContext()?.on("block", blockHandler);
       if (accounts.length > 0) {
         onAccountChange(accounts);
         onNetworkChange(web3.utils.toHex(chain));
@@ -144,7 +137,6 @@ interface EthereumContextValue {
       if (!chain) throw new Error("Unsupported chain");
     
       const hexChainId = web3?.utils.numberToHex(chainId);
-      console.log(getEthereumContext())
       if (web3)
       try {
         getEthereumContext()?.request({
@@ -152,7 +144,6 @@ interface EthereumContextValue {
             params: [{ chainId: hexChainId }],
         })
       } catch (error) {
-        console.log(error)
         if ((error as any)?.code === 4902) { // 4902 - chain not added
           getEthereumContext()?.request({
             method: "wallet_addEthereumChain",
