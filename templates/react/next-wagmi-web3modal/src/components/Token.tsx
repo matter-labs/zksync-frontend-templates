@@ -13,22 +13,22 @@ export function Token() {
   allowFailure: false, 
   contracts: [ 
     { 
-      address: '0x6B175474E89094C44Da98b954EedeAC495271d0F', 
+      address: address, 
       abi: erc20Abi, 
       functionName: 'decimals', 
     }, 
     { 
-      address: '0x6B175474E89094C44Da98b954EedeAC495271d0F', 
+      address: address, 
       abi: erc20Abi, 
       functionName: 'name', 
     }, 
     { 
-      address: '0x6B175474E89094C44Da98b954EedeAC495271d0F', 
+      address: address, 
       abi: erc20Abi, 
       functionName: 'symbol', 
     }, 
     { 
-      address: '0x6B175474E89094C44Da98b954EedeAC495271d0F', 
+      address: address, 
       abi: erc20Abi, 
       functionName: 'totalSupply', 
     }, 
