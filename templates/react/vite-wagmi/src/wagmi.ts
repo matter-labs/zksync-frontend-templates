@@ -1,7 +1,6 @@
 import { http, createConfig } from 'wagmi'
-import { type Chain, zkSync, zkSyncSepoliaTestnet } from 'wagmi/chains'
+import { type Chain, zksync, zksyncSepoliaTestnet } from 'wagmi/chains'
 import { coinbaseWallet } from 'wagmi/connectors'
-import { injected } from 'wagmi/connectors'
 
 export const dockerizedLocalNode: Chain = {
   id: 270,
@@ -39,10 +38,10 @@ export const inMemoryLocalNode: Chain = {
   testnet: true
 } as const satisfies Chain;
 
-export const defaultChain = process.env.NODE_ENV === "development" ? zkSyncSepoliaTestnet : zkSync;
+export const defaultChain = process.env.NODE_ENV === "development" ? zksyncSepoliaTestnet : zksync;
 
 export const config = createConfig({
-  chains: [zkSync, zkSyncSepoliaTestnet, dockerizedLocalNode, inMemoryLocalNode],
+  chains: [zksync, zksyncSepoliaTestnet, dockerizedLocalNode, inMemoryLocalNode],
   connectors: [
     coinbaseWallet({
       chainId: defaultChain.id,
@@ -50,8 +49,8 @@ export const config = createConfig({
     }),
   ],
   transports: {
-    [zkSync.id]: http(),
-    [zkSyncSepoliaTestnet.id]: http(),
+    [zksync.id]: http(),
+    [zksyncSepoliaTestnet.id]: http(),
     [dockerizedLocalNode.id]: http(),
     [inMemoryLocalNode.id]: http()
   },

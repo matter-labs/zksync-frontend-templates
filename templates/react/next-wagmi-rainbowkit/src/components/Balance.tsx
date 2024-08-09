@@ -1,8 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import type { Address } from 'wagmi'
-import { useAccount, useBalance } from 'wagmi'
+import { useAccount, useBalance, type UseBalanceParameters } from 'wagmi'
+import { formatUnits } from 'viem' 
 
 export function Balance() {
   return (
@@ -22,12 +22,15 @@ export function AccountBalance() {
   const { address } = useAccount()
   const { data, refetch } = useBalance({
     address,
-    watch: true,
   })
+
+  const formattedBalance = data?.value && data?.decimals 
+  ? formatUnits(data.value, data.decimals) 
+  : 'Enter an address and click fetch';
 
   return (
     <div>
-      {data?.formatted}
+         {formattedBalance}
       <button onClick={() => refetch()}>refetch</button>
     </div>
   )
@@ -36,10 +39,14 @@ export function AccountBalance() {
 export function FindBalance() {
   const [address, setAddress] = useState('')
   const { data, isLoading, refetch } = useBalance({
-    address: address as Address,
+    address: address as UseBalanceParameters['address'],
   })
 
   const [value, setValue] = useState('')
+
+  const formattedBalance = data?.value && data?.decimals 
+  ? formatUnits(data.value, data.decimals) 
+  : 'Enter an address and click fetch';
 
   return (
     <div>
@@ -54,7 +61,7 @@ export function FindBalance() {
       >
         {isLoading ? 'fetching...' : 'fetch'}
       </button>
-      <div>{data?.formatted}</div>
+      <div>{formattedBalance}</div>
     </div>
   )
 }

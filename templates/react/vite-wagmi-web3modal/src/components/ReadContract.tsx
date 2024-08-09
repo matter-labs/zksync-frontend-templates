@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { BaseError } from 'viem'
-import { type Address, useContractRead, useAccount } from 'wagmi'
-
+import { type UseReadContractParameters, useReadContract, useAccount } from 'wagmi'
 import { daiContractConfig } from './contracts'
 
 export function ReadContract() {
@@ -17,7 +16,7 @@ export function ReadContract() {
 }
 
 function TotalSupply() {
-  const { data, isRefetching, refetch } = useContractRead({
+  const { data, isRefetching, refetch } = useReadContract({
     ...daiContractConfig,
     functionName: 'totalSupply',
   })
@@ -38,17 +37,16 @@ function TotalSupply() {
 
 function BalanceOf() {
   const { address: connectedWalletAddress } = useAccount();
-  const [address, setAddress] = useState<Address>(
+  const [address, setAddress] = useState<UseReadContractParameters['address']>(
     connectedWalletAddress!
   )
-  const { data, error, isLoading, isSuccess } = useContractRead({
+  const { data, error, isLoading, isSuccess } = useReadContract({
     ...daiContractConfig,
     functionName: 'balanceOf',
-    args: [address],
-    enabled: Boolean(address),
+    args: [address as `0x${string}`],
   })
 
-  const [value, setValue] = useState<string>(address)
+  const [value, setValue] = useState<string>(address as `0x${string}`)
 
   return (
     <div>
@@ -59,7 +57,7 @@ function BalanceOf() {
         style={{ marginLeft: 4 }}
         value={value}
       />
-      <button onClick={() => setAddress(value as Address)}>
+      <button onClick={() => setAddress(value as UseReadContractParameters['address'])}>
         {isLoading ? 'fetching...' : 'fetch'}
       </button>
       {error && <div>{(error as BaseError).shortMessage}</div>}

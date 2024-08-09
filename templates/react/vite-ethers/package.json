@@ -9,18 +9,18 @@
   },
   "dependencies": {
     "buffer": "^6.0.3",
-    "ethers": "^6.9.2",
+    "ethers": "^6.13.2",
     "process": "^0.11.10",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "util": "^0.12.4",
-    "zksync-ethers": "^6.0.0"
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "util": "^0.12.5",
+    "zksync-ethers": "^6.11.1"
   },
   "devDependencies": {
-    "@types/react": "^18.0.9",
-    "@types/react-dom": "^18.0.3",
-    "@vitejs/plugin-react": "^4.0.0",
-    "typescript": "^5.0.4",
-    "vite": "^4.3.5"
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.3.1",
+    "typescript": "^5.5.4",
+    "vite": "^5.4.0"
   }
 }
