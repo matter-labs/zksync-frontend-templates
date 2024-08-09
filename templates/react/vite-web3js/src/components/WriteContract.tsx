@@ -55,10 +55,10 @@ export function WriteContract() {
           <div>Transaction Hash: {transaction?.transactionHash}</div>
           <div>
             Transaction Receipt:
-            {transaction.receipt ? (
+            {inProgress ? (
               <span>pending...</span>
             ) : (
-              <pre>{JSON.stringify(transaction.receipt, null, 2)}</pre>
+              <pre>{JSON.stringify(transaction, null, 2)}</pre>
             )}
           </div>
         </div>

@@ -87,14 +87,14 @@ export function SendTransactionPrepared() {
       {transaction && (
         <div>
           <div>Transaction Hash: {transaction?.blockHash}</div>
-          <div>
-            Transaction Receipt:
-            {transaction ? (
-              <span>pending...</span>
-            ) : (
+          {inProgress ? (
+            <span>pending...</span>
+          ) : (
+            <div style={{ maxWidth: 300 }}>
+              Transaction Receipt:
               <pre>{JSON.stringify(transaction, null, 2)}</pre>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       )}
 

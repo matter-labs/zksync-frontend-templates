@@ -14,9 +14,6 @@ export function SendTransaction() {
   const asyncFetch = useCallback(async () => {
     if (!web3 || !value) throw new Error('Provider or value not found');
 
-    console.log('Sending transaction to address: ', address, value);
-    console.log(account);
-
     return web3.eth.sendTransaction(
       {
         to: address,
@@ -55,7 +52,7 @@ export function SendTransaction() {
       {transaction && (
         <div>
           <div>Transaction Hash: {transaction.blockHash}</div>
-          <div>
+          <div style={{ maxWidth: 300 }}>
             Transaction Receipt:
             {inProgress ? (
               <span>pending...</span>

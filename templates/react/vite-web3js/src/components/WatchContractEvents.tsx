@@ -11,7 +11,7 @@ export function WatchContractEvents() {
     const web3 = getWeb3();
     if (!web3) return;
 
-    const contract = web3.zkSync.erc20(daiContractConfig.address);
+    const contract = new web3.eth.Contract(daiContractConfig.abi, daiContractConfig.address);
     const transferEvent = contract.events.Transfer();
 
     transferEvent.on('data', (event) => {

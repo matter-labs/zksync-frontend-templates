@@ -14,10 +14,6 @@ export const EthereumContextProvider = ({ children }: { children: ReactNode }) =
 
   const getEthereumContext = () => window.ethereum;
 
-  const blockHandler = useCallback(async (block: string) => {
-    console.log('block', block);
-  }, []);
-
   const onNetworkChange = useCallback((chainId: string) => {
     const currentChain = chains.find((chain: Chain) => chain.id === chainId);
     const strChainId = String(web3?.utils.hexToNumber(chainId));
@@ -72,8 +68,6 @@ export const EthereumContextProvider = ({ children }: { children: ReactNode }) =
 
     const accounts = await web3.eth.requestAccounts();
 
-    getEthereumContext()?.on('block', blockHandler);
-
     if (accounts.length === 0) {
       throw new Error('No accounts found');
     }
@@ -83,7 +77,7 @@ export const EthereumContextProvider = ({ children }: { children: ReactNode }) =
     onAccountChange(accounts);
 
     if (chainId) onNetworkChange(web3.utils.toHex(chainId));
-  }, [blockHandler, onAccountChange, onNetworkChange]);
+  }, [onAccountChange, onNetworkChange]);
 
   useEffect(() => {
     void connect();

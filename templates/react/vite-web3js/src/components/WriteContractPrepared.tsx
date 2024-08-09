@@ -90,22 +90,20 @@ export function WriteContractPrepared() {
         </button>
       </form>
 
-      {inProgress ? (
-        <div>Transaction pending...</div>
-      ) : (
-        transaction && (
-          <div>
-            <div>Transaction Hash: {transaction?.transactionHash}</div>
-            <div>
+      {inProgress && <div>Transaction pending...</div>}
+
+      {transaction && (
+        <div>
+          <div>Transaction Hash: {transaction?.transactionHash}</div>
+          {inProgress ? (
+            <span>pending...</span>
+          ) : (
+            <div style={{ maxWidth: 300 }}>
               Transaction Receipt:
-              {transaction ? (
-                <span>pending...</span>
-              ) : (
-                <pre>{JSON.stringify(transaction, null, 2)}</pre>
-              )}
+              <pre>{JSON.stringify(transaction, null, 2)}</pre>
             </div>
-          </div>
-        )
+          )}
+        </div>
       )}
 
       {prepareError && <div>Preparing Transaction Error: {prepareError.message}</div>}
