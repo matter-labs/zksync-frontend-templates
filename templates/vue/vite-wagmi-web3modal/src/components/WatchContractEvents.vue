@@ -24,7 +24,7 @@ import { wagmiConfig } from '../wagmi';
 
 const events = ref<Log[]>([]);
 
-</script>watchContractEvent(wagmiConfig,{
+watchContractEvent(wagmiConfig,{
     ...daiContractConfig,
     eventName: 'Transfer',
     onLogs(logs) {
@@ -34,3 +34,4 @@ const events = ref<Log[]>([]);
       console.error('Error watching contract event:', error);
     },
   });
+</script>

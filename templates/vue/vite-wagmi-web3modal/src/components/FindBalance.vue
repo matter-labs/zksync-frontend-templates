@@ -20,4 +20,5 @@ import { wagmiConfig } from '../wagmi';
 
 const address = ref("");
 
-</script>const { result: balance, execute: fetchBalance, inProgress, error} = useAsync(getBalance);
+const { result: balance, execute: fetchBalance, inProgress, error} = useAsync(getBalance);
+</script>

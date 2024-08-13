@@ -51,6 +51,7 @@ const { result: token, execute: fetchToken, inProgress, error } = useAsync(async
   });
 });
 
-</script>const fetchCurrentToken = () => {
+const fetchCurrentToken = () => {
   fetchToken();
 };
+</script>

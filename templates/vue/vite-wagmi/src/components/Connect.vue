@@ -22,7 +22,7 @@ import { connect, disconnect, type Connector } from '@wagmi/core';
 import { account } from '@/wagmi';
 import { wagmiConfig } from "../wagmi";
 
-</script>const connectors = ref(wagmiConfig.connectors);
+const connectors = ref(wagmiConfig.connectors);
 
 const handleConnect = async (connector: Connector) => {
   try {
@@ -40,3 +40,4 @@ const handleDisconnect = async () => {
     console.error("Error disconnecting:", error);
   }
 };
+</script>

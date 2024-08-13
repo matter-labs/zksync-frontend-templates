@@ -42,6 +42,7 @@ const handleSwitchNetwork = async (chainId: number) => {
   }
 };
 
-</script>onMounted(() => {
+onMounted(() => {
   account.value = getAccount(wagmiConfig);
 });
+</script>

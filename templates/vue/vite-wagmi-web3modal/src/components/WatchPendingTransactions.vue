@@ -16,7 +16,7 @@ import { Hash } from "viem";
 
 const transactionHashes = ref<Hash[]>([]);
 
-</script>watchPendingTransactions(wagmiConfig,{
+watchPendingTransactions(wagmiConfig,{
     onTransactions(newHashes) {
       transactionHashes.value.push(...newHashes);
     },
@@ -24,3 +24,4 @@ const transactionHashes = ref<Hash[]>([]);
       console.error('Error watching pending transactions:', err);
     },
   });
+</script>
