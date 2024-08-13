@@ -43,8 +43,8 @@
       <SendTransaction />
       <br />
       <hr />
-      <h2>Send Transaction (Prepared)</h2>
-      <SendTransactionPrepared />
+      <h2>Estimate Gas and Send</h2>
+      <EstimateGas />
       <br />
       <hr />
       <h2>Sign Message</h2>
@@ -83,12 +83,12 @@ import NetworkSwitcher from '@/components/NetworkSwitcher.vue'
 import Account from '@/components/Account.vue'
 import Balance from '@/components/Balance.vue'
 import BlockNumber from '@/components/BlockNumber.vue'
+import EstimateGas from '@/components/EstimateGas.vue'
 import FindBalance from '@/components/FindBalance.vue'
 import ReadTokenBalance from '@/components/ReadTokenBalance.vue'
 import ReadTokenSupply from '@/components/ReadTokenSupply.vue'
 import ReadContracts from '@/components/ReadContracts.vue'
 import SendTransaction from '@/components/SendTransaction.vue'
-import SendTransactionPrepared from '@/components/SendTransactionPrepared.vue'
 import SignMessage from '@/components/SignMessage.vue'
 import SignTypedData from '@/components/SignTypedData.vue'
 import Token from '@/components/Token.vue'

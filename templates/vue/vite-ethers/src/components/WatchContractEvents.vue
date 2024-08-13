@@ -29,7 +29,7 @@ type TransferLog = {
 const events = ref<TransferLog[]>([]);
 
 const contract = new Contract(daiContractConfig.address, daiContractConfig.abi, getProvider()!);
-contract.on('Transfer', (from, to, amount, event) => {
+contract.on('Transfer', (from, to, amount) => {
   events.value.push({
     from,
     to,

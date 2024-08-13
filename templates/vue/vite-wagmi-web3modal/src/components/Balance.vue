@@ -11,13 +11,14 @@
 
 <script lang="ts" setup>
 import { watch } from "vue"
-import { fetchBalance as wagmiFetchBalance } from '@wagmi/core';
+import { getBalance as wagmiFetchBalance } from '@wagmi/core';
 
 import { useAsync } from '@/composables/useAsync';
 import { account } from '@/wagmi';
+import { wagmiConfig } from '../wagmi'; 
 
-const { result: balance, execute: fetchBalance, inProgress, error} = useAsync(wagmiFetchBalance);
-const getAccountBalance = () => fetchBalance({ address: account.value.address! });
+const { result: balance, execute: fetchBalance, error} = useAsync(wagmiFetchBalance);
+const getAccountBalance = () => fetchBalance(wagmiConfig,{ address: account.value.address! });
 
 watch(account, ({ address }) => {
   if (!address) return;

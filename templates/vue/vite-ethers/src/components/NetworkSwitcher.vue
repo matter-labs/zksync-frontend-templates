@@ -20,5 +20,4 @@
 import { useAsync } from '@/composables/useAsync';
 import { chains, network, switchNetwork as switchToChainByID } from "@/ethers";
 
-const { execute: switchNetwork, inProgress, error} = useAsync(switchToChainByID);
-</script>
+</script>const { execute: switchNetwork, error} = useAsync(switchToChainByID);

@@ -1,14 +1,18 @@
 <template>
   <div>
     <div>
-      Connected to {{network.chain?.name ?? network.chain?.id}}
-      <span v-if="network.chain?.unsupported">(unsupported)</span>
+      Connected to {{ currentChain?.name ?? currentChain?.id }}
     </div>
     <br />
     <div>
       Switch to:
-      <button v-for="(item, index) in network.chains" :key="index" @click="switchNetwork({chainId: item.id})">
-        {{ item.name }}
+      <button
+        v-for="chain in chains"
+        :key="chain.id"
+        @click="handleSwitchNetwork(chain.id)"
+        :disabled="!account.isConnected || currentChain?.id === chain.id"
+      >
+        {{ chain.name }}
       </button>
     </div>
 
@@ -17,10 +21,27 @@
 </template>
 
 <script lang="ts" setup>
-import { network } from '@/wagmi';
-import { switchNetwork as wagmiSwitchNetwork } from '@wagmi/core';
-
+import { ref, onMounted, computed } from 'vue';
+import { switchChain, getAccount } from '@wagmi/core';
 import { useAsync } from '@/composables/useAsync';
+import { wagmiConfig } from '../wagmi';
+import { Chain } from 'viem';
 
-const { execute: switchNetwork, inProgress, error} = useAsync(wagmiSwitchNetwork);
-</script>
+const account = ref(getAccount(wagmiConfig));
+const { execute: switchNetwork, error } = useAsync(switchChain);
+
+const chains = ref<Chain[]>([...wagmiConfig.chains]);
+
+const currentChain = computed(() => {
+  return chains.value.find((chain) => chain.id === account.value.chainId) || null;
+});
+
+const handleSwitchNetwork = async (chainId: number) => {
+  if (account.value.isConnected) {
+    await switchNetwork(wagmiConfig, { chainId });
+  }
+};
+
+</script>onMounted(() => {
+  account.value = getAccount(wagmiConfig);
+});
