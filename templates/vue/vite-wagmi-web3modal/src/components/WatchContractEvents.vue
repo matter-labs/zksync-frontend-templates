@@ -30,8 +30,5 @@ watchContractEvent(wagmiConfig,{
     onLogs(logs) {
       events.value.push(...logs);
     },
-    onError(error) {
-      console.error('Error watching contract event:', error);
-    },
   });
 </script>

@@ -1,69 +1,78 @@
 <template>
   <div>
-    <form @submit.prevent="sendTransaction">
-      <input v-model="address" placeholder="address" />
-      <input v-model="value" placeholder="value (ether)" />
-      <button :disabled="prepareInProgress || !preparedTransaction" type="submit">Send</button>
+    <form @submit.prevent="handleSubmit">
+      <input
+        v-model="to"
+        placeholder="Address"
+        type="text"
+      />
+      <input
+        v-model="value"
+        placeholder="Value (ether)"
+        type="text"
+      />
+      <button :disabled="isSending || !to || !value" type="submit">
+        {{ isSending ? 'Confirming...' : 'Send' }}
+      </button>
     </form>
 
-    <div v-if="inProgress">Transaction pending...</div>
-    <div v-else-if="transaction">
-      <div>Transaction Hash: {{ transaction }}</div>
-      <div>
-        Transaction Receipt:
-        <span v-if="receiptInProgress">pending...</span>
-        <pre>{{ stringify(receipt, null, 2) }}</pre>
-      </div>
+    <div v-if="estimatedGas">Estimated Gas: {{ estimatedGas }}</div>
+    <div v-if="transactionHash">Transaction Hash: {{ transactionHash }}</div>
+    <div v-if="isConfirming">Waiting for confirmation...</div>
+    <div v-if="isConfirmed">Transaction confirmed.</div>
+    <div v-if="sendError || receiptError">
+      Error: {{ (sendError || receiptError)?.message }}
     </div>
-
-    <div v-if="prepareError">Preparing Transaction Error: {{ prepareError?.message }}</div>
-    <div v-if="error">Error: {{ error?.message }}</div>
-    <div v-if="receiptError">Receipt Error: {{ receiptError?.message }}</div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { ref, watch } from "vue";
-import { parseEther, type Address } from 'viem';
-import { estimateGas, sendTransaction as wagmiSendTransaction, waitForTransactionReceipt } from '@wagmi/core';
-
-import { stringify } from '@/utils/formatters';
-import { useAsync } from '@/composables/useAsync';
+import { ref } from 'vue';
+import { parseEther } from 'viem';
+import { estimateGas, sendTransaction, waitForTransactionReceipt } from '@wagmi/core';
 import { wagmiConfig } from '../wagmi'; 
 
-const address = ref<Address | null>(null);
-const value = ref<string | null>(null);
+const to = ref('');
+const value = ref('');
+const estimatedGas = ref<bigint | undefined>(undefined);
+const transactionHash = ref<string | undefined>(undefined);
+const isSending = ref(false);
+const isConfirming = ref(false);
+const isConfirmed = ref(false);
+const sendError = ref<Error | null>(null);
+const receiptError = ref<Error | null>(null);
 
-const { result: preparedTransaction, execute: prepareTransaction, inProgress: prepareInProgress, error: prepareError } = useAsync(async () => {
-  const gasEstimate = await estimateGas(wagmiConfig, {
-    to: address.value!,
-    value: parseEther(value.value!) 
-  });
+const handleSubmit = async () => {
+  if (to.value && value.value) {
+    isSending.value = true;
+    try {
+      const gasEstimate = await estimateGas(wagmiConfig, {
+        to: to.value as `0x${string}`,
+        value: parseEther(value.value),
+      });
+      estimatedGas.value = gasEstimate;
 
-  return {
-    to: address.value!,
-    value: parseEther(value.value!), 
-    gas: gasEstimate
-  };
-});
+      const hash = await sendTransaction(wagmiConfig, {
+        to: to.value as `0x${string}`,
+        value: parseEther(value.value),
+        gas: gasEstimate,
+      });
 
-const { result: transaction, execute: sendTransaction, inProgress, error } = useAsync(async () => {
-  if (!preparedTransaction.value) throw new Error('Transaction not prepared');
-  const result = await wagmiSendTransaction(wagmiConfig,{
-    to: preparedTransaction.value.to,
-    value: preparedTransaction.value.value, 
-    gas: preparedTransaction.value.gas,
-  });
-  waitForReceipt(result); 
-  return result;
-});
+      transactionHash.value = hash;
 
-const { result: receipt, execute: waitForReceipt, inProgress: receiptInProgress, error: receiptError } = useAsync(async (transactionHash: `0x${string}`) => {
-  return await waitForTransactionReceipt(wagmiConfig, { hash: transactionHash });
-});
+      isSending.value = false;
+      isConfirming.value = true;
+      await waitForTransactionReceipt(wagmiConfig, {
+        hash: hash,
+      });
 
-watch([address, value], () => {
-  if (!address.value || !value.value) return;
-  prepareTransaction();
-}, { immediate: true });
+      isConfirmed.value = true;
+      isConfirming.value = false;
+    } catch (error) {
+      isSending.value = false;
+      sendError.value = error as Error;
+      console.error('Error estimating or sending transaction:', error);
+    }
+  }
+};
 </script>

@@ -32,6 +32,7 @@ import { wagmiConfig } from '../wagmi';
 const amount = ref<string | null>(null);
 
 const { result: transaction, execute: writeContract, inProgress, error } = useAsync(async () => {
+  // random address for testing, replace with contract address that you want to allow to spend your tokens
   const spender = "0xa1cf087DB965Ab02Fb3CFaCe1f5c63935815f044";
   
   if (!amount.value) {
@@ -44,7 +45,7 @@ const { result: transaction, execute: writeContract, inProgress, error } = useAs
     args: [spender, BigInt(amount.value)]
   });
 
-  return result as `0x${string}`; // Assert hash type
+  return result as `0x${string}`; 
 });
 
 const { result: receipt, execute: waitForReceipt, inProgress: receiptInProgress, error: receiptError } = useAsync(async (transactionHash: `0x${string}`) => {

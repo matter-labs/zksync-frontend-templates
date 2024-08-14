@@ -34,6 +34,7 @@ const receipt = ref<any>(null);
 const simulateError = ref<Error | null>(null);
 const error = ref<Error | null>(null);
 
+// random address for testing, replace with contract address that you want to allow to spend your tokens
 const spender: `0x${string}` = '0xa1cf087DB965Ab02Fb3CFaCe1f5c63935815f044';
 
 const handleSubmit = async () => {
