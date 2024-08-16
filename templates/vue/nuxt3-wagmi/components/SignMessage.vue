@@ -23,7 +23,7 @@ import { signMessage as wagmiSignMessage } from '@wagmi/core';
 const message = ref<string | null>(null);
 
 const { result, execute: signMessage, inProgress, error} = useAsync(async () => {
-  const signature =  await wagmiSignMessage({ message: message.value! })
+  const signature =  await wagmiSignMessage(wagmiConfig,{ message: message.value! })
   const recoveredAddress = await recoverMessageAddress({ message: message.value!, signature });
 
   return {

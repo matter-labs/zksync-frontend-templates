@@ -33,8 +33,8 @@ const { result: token, execute: fetchToken, inProgress, error} = useAsync(async 
   return {
     symbol,
     name,
-    decimals,
-    supply,
+    decimals: decimals.toString(),
+    supply: supply.toString(),
   }
 })
 const fetchCurrentToken = () => fetchToken(tokenAddress.value)

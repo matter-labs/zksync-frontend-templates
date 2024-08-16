@@ -12,7 +12,7 @@
 import { readContract } from '@wagmi/core';
 
 const { result: supply, execute: fetchTotalSupply, inProgress, error} = useAsync(async () => {
-  return await readContract({
+  return await readContract(wagmiConfig, {
     ...daiContractConfig,
     functionName: 'totalSupply',
   })

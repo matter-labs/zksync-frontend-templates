@@ -12,13 +12,13 @@ export default defineNuxtConfig({
     walletConnectProjectID: process.env.WALLET_CONNECT_PROJECT_ID,
   },
   
-  pinia: {
-    autoImports: [
-      // automatically imports `defineStore`
-      "defineStore",
-      "storeToRefs",
-    ],
-  },
+  // pinia: {
+  //   autoImports: [
+  //     // automatically imports `defineStore`
+  //     "defineStore",
+  //     "storeToRefs",
+  //   ],
+  // },
   imports: {
     dirs: ["store"],
   },

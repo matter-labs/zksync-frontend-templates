@@ -19,16 +19,9 @@ const zkSyncSepoliaTestnet: Chain = {
   rpcUrl: "https://rpc.ankr.com/eth_sepolia",
   blockExplorerUrl: "https://sepolia.etherscan.io"
 }
-const zkSyncGoerliTestnet: Chain = {
-  id: 280,
-  name: "zkSync Goerli Testnet",
-  rpcUrl: "https://testnet.era.zksync.dev",
-  blockExplorerUrl: "https://goerli.explorer.zksync.io"
-}
 export const chains: Chain[] = [
   zkSync,
   zkSyncSepoliaTestnet,
-  zkSyncGoerliTestnet,
   ...(
     import.meta.env.MODE === "development" ?
     [
@@ -131,11 +124,9 @@ export const useEthers = defineStore("ethers", () => {
   return {
     account,
     network,
-
     switchNetwork,
     getProvider: () => web3Provider,
     getSigner: () => web3Provider?.getSigner(),
-
     connect,
     disconnect,
   }

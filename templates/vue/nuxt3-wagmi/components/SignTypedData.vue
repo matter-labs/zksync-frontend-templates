@@ -49,7 +49,7 @@ const message = {
 } as const
 
 const { result, execute: signTypedData, inProgress, error} = useAsync(async () => {
-  const signature =  await wagmiSignTypedData({
+  const signature =  await wagmiSignTypedData(wagmiConfig,{
     domain,
     types,
     message,

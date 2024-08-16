@@ -1,17 +1,17 @@
-import { createWeb3Modal, defaultWagmiConfig } from '@web3modal/wagmi/vue'
-import { type Chain, zkSync, zkSyncSepoliaTestnet } from '@wagmi/core/chains'
-import { getAccount, getNetwork, watchAccount, watchNetwork } from '@wagmi/core';
+import { createWeb3Modal } from '@web3modal/wagmi/vue'
+import { type Chain, zksync, zksyncSepoliaTestnet } from '@wagmi/core/chains'
+import { getAccount, watchAccount, createConfig, http, injected } from '@wagmi/core';
+import { coinbaseWallet, metaMask } from '@wagmi/connectors'
 
 export const chains: Chain[] = [
-  zkSync,
-  zkSyncSepoliaTestnet,
+  zksync,
+  zksyncSepoliaTestnet,
   ...(
       import.meta.env.MODE === "development" ?
       [
         {
           id: 270,
           name: "Dockerized local node",
-          network: "zksync-dockerized-node",
           nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
           rpcUrls: {
             default: {
@@ -32,7 +32,6 @@ export const chains: Chain[] = [
         {
           id: 260,
           name: "In-memory local node",
-          network: "zksync-in-memory-node",
           nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
           rpcUrls: {
             default: {
@@ -48,7 +47,17 @@ export const chains: Chain[] = [
       : []
     ),
 ];
-export const defaultChain = import.meta.env.MODE === "development" ? zkSyncSepoliaTestnet : zkSync;
+export const defaultChain = import.meta.env.MODE === "development" ? zksyncSepoliaTestnet : zksync;
+
+export const wagmiConfig = createConfig({
+  chains: [zksync, zksyncSepoliaTestnet],
+  connectors: [injected(), coinbaseWallet(), metaMask()],
+  transports: {
+    [zksync.id]: http(),
+    [zksyncSepoliaTestnet.id]: http(),
+  },
+
+})
 
 export const useWagmi = defineStore("wagmi", () => {
   const projectId = useAppConfig().walletConnectProjectID;
@@ -61,27 +70,20 @@ export const useWagmi = defineStore("wagmi", () => {
     icons: ['https://avatars.githubusercontent.com/u/37784886']
   }
 
-  const wagmiConfig = defaultWagmiConfig({ chains, projectId, metadata })
-
   const web3Modal = createWeb3Modal({
     wagmiConfig,
     projectId,
-    chains,
+    metadata,
     defaultChain, 
     themeMode: "light"
   })
 
-  const account = ref(getAccount());
-  const network = ref(getNetwork());
-  watchAccount((updatedAccount) => {
+  const account = ref(getAccount(wagmiConfig));
+    watchAccount(wagmiConfig, {
+    onChange(updatedAccount) {
     account.value = updatedAccount;
-  });
-  watchNetwork((updatedNetwork) => {
-    network.value = updatedNetwork;
+   },
   });
 
-  return {
-    account,
-    network,
-  }
+  return { account }
 });

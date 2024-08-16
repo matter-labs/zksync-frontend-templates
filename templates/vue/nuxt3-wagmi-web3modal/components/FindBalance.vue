@@ -11,9 +11,10 @@
 </template>
 
 <script lang="ts" setup>
-import { fetchBalance as wagmiFetchBalance, type Address } from '@wagmi/core';
+import { getBalance } from '@wagmi/core';
+import type { Address } from 'viem';
 
 const address = ref("");
 
-const { result: balance, execute: fetchBalance, inProgress, error} = useAsync(wagmiFetchBalance);
+const { result: balance, execute: fetchBalance, inProgress, error} = useAsync(getBalance);
 </script>

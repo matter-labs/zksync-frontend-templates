@@ -19,7 +19,7 @@
 <script lang="ts" setup>
 import { switchNetwork as wagmiSwitchNetwork } from '@wagmi/core';
 
-const { network } = storeToRefs(useWagmi());
+
 
 const { execute: switchNetwork, inProgress, error} = useAsync(wagmiSwitchNetwork);
 </script>

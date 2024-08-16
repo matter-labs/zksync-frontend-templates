@@ -8,7 +8,7 @@
 
     <div v-if="inProgress">Transaction pending...</div>
     <div v-else-if="transaction">
-      <div>Transaction Hash: {{ transaction?.hash }}</div>
+      <div>Transaction Hash: {{ transaction }}</div>
       <div>
         Transaction Receipt:
         <span v-if="receiptInProgress">pending...</span>
@@ -22,7 +22,7 @@
 </template>
 
 <script lang="ts" setup>
-import { writeContract as wagmiWriteContract, waitForTransaction } from '@wagmi/core';
+import { writeContract as wagmiWriteContract, waitForTransactionReceipt } from '@wagmi/core';
 
 const amount = ref<string | null>(null);
 
@@ -30,15 +30,15 @@ const { result: transaction, execute: writeContract, inProgress, error} = useAsy
   // random address for testing, replace with contract address that you want to allow to spend your tokens
   const spender = "0xa1cf087DB965Ab02Fb3CFaCe1f5c63935815f044"
 
-  const result = await wagmiWriteContract({
+  const result = await wagmiWriteContract(wagmiConfig, {
     ...daiContractConfig,
     functionName: 'approve',
     args: [spender, BigInt(amount.value!)]
   })
-  waitForReceipt(result.hash);
+  waitForReceipt(result);
   return result;
 });
 const { result: receipt, execute: waitForReceipt, inProgress: receiptInProgress, error: receiptError} = useAsync(async (transactionHash) => {
-  return await waitForTransaction({ hash: transactionHash });
+  return await waitForTransactionReceipt(wagmiConfig, { hash: transactionHash });
 });
 </script>

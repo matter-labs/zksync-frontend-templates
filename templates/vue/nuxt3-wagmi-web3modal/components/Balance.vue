@@ -10,12 +10,12 @@
 </template>
 
 <script lang="ts" setup>
-import { fetchBalance as wagmiFetchBalance } from '@wagmi/core';
+import { getBalance } from '@wagmi/core';
 
 const { account } = storeToRefs(useWagmi());
 
-const { result: balance, execute: fetchBalance, inProgress, error} = useAsync(wagmiFetchBalance);
-const getAccountBalance = () => fetchBalance({ address: account.value.address! });
+const { result: balance, execute: fetchBalance, inProgress, error} = useAsync(getBalance);
+const getAccountBalance = () => fetchBalance(wagmiConfig, { address: account.value.address! });
 
 watch(account, ({ address }) => {
   if (!address) return;
