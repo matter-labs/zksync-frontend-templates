@@ -37,6 +37,7 @@ const { result: transaction, execute: writeContract, inProgress, error } = useAs
 
   const contract = new Contract(daiContractConfig.address, daiContractConfig.abi, signer);
 
+  // random address for testing, replace with contract address that you want to allow to spend your tokens
   const spender = "0xa1cf087DB965Ab02Fb3CFaCe1f5c63935815f044";
   
   if (!amount.value) throw new Error("Allowance amount is not set");
