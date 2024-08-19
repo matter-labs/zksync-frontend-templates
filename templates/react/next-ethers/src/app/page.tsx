@@ -24,7 +24,7 @@ export default function Page() {
   return (
     <div>
       <h1>zkSync + ethers + Next.js</h1>
-      
+
       <Connect />
 
       {account.isConnected && (
