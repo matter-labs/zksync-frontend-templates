@@ -124,6 +124,6 @@ export const ERC20TokenAbi = [
 
 
 export const daiContractConfig = {
-  address: "0x6Ff473f001877D553833B6e312C89b3c8fACa7Ac", // zkSync Era Sepolia Testnet DAI token address
+  address: "0x6Ff473f001877D553833B6e312C89b3c8fACa7Ac", // ZKsync Era Sepolia Testnet DAI token address
   abi: ERC20TokenAbi,
 } as const;

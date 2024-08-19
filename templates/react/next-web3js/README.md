@@ -1,4 +1,4 @@
-This is a [zkSync](https://zksync.io) + [Web3.js](https://web3js.org/) +[Next.js](https://nextjs.org/) project bootstrapped with [`zksync-cli`](https://github.com/matter-labs/zksync-cli)
+This is a [ZKsync](https://zksync.io) + [Web3.js](https://web3js.org/) +[Next.js](https://nextjs.org/) project bootstrapped with [`zksync-cli`](https://github.com/matter-labs/zksync-cli)
 
 ## Getting Started
 
@@ -21,8 +21,8 @@ You can start editing the page by modifying `pages/index.tsx`. The page auto-upd
 
 ## Learn More
 
-To learn more about [zkSync](https://zksync.io) or [Web3.js](https://web3js.org/), check out the following resources:
+To learn more about [ZKsync](https://zksync.io) or [Web3.js](https://web3js.org/), check out the following resources:
 
-- [zkSync Documentation](https://era.zksync.io/docs/dev) – learn about zkSync features and API.
+- [ZKsync Documentation](https://era.zksync.io/docs/dev) – learn about ZKsync features and API.
 - [Web3.js Documentation](https://docs.web3js.org/) – learn about Web3.js and API.
 - [Next.js Documentation](https://nextjs.org/docs) learn about Next.js features and API.
