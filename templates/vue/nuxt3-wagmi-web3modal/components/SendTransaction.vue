@@ -24,6 +24,8 @@
 <script lang="ts" setup>
 import { parseEther, type Address } from 'viem';
 import { sendTransaction as wagmiSendTransaction, waitForTransactionReceipt } from '@wagmi/core';
+import { stringify } from '@/utils/formatters';
+import { wagmiConfig } from '../store/wagmi.js';
 
 const address = ref<Address | null>(null);
 const value = ref<string | null>(null);

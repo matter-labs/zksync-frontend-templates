@@ -16,13 +16,16 @@
 <script lang="ts" setup>
 import type { Log } from 'viem';
 import { watchContractEvent } from '@wagmi/core';
+import { stringify } from '@/utils/formatters';
+import { wagmiConfig } from '../store/wagmi.js';
 
 const events = ref<Log[]>([]);
 
-watchContractEvent({
+watchContractEvent(wagmiConfig, {
   ...daiContractConfig,
-  eventName: 'Transfer'
-}, (logs) => {
-  events.value.push(...logs);
+  eventName: 'Transfer',
+    onLogs(logs) {
+      events.value.push(...logs);
+    },
 });
 </script>

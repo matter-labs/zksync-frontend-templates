@@ -16,6 +16,7 @@
 <script lang="ts" setup>
 import { recoverTypedDataAddress } from 'viem';
 import { signTypedData as wagmiSignTypedData } from '@wagmi/core';
+import { wagmiConfig } from '../store/wagmi.js';
 
 const domain = {
   name: 'Ether Mail',

@@ -30,6 +30,7 @@
 import { ref } from 'vue';
 import { parseEther } from 'viem';
 import { estimateGas, sendTransaction, waitForTransactionReceipt } from '@wagmi/core';
+import { wagmiConfig } from '../store/wagmi.js';
 
 const to = ref('');
 const value = ref('');

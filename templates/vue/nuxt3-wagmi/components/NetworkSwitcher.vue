@@ -21,7 +21,7 @@
 </template>
 
 <script lang="ts" setup>
-import { switchChain, getAccount } from '@wagmi/core';
+import { switchChain } from '@wagmi/core';
 import type { Chain } from 'viem';
 
 const { account } = storeToRefs(useWagmi());

@@ -10,6 +10,7 @@
 
 <script lang="ts" setup>
 import { readContract } from '@wagmi/core';
+import { wagmiConfig } from '../store/wagmi.js';
 
 const { result: supply, execute: fetchTotalSupply, inProgress, error} = useAsync(async () => {
   return await readContract(wagmiConfig, {

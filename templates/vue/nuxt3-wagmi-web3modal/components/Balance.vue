@@ -11,6 +11,7 @@
 
 <script lang="ts" setup>
 import { getBalance } from '@wagmi/core';
+import { wagmiConfig } from '../store/wagmi.js';
 
 const { account } = storeToRefs(useWagmi());
 

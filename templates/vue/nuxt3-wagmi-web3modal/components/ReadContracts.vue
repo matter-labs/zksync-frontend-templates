@@ -11,6 +11,8 @@
 
 <script lang="ts" setup>
 import { readContracts } from '@wagmi/core';
+import { stringify } from '@/utils/formatters';
+import { wagmiConfig } from '../store/wagmi.js';
 
 const { account } = storeToRefs(useWagmi());
 

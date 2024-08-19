@@ -15,7 +15,6 @@
 <script lang="ts" setup>
 import { ref } from "vue";
 import { readContracts } from '@wagmi/core';
-import { stringify } from '@/utils/formatters';
 import { daiContractConfig } from '@/utils/contracts';
 import { useAsync } from '@/composables/useAsync';
 import { erc20Abi } from "viem";

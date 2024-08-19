@@ -13,6 +13,7 @@
 
 <script lang="ts" setup>
 import { readContract } from '@wagmi/core';
+import { wagmiConfig } from '../store/wagmi.js';
 
 const { account } = storeToRefs(useWagmi());
 const address = ref(account.value.address);

@@ -19,6 +19,7 @@
 <script lang="ts" setup>
 import { recoverMessageAddress } from 'viem';
 import { signMessage as wagmiSignMessage } from '@wagmi/core';
+import { wagmiConfig } from '../store/wagmi.js';
 
 const message = ref<string | null>(null);
 

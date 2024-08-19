@@ -23,6 +23,8 @@
 
 <script lang="ts" setup>
 import { writeContract as wagmiWriteContract, waitForTransactionReceipt } from '@wagmi/core';
+import { stringify } from '@/utils/formatters';
+import { wagmiConfig } from '../store/wagmi.js';
 
 const amount = ref<string | null>(null);
 
@@ -30,7 +32,7 @@ const { result: transaction, execute: writeContract, inProgress, error} = useAsy
   // random address for testing, replace with contract address that you want to allow to spend your tokens
   const spender = "0xa1cf087DB965Ab02Fb3CFaCe1f5c63935815f044"
 
-  const result = await wagmiWriteContract(wagmiConfig, {
+  const result = await wagmiWriteContract(wagmiConfig,{
     ...daiContractConfig,
     functionName: 'approve',
     args: [spender, BigInt(amount.value!)]
