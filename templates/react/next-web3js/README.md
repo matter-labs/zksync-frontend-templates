@@ -16,7 +16,7 @@ bun dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+In this project template, You can connect your wallet to the ZKsync testnet and see examples of the usage of the Web3.js library on ZKsync Era.
 
 
 ## Learn More
