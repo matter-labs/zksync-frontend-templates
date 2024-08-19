@@ -10,7 +10,7 @@
 </template>
 
 <script lang="ts" setup>
-import { getBalance} from '@wagmi/core';
+import { getBalance } from '@wagmi/core';
 import { formatUnits } from 'viem';
 
 const { account } = storeToRefs(useWagmi());
