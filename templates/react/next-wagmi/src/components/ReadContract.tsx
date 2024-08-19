@@ -18,6 +18,7 @@ export function ReadContract() {
   )
 }
 
+
 function TotalSupply() {
   const { data, isRefetching, refetch } = useReadContract({
     ...daiContractConfig,

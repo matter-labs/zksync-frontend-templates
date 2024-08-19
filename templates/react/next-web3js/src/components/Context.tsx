@@ -1,9 +1,8 @@
 'use client'
 
-import { Web3, EIP1193Provider } from 'web3';
+import { Web3 } from 'web3';
 import { ZkSyncPlugin } from 'web3-plugin-zksync';
 import React, { useState, useEffect, createContext, useContext } from 'react';
-import { on } from 'events';
 
 type Chain = {
     id: string;
@@ -16,26 +15,19 @@ type Chain = {
 
 const zkSync: Chain = {
     id: "324",
-    name: "zkSync",
+    name: "ZKsync",
     rpcUrl: "https://mainnet.era.zksync.io",
     blockExplorerUrl: "https://explorer.zksync.io"
   }
   const zkSyncSepoliaTestnet: Chain = {
     id: "300",
-    name: "zkSync Sepolia Testnet",
+    name: "ZKsync Sepolia Testnet",
     rpcUrl: "https://rpc.ankr.com/eth_sepolia",
     blockExplorerUrl: "https://sepolia.etherscan.io"
-  }
-  const zkSyncGoerliTestnet: Chain = {
-    id: "280",
-    name: "zkSync Goerli Testnet",
-    rpcUrl: "https://testnet.era.zksync.dev",
-    blockExplorerUrl: "https://goerli.explorer.zksync.io"
   }
   export const chains: Chain[] = [
     zkSync,
     zkSyncSepoliaTestnet,
-    zkSyncGoerliTestnet,
     ...(
       process.env.NODE_ENV === "development" ?
       [
@@ -133,6 +125,8 @@ interface EthereumContextValue {
     }, []);
   
     const switchNetwork = async (chainId: string) => {
+      console.log("chainID", chainId)
+      console.log(typeof(chainId));
       const chain = chains.find((chain: any) => chain.id === chainId);
       if (!chain) throw new Error("Unsupported chain");
     

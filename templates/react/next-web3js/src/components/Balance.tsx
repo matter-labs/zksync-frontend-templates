@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react';
-import { Web3 } from 'Web3';
+import { Web3 } from 'web3';
 
 import { useAsync } from '../hooks/useAsync';
 import { useEthereum } from './Context';

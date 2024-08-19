@@ -18,13 +18,13 @@ import { WatchPendingTransactions } from '../components/WatchPendingTransactions
 import { WriteContract } from '../components/WriteContract'
 import { WriteContractPrepared } from '../components/WriteContractPrepared'
 
+
 export default function Page() {
   const { account } = useEthereum();
   
   return (
     <div>
       <h1>zkSync + ethers + Next.js</h1>
-
       <Connect />
 
       {account.isConnected && (
