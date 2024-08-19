@@ -58,7 +58,7 @@ let web3Provider: BrowserProvider | null = null;
 interface EthereumContextValue {
   account: { isConnected: true; address: string; } | { isConnected: false; address: null; };
   network: Chain | null;
-  switchNetwork: (chainId: string) => Promise<void>;
+  switchNetwork: (chainId: number) => Promise<void>;
   connect: () => void;
   disconnect: () => void;
   getProvider: () => BrowserProvider | null;
@@ -122,7 +122,7 @@ export const EthereumProvider = ({ children }: { children: React.ReactNode }) =>
     }
   }, []);
 
-  const switchNetwork = async (chainId: string) => {
+  const switchNetwork = async (chainId: number) => {
     const chain = chains.find((chain: any) => chain.id === chainId);
     if (!chain) throw new Error("Unsupported chain");
 
