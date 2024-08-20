@@ -9,16 +9,25 @@
   let address: string | null = "";
   let value: string | null = "";
 
-  const { state: transactionState, execute: sendTransaction } = useAsync(
-    async () => {
-      const result = await (await getSigner())!.sendTransaction({
+ const { state: transactionState, execute: sendTransaction } = useAsync(
+  async () => {
+    try {
+      const signer = await getSigner();
+      if (!signer) {
+        throw new Error("Failed to get signer");
+      }
+      const result = await signer.sendTransaction({
         to: address!,
         value: ethers.parseEther(value!),
       });
       waitForReceipt(result.hash);
       return result;
-    },
-  );
+    } catch (error) {
+      console.error("Error sending transaction:", error);
+      throw error;
+    }
+  }
+);
   $: ({ result: transaction, inProgress, error } = $transactionState);
 
   const { state: receiptState, execute: waitForReceipt } = useAsync(
@@ -40,6 +49,7 @@
     <button type="submit">Send</button>
   </form>
 
+  <div>
   {#if inProgress}
     <div>Transaction pending...</div>
   {:else if transaction}
@@ -49,8 +59,11 @@
         Transaction Receipt:
         {#if receiptInProgress}
           <span>pending...</span>
+        {:else if receipt}
+          <pre>{stringify(receipt, null, 2)}</pre>
+        {:else}
+          <div>No transaction receipt available</div>
         {/if}
-        <pre>{stringify(receipt, null, 2)}</pre>
       </div>
     </div>
   {/if}
@@ -61,4 +74,5 @@
   {#if receiptError}
     <div>Receipt Error: {receiptError?.message}</div>
   {/if}
+</div>
 </div>

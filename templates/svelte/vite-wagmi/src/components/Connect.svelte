@@ -1,20 +1,37 @@
 <script lang="ts">
-  import { wagmiStore } from "../wagmi";
-  import { connect, disconnect, getConfig } from "@wagmi/core";
+  import { wagmiConfig, wagmiStore } from "../wagmi";
+  import { connect, disconnect, type Connector } from "@wagmi/core";
+  import { get } from "svelte/store";
 
-  const config = getConfig();
-  $: ({ account } = $wagmiStore);
+  $: ({ account } = get(wagmiStore));
+
+  const handleConnect = async (connector: Connector) => {
+    try {
+      await connect(wagmiConfig, { connector });
+    } catch (error) {
+      console.error("Error connecting:", error);
+    }
+  };
+
+  const handleDisconnect = async () => {
+    try {
+      await disconnect(wagmiConfig);
+      account.isConnected = false;
+    } catch (error) {
+      console.error("Error disconnecting:", error);
+    }
+  };
 </script>
 
 <div>
   {#if account.isConnected}
-    <button on:click={disconnect}>
+    <button on:click={handleDisconnect}>
       Disconnect from {account.connector?.name}
     </button>
   {:else}
-    {#each config.connectors as item (item.id)}
-      <button on:click={() => connect({ connector: item })}>
-        {item.name}
+    {#each wagmiConfig.connectors as item (item.id)}
+      <button on:click={() => handleConnect(item)}>
+        Connect with {item.name}
       </button>
     {/each}
   {/if}

@@ -1,86 +1,93 @@
 <script lang="ts">
-  import { daiContractConfig } from "../utils/contracts";
-  import { useAsync } from "../composables/useAsync";
-  import { stringify } from "../utils/formatters";
-  import {
-    prepareWriteContract as wagmiPrepareWriteContract,
-    writeContract as wagmiWriteContract,
-    waitForTransaction,
-  } from "@wagmi/core";
+  import { writable } from 'svelte/store';
+  import { BaseError } from 'viem';
+  import { simulateContract, writeContract as wagmiWriteContract, waitForTransactionReceipt } from '@wagmi/core';
+  import { get } from 'svelte/store';
+  import { daiContractConfig } from '../utils/contracts';
+  import { wagmiConfig } from '../wagmi';
 
-  let amount: string | null = null;
+  let amount = writable<string>('');
+  let isSimulating = writable(false);
+  let isPending = writable(false);
+  let transactionHash = writable<string | null>(null);
+  let receipt = writable<any>(null);
+  let simulateError = writable<Error | null>(null);
+  let error = writable<Error | null>(null);
 
-  // Preparing the transaction
-  const { state: preparedTransactionState, execute: prepareTransaction } =
-    useAsync(async () => {
-      // random address for testing, replace with contract address that you want to allow to spend your tokens
-      const spender = "0xa1cf087DB965Ab02Fb3CFaCe1f5c63935815f044";
+  // random address for testing, replace with contract address that you want to allow to spend your tokens
+  const spender: `0x${string}` = '0xa1cf087DB965Ab02Fb3CFaCe1f5c63935815f044';
 
-      return await wagmiPrepareWriteContract({
-        ...daiContractConfig,
-        functionName: "approve",
-        args: [spender, BigInt(amount!)],
+
+  const handleSubmit = async () => {
+    const amountValue = get(amount);
+    if (!amountValue) return;
+
+    simulateError.set(null);
+    error.set(null);
+    
+    try {
+      isSimulating.set(true);
+
+      const simulation = await simulateContract(wagmiConfig, {
+        abi: daiContractConfig.abi,
+        address: daiContractConfig.address,
+        functionName: 'approve',
+        args: [spender, BigInt(amountValue)],
       });
-    });
-  $: ({
-    result: preparedWriteContract,
-    inProgress: prepareInProgress,
-    error: prepareError,
-  } = $preparedTransactionState);
 
-  const { state: transactionState, execute: sendTransaction } = useAsync(
-    async () => {
-      const result = await wagmiWriteContract(preparedWriteContract!);
-      waitForReceipt(result.hash);
-      return result;
+      isSimulating.set(false);
+
+      if (simulation.result) {
+        isPending.set(true);
+        
+        const result = await wagmiWriteContract(wagmiConfig, {
+          abi: daiContractConfig.abi,
+          address: daiContractConfig.address,
+          functionName: 'approve',
+          args: [spender, BigInt(amountValue)],
+        });
+
+        transactionHash.set(result);
+
+        const transactionReceipt = await waitForTransactionReceipt(wagmiConfig, { hash: result });
+        receipt.set(transactionReceipt);
+      }
+    } catch (e: any) {
+      if (get(isSimulating)) {
+        simulateError.set(e instanceof BaseError ? e : null);
+      } else {
+        error.set(e instanceof BaseError ? e : null);
+      }
+    } finally {
+      isSimulating.set(false);
+      isPending.set(false);
     }
-  );
-  $: ({ result: transaction, inProgress, error } = $transactionState);
-
-  const { state: receiptState, execute: waitForReceipt } = useAsync(
-    async (transactionHash) => {
-      return await waitForTransaction({ hash: transactionHash });
-    }
-  );
-  $: ({
-    result: receipt,
-    inProgress: receiptInProgress,
-    error: receiptError,
-  } = $receiptState);
-
-  $: amount && prepareTransaction();
+  };
 </script>
 
+<form on:submit|preventDefault={handleSubmit}>
+  <input bind:value={$amount} type="number" placeholder="Allowance Amount" />
+  <button disabled={$isSimulating || $isPending || !$amount} type="submit">
+    {$isSimulating ? 'Simulating...' : $isPending ? 'Confirming...' : 'Approve'}
+  </button>
+</form>
+
 <div>
-  <form on:submit|preventDefault={sendTransaction}>
-    <input bind:value={amount} type="number" placeholder="allowance amount" />
-    <button disabled={prepareInProgress || !preparedWriteContract} type="submit"
-      >Approve</button
-    >
-  </form>
-
-  {#if inProgress}
-    <div>Transaction pending...</div>
-  {:else if transaction}
-    <div>
-      <div>Transaction Hash: {transaction?.hash}</div>
+  {#if $simulateError}
+    Simulation Error: {$simulateError.message}
+  {/if}
+  {#if $isPending}
+    Check wallet...
+  {/if}
+  {#if $transactionHash}
+    <div>Transaction Hash: {$transactionHash}</div>
+    {#if $receipt}
       <div>
-        Transaction Receipt:
-        {#if receiptInProgress}
-          <span>pending...</span>
-        {/if}
-        <pre>{stringify(receipt, null, 2)}</pre>
+        Transaction Receipt: <pre>{JSON.stringify($receipt, null, 2)}</pre>
       </div>
-    </div>
+    {/if}
   {/if}
-
-  {#if prepareError}
-    <div>Preparing Transaction Error: {prepareError?.message}</div>
-  {/if}
-  {#if error}
-    <div>Error: {error?.message}</div>
-  {/if}
-  {#if receiptError}
-    <div>Receipt Error: {receiptError?.message}</div>
+  {#if $error}
+    Error: {$error.message}
   {/if}
 </div>
