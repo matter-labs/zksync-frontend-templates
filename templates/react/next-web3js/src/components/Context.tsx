@@ -79,10 +79,12 @@ interface EthereumContextValue {
     }
   
     const onNetworkChange = async (chainId: string) => {
-      const chainIdStr = web3?.utils.hexToNumberString(chainId)
-      const currentChain = chains.find((chain: any) => chain.id === chainIdStr);
-      setNetwork(currentChain ?? { id: chainIdStr, name: null, rpcUrl: null, unsupported: true });
-    }
+      const chainIdStr = web3?.utils.hexToNumberString(chainId);
+      if (typeof chainIdStr === 'string') {
+        const currentChain = chains.find((chain: any) => chain.id === chainIdStr);
+        setNetwork(currentChain ?? { id: chainIdStr, name: null, rpcUrl: null, unsupported: true });
+      }
+    };
 
   
     const connect = async () => {
