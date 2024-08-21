@@ -12,7 +12,6 @@
   const { execute: switchNetwork, state: asyncState } = useAsync(switchChain);
   $: ({ inProgress, error } = $asyncState);
 
-  // Function to switch networks
   const handleSwitchNetwork = async (chainId: number) => {
     if (account.isConnected) {
       try {

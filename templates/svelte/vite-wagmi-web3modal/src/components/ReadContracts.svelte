@@ -9,7 +9,7 @@
   $: ({ account } = $wagmiStore);
 
   const { state: asyncState, execute: fetchContracts } = useAsync(async () => {
-    return await readContracts({
+    return await readContracts(wagmiConfig, {
       contracts: [
         {
           ...daiContractConfig,

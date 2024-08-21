@@ -55,12 +55,12 @@
 <form on:submit|preventDefault={handleSubmit}>
   <input
     bind:value={$to}
-    placeholder="Address"
+    placeholder="address"
     type="text"
   />
   <input
     bind:value={$value}
-    placeholder="Value (ether)"
+    placeholder="value (ether)"
     type="text"
   />
   <button disabled={$isSending || !$to || !$value} type="submit">

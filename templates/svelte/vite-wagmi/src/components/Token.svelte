@@ -66,7 +66,7 @@
   {#if $inProgress}
     Fetching token...
   {:else if $token}
-    <pre>{JSON.stringify($token, null, 4)}</pre>
+    <pre>{JSON.stringify($token, (key, value) => typeof value === 'bigint' ? value.toString() : value, 4)}</pre>
   {:else if $error}
     Error: {$error.message}
   {/if}

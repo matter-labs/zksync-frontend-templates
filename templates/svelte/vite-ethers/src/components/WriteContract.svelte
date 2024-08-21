@@ -10,19 +10,32 @@
 
   const { state: transactionState, execute: writeContract } = useAsync(
     async () => {
-      const contract = new Contract(
-        daiContractConfig.address,
-        daiContractConfig.abi,
-        await getSigner()!,
-      );
+      try {
+        const contract = new Contract(
+          daiContractConfig.address,
+          daiContractConfig.abi,
+          await getSigner()!,
+        );
 
-      // random address for testing, replace with contract address that you want to allow to spend your tokens
-      const spender = "0xa1cf087DB965Ab02Fb3CFaCe1f5c63935815f044";
+        // random address for testing, replace with contract address that you want to allow to spend your tokens
+        const spender = "0xa1cf087DB965Ab02Fb3CFaCe1f5c63935815f044";
 
-      const transaction = await contract.approve(spender, amount);
+        const gasPrice = await getProvider()!.getGasPrice();
+        const gasLimit = await contract
+        .getFunction("approve")
+        .estimateGas(spender, amount);
 
-      waitForReceipt(transaction.hash);
-      return transaction;
+        const transaction = await contract.approve(spender, amount, {
+          gasPrice,
+          gasLimit,
+        });
+
+        waitForReceipt(transaction.hash);
+        return transaction;
+      } catch (error) {
+        console.error("Error sending transaction:", error);
+        throw error;
+      }
     },
   );
   $: ({ result: transaction, inProgress, error } = $transactionState);

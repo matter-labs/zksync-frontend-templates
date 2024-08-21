@@ -45,14 +45,17 @@ export const chains: Chain[] = [
       ]
     : []),
 ];
+
 export const defaultChain = import.meta.env.MODE === "development" ? zksyncSepoliaTestnet : zksync;
 
 export const wagmiConfig = createConfig({
-  chains: [zksync, zksyncSepoliaTestnet],
+ chains: chains.length > 0 ? (chains as [Chain, ...Chain[]]) : [defaultChain], 
   connectors: [injected(), coinbaseWallet(), metaMask()],
   transports: {
     [zksync.id]: http(),
     [zksyncSepoliaTestnet.id]: http(),
+    270: http(),  
+    260: http(),
   },
 })
 

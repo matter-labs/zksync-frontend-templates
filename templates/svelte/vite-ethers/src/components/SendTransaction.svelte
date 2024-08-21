@@ -1,33 +1,45 @@
 <script lang="ts">
   import { ethers } from "ethers";
+  import { stringify } from "../utils/formatters";
   import { etherStore } from "../ethers";
   import { useAsync } from "../composables/useAsync";
-  import { stringify } from "../utils/formatters";
 
   const { getSigner, getProvider } = etherStore;
 
   let address: string | null = "";
   let value: string | null = "";
 
- const { state: transactionState, execute: sendTransaction } = useAsync(
-  async () => {
-    try {
-      const signer = await getSigner();
-      if (!signer) {
-        throw new Error("Failed to get signer");
+  const { state: transactionState, execute: sendTransaction } = useAsync(
+    async () => {
+      try {
+        const signer = await getSigner();
+        if (!signer) {
+          throw new Error("Failed to get signer");
+        }
+
+        const gasPrice = await getProvider()!.getGasPrice();
+        const gasLimit = await signer.estimateGas({
+          to: address!,
+          value: ethers.parseEther(value!),
+          gasPrice,
+        });
+
+        const result = await signer.sendTransaction({
+          to: address!,
+          value: ethers.parseEther(value!),
+          gasPrice,
+          gasLimit,
+        });
+
+        waitForReceipt(result.hash);
+        return result;
+      } catch (error) {
+        console.error("Error sending transaction:", error);
+        throw error;
       }
-      const result = await signer.sendTransaction({
-        to: address!,
-        value: ethers.parseEther(value!),
-      });
-      waitForReceipt(result.hash);
-      return result;
-    } catch (error) {
-      console.error("Error sending transaction:", error);
-      throw error;
     }
-  }
-);
+  );
+  
   $: ({ result: transaction, inProgress, error } = $transactionState);
 
   const { state: receiptState, execute: waitForReceipt } = useAsync(
@@ -35,6 +47,7 @@
       return await getProvider()!.waitForTransaction(transactionHash);
     },
   );
+  
   $: ({
     result: receipt,
     inProgress: receiptInProgress,
@@ -49,7 +62,6 @@
     <button type="submit">Send</button>
   </form>
 
-  <div>
   {#if inProgress}
     <div>Transaction pending...</div>
   {:else if transaction}
@@ -59,11 +71,8 @@
         Transaction Receipt:
         {#if receiptInProgress}
           <span>pending...</span>
-        {:else if receipt}
-          <pre>{stringify(receipt, null, 2)}</pre>
-        {:else}
-          <div>No transaction receipt available</div>
         {/if}
+        <pre>{stringify(receipt, null, 2)}</pre>
       </div>
     </div>
   {/if}
@@ -74,5 +83,4 @@
   {#if receiptError}
     <div>Receipt Error: {receiptError?.message}</div>
   {/if}
-</div>
 </div>

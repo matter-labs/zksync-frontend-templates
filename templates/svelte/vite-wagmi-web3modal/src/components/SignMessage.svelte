@@ -2,11 +2,12 @@
   import { recoverMessageAddress } from "viem";
   import { signMessage as wagmiSignMessage } from "@wagmi/core";
   import { useAsync } from "../composables/useAsync";
+  import { wagmiConfig } from "../wagmi";
 
   let message: string | null = null;
 
   const { state, execute: signMessage } = useAsync(async () => {
-    const signature = await wagmiSignMessage({ message: message! });
+    const signature = await wagmiSignMessage(wagmiConfig, { message: message! });
     const recoveredAddress = await recoverMessageAddress({
       message: message!,
       signature,

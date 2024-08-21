@@ -17,7 +17,6 @@
   // random address for testing, replace with contract address that you want to allow to spend your tokens
   const spender: `0x${string}` = '0xa1cf087DB965Ab02Fb3CFaCe1f5c63935815f044';
 
-
   const handleSubmit = async () => {
     const amountValue = get(amount);
     if (!amountValue) return;
@@ -66,7 +65,7 @@
 </script>
 
 <form on:submit|preventDefault={handleSubmit}>
-  <input bind:value={$amount} type="number" placeholder="Allowance Amount" />
+  <input bind:value={$amount} type="number" placeholder="allowance amount" />
   <button disabled={$isSimulating || $isPending || !$amount} type="submit">
     {$isSimulating ? 'Simulating...' : $isPending ? 'Confirming...' : 'Approve'}
   </button>

@@ -1,25 +1,15 @@
 <script lang="ts">
   import { wagmiConfig, wagmiStore } from "../wagmi";
   import { connect, disconnect, type Connector } from "@wagmi/core";
-  import { get } from "svelte/store";
 
-  $: ({ account } = get(wagmiStore));
+  $: ({ account } = $wagmiStore);
 
   const handleConnect = async (connector: Connector) => {
-    try {
-      await connect(wagmiConfig, { connector });
-    } catch (error) {
-      console.error("Error connecting:", error);
-    }
+    await connect(wagmiConfig, { connector });
   };
 
   const handleDisconnect = async () => {
-    try {
-      await disconnect(wagmiConfig);
-      account.isConnected = false;
-    } catch (error) {
-      console.error("Error disconnecting:", error);
-    }
+    await disconnect(wagmiConfig);
   };
 </script>
 

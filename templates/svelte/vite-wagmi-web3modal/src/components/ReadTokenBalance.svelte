@@ -1,7 +1,7 @@
 <script lang="ts">
   import { readContract } from "@wagmi/core";
   import { useAsync } from "../composables/useAsync";
-  import { wagmiStore } from "../wagmi";
+  import { wagmiConfig, wagmiStore } from "../wagmi";
   import { daiContractConfig } from "../utils/contracts";
   import { onMount } from "svelte";
 
@@ -11,7 +11,7 @@
     state: asyncState,
     execute: fetchBalance,
   } = useAsync(async () => {
-    return await readContract({
+    return await readContract(wagmiConfig, {
       ...daiContractConfig,
       functionName: "balanceOf",
       args: [account.address!],
