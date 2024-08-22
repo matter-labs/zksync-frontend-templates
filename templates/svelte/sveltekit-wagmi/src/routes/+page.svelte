@@ -10,7 +10,6 @@
   import ReadTokenBalance from "../components/ReadTokenBalance.svelte";
   import ReadTokenSupply from "../components/ReadTokenSupply.svelte";
   import SendTransaction from "../components/SendTransaction.svelte";
-  import SendTransactionPrepared from "../components/SendTransactionPrepared.svelte";
   import SignMessage from "../components/SignMessage.svelte";
   import SignTypedData from "../components/SignTypedData.svelte";
   import Token from "../components/Token.svelte";
@@ -18,6 +17,7 @@
   import WatchPendingTransactions from "../components/WatchPendingTransactions.svelte";
   import WriteContract from "../components/WriteContract.svelte";
   import WriteContractPrepared from "../components/WriteContractPrepared.svelte";
+  import EstimateGas from "../components/EstimateGas.svelte";
 </script>
 
 <div>
@@ -67,8 +67,8 @@
     <SendTransaction />
     <br />
     <hr />
-    <h2>Send Transaction (Prepared)</h2>
-    <SendTransactionPrepared />
+    <h2>Estimate Gas and Send</h2>
+    <EstimateGas />
     <br />
     <hr />
     <h2>Sign Message</h2>

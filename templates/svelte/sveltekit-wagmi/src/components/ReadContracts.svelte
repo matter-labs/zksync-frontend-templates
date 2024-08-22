@@ -1,6 +1,6 @@
 <script lang="ts" setup>
   import { readContracts } from "@wagmi/core";
-  import { wagmiStore } from "../stores/wagmi";
+  import { wagmiConfig, wagmiStore } from "../stores/wagmi";
   import { useAsync } from "../composables/useAsync";
   import { daiContractConfig } from "../utils/contracts";
   import { stringify } from "viem";
@@ -9,7 +9,7 @@
   $: ({ account } = $wagmiStore);
 
   const { state: asyncState, execute: fetchContracts } = useAsync(async () => {
-    return await readContracts({
+    return await readContracts(wagmiConfig, {
       contracts: [
         {
           ...daiContractConfig,
