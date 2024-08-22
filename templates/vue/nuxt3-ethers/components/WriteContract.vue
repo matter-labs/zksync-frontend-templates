@@ -23,7 +23,7 @@
 
 <script lang="ts" setup>
 import { ref } from 'vue';
-import { Contract, Provider, types, utils } from 'zksync-ethers';
+import { Contract, Provider, types } from 'zksync-ethers';
 import { stringify } from '@/utils/formatters';
 import { daiContractConfig } from '@/utils/contracts';
 import { useAsync } from '@/composables/useAsync';
@@ -42,20 +42,13 @@ const { result: transaction, execute: writeContract, inProgress, error } = useAs
   
   if (!amount.value) throw new Error("Allowance amount is not set");
 
-  const amountBigInt = BigInt(amount.value);
-
   const provider = Provider.getDefaultProvider(types.Network.Sepolia);
-  const fee = await provider.estimateFee({
-    from: await signer.getAddress(),
-    to: daiContractConfig.address,
-    value: `0x${amountBigInt.toString(16)}`,
-  });
-
-  console.log(`Estimated Fee: ${utils.toJSON(fee)}`);
+  const gasPrice = await provider.getGasPrice();
+  const gasLimit = await contract.getFunction("approve").estimateGas(spender, amount.value);
 
   const transaction = await contract.approve(spender, amount.value, {
-    gasLimit: fee.gasLimit,
-    gasPrice: fee.maxFeePerGas,
+    gasLimit,
+    gasPrice,
   });
 
   waitForReceipt(transaction.hash);
