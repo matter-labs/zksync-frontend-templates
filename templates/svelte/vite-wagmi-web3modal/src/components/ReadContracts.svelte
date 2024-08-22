@@ -1,6 +1,6 @@
 <script lang="ts" setup>
   import { readContracts } from "@wagmi/core";
-  import { wagmiStore } from "../wagmi";
+  import { wagmiConfig, wagmiStore } from "../wagmi";
   import { useAsync } from "../composables/useAsync";
   import { daiContractConfig } from "../utils/contracts";
   import { stringify } from "viem";
