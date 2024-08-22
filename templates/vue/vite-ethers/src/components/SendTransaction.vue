@@ -33,9 +33,17 @@ const address = ref<string | null>(null);
 const value = ref<string | null>(null);
 
 const { result: transaction, execute: sendTransaction, inProgress, error} = useAsync(async () => {
+  const gasPrice = await getProvider()!.getGasPrice();
+  const gasLimit = await (await getSigner())!.estimateGas({
+    to: address.value!,
+    value: ethers.parseEther(value.value!),
+    gasPrice,
+  });
   const result = await (await getSigner())!.sendTransaction({
     to: address.value!,
     value: ethers.parseEther(value.value!),
+    gasPrice,
+    gasLimit,
   })
   waitForReceipt(result.hash);
   return result;
