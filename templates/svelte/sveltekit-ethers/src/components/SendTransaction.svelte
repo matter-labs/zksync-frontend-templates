@@ -11,21 +11,43 @@
 
   const { state: transactionState, execute: sendTransaction } = useAsync(
     async () => {
-      const result = await (await getSigner())!.sendTransaction({
-        to: address!,
-        value: ethers.parseEther(value!),
-      });
-      waitForReceipt(result.hash);
-      return result;
-    },
+      try {
+        const signer = await getSigner();
+        if (!signer) {
+          throw new Error("Failed to get signer");
+        }
+
+        const gasPrice = await getProvider()!.getGasPrice();
+        const gasLimit = await signer.estimateGas({
+          to: address!,
+          value: ethers.parseEther(value!),
+          gasPrice,
+        });
+
+        const result = await signer.sendTransaction({
+          to: address!,
+          value: ethers.parseEther(value!),
+          gasPrice,
+          gasLimit,
+        });
+
+        waitForReceipt(result.hash);
+        return result;
+      } catch (error) {
+        console.error("Error sending transaction:", error);
+        throw error;
+      }
+    }
   );
+
   $: ({ result: transaction, inProgress, error } = $transactionState);
 
   const { state: receiptState, execute: waitForReceipt } = useAsync(
     async (transactionHash) => {
       return await getProvider()!.waitForTransaction(transactionHash);
-    },
+    }
   );
+
   $: ({
     result: receipt,
     inProgress: receiptInProgress,
@@ -36,7 +58,7 @@
 <div>
   <form on:submit|preventDefault={sendTransaction}>
     <input bind:value={address} placeholder="address" />
-    <input bind:value placeholder="value (ether)" />
+    <input bind:value={value} placeholder="value (ether)" />
     <button type="submit">Send</button>
   </form>
 
