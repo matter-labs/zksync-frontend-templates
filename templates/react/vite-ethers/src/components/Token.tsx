@@ -22,8 +22,8 @@ export function Token() {
     return {
       symbol,
       name,
-      decimals,
-      supply,
+      decimals: decimals.toString(), 
+      supply: supply.toString(),
     };
   };
 

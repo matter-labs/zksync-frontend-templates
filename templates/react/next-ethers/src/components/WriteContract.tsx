@@ -15,8 +15,10 @@ export function WriteContract() {
 
     // random address for testing, replace with contract address that you want to allow to spend your tokens
     const spender = "0xa1cf087DB965Ab02Fb3CFaCe1f5c63935815f044"
+    const gasPrice = await getProvider()!.getGasPrice();
+    const gasLimit = await contract.getFunction("approve").estimateGas(spender, amount);
   
-    const tx = await contract.approve(spender, amount);
+    const tx = await contract.approve(spender, amount, {gasPrice, gasLimit});
 
     waitForReceipt(tx.hash);
     return tx;

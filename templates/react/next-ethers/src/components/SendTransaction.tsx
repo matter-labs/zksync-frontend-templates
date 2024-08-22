@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import { ethers } from 'ethers';
-
 import { useAsync } from '../hooks/useAsync';
 import { useEthereum } from './Context';
 
@@ -13,9 +12,19 @@ export function SendTransaction() {
   const { getSigner, getProvider } = useEthereum();
 
   const { result: transaction, execute: sendTransaction, inProgress, error } = useAsync(async () => {
+    if (!address || !value) return;
+    const gasPrice = await getProvider()!.getGasPrice();
+    const gasLimit = await (await getSigner())!.estimateGas({
+      to: address,
+      value: ethers.parseEther(value),
+      gasPrice,
+    });
+
     const result = await (await getSigner())!.sendTransaction({
       to: address!,
       value: ethers.parseEther(value!),
+      gasPrice,
+      gasLimit,
     });
     waitForReceipt(result.hash);
     return result;
