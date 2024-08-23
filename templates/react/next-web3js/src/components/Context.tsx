@@ -1,7 +1,7 @@
 'use client'
 
 import { Web3 } from 'web3';
-import { ZkSyncPlugin } from 'web3-plugin-zksync';
+import { ZKsyncPlugin } from 'web3-plugin-zksync';
 import React, { useState, useEffect, createContext, useContext } from 'react';
 
 type Chain = {
@@ -94,7 +94,7 @@ interface EthereumContextValue {
 
       
 
-      const zkSyncPlugin = new ZkSyncPlugin(getEthereumContext());
+      const zkSyncPlugin = new ZKsyncPlugin(getEthereumContext());
       web3.registerPlugin(zkSyncPlugin);
       const accounts = await web3.eth.requestAccounts();
       const chain = await web3.eth.getChainId();
