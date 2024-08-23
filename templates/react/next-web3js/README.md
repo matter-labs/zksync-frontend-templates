@@ -23,6 +23,6 @@ In this project template, You can connect your wallet to the ZKsync testnet and 
 
 To learn more about [ZKsync](https://zksync.io) or [Web3.js](https://web3js.org/), check out the following resources:
 
-- [ZKsync Documentation](https://era.zksync.io/docs/dev) – learn about ZKsync features and API.
+- [ZKsync Documentation](https://docs.zksync.io) – learn about ZKsync features and API.
 - [Web3.js Documentation](https://docs.web3js.org/) – learn about Web3.js and API.
 - [Next.js Documentation](https://nextjs.org/docs) learn about Next.js features and API.
