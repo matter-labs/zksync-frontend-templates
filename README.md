@@ -42,6 +42,9 @@ To make navigation easier, the templates are structured based on their respectiv
 - **Ethers v5**
   - [Next](./templates/react/next-ethers5/)
   - [Vite](./templates/react/vite-ethers5/)
+- **Web3.js**
+  - [Next](./templates/react/next-web3js)
+  - [Vite](./templates/react/vite-web3js)
 
 ### Svelte
 
