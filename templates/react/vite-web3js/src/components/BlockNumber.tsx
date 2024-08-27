@@ -11,7 +11,7 @@ export function BlockNumber() {
     if (!web3) return;
 
     const onBlock = async () => {
-      const subscription = await web3.eth.subscribe('newHeads');
+      const subscription = await web3.ZKsync.L2.eth.subscribe('newHeads');
 
       subscription.on('data', (block) => {
         if (block && block.number) {

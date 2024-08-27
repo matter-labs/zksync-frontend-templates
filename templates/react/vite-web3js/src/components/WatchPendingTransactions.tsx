@@ -13,7 +13,7 @@ export function WatchPendingTransactions() {
     const onBlock = async () => {
       if (!web3) return;
 
-      const newHeadsSubscription = await web3.eth.subscribe('newHeads');
+      const newHeadsSubscription = await web3.ZKsync.L2.eth.subscribe('newHeads');
 
       function handleSubscriptionSet(block: BlockHeaderOutput) {
         if (block && block.hash) {

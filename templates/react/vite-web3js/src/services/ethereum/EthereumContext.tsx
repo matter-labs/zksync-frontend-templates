@@ -1,6 +1,6 @@
 import { type ReactNode, useState, useEffect, useCallback } from 'react';
 import { Web3, ProviderError } from 'web3';
-import { ZkSyncPlugin } from 'web3-plugin-zksync';
+import { ZKsyncPlugin } from 'web3-plugin-zksync';
 import type { Chain } from '@/types/web3.ts';
 import { Account, Network } from './types.ts';
 import { chains } from '../constants.ts';
@@ -58,21 +58,21 @@ export const EthereumContextProvider = ({ children }: { children: ReactNode }) =
   );
 
   const connect = useCallback(async () => {
-    if (!getEthereumContext()) throw new Error('No injected wallets found');
-
     const ctx = getEthereumContext();
+    if (!ctx) throw new Error('No injected wallets found');
 
-    web3 = new Web3(ctx);
-    const zkSyncPlugin = new ZkSyncPlugin(getEthereumContext());
+    web3 = new Web3();
+    const zkSyncPlugin = new ZKsyncPlugin(ctx);
     web3.registerPlugin(zkSyncPlugin);
+    const l2 = web3.ZKsync.L2;
 
-    const accounts = await web3.eth.requestAccounts();
+    const accounts = await l2.eth.requestAccounts();
 
     if (accounts.length === 0) {
       throw new Error('No accounts found');
     }
 
-    const chainId = await web3.eth.getChainId();
+    const chainId = await l2.eth.getChainId();
 
     onAccountChange(accounts);
 

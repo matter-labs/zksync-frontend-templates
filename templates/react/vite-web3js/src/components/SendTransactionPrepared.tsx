@@ -5,12 +5,13 @@ import { useAsync } from '@/hooks/use-async.ts';
 export function SendTransactionPrepared() {
   const { getWeb3, account } = useEthereum();
   const web3 = getWeb3();
+  const l2 = web3?.ZKsync.L2;
 
   const [address, setAddress] = useState<string | null>(null);
   const [value, setValue] = useState<string | null>(null);
 
   const asyncPrepareFetch = useCallback(async () => {
-    if (!web3 || !address || !value) throw new Error('Provider, address or value not found!');
+    if (!l2 || !address || !value) throw new Error('Provider, address or value not found!');
 
     const transaction = {
       to: address,
@@ -18,8 +19,8 @@ export function SendTransactionPrepared() {
       from: account.address as string,
     };
 
-    const gasPrice = await web3.eth.getGasPrice();
-    const gasLimit = await web3.eth.estimateGas({
+    const gasPrice = await l2.eth.getGasPrice();
+    const gasLimit = await l2.eth.estimateGas({
       ...transaction,
       gasPrice,
     });
@@ -39,9 +40,9 @@ export function SendTransactionPrepared() {
   } = useAsync(asyncPrepareFetch);
 
   const asyncSendFetch = useCallback(async () => {
-    if (!web3 || !preparedTransaction) throw new Error('Provider not found or empty transaction!');
+    if (!l2 || !preparedTransaction) throw new Error('Provider not found or empty transaction!');
 
-    return web3.eth.sendTransaction(preparedTransaction);
+    return l2.eth.sendTransaction(preparedTransaction);
   }, [preparedTransaction, web3]);
 
   const {

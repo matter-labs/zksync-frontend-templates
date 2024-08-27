@@ -23,7 +23,7 @@ function AccountBalance() {
     result: balance,
     execute: fetchBalance,
     error,
-  } = useAsync((address) => getWeb3()!.eth.getBalance(address));
+  } = useAsync((address) => getWeb3()!.ZKsync.L2.eth.getBalance(address));
 
   useEffect(() => {
     if (account?.address) {
@@ -50,7 +50,7 @@ function FindBalance() {
     const web3 = getWeb3();
     if (!web3) throw new Error('Provider not found!');
 
-    return web3.eth.getBalance(address);
+    return web3.ZKsync.L2.eth.getBalance(address);
   };
 
   const { result: balance, execute: fetchBalance, inProgress, error } = useAsync(fetchBalanceFunc);

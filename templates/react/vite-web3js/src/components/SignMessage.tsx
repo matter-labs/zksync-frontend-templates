@@ -3,17 +3,16 @@ import { useEthereum } from '@/services/ethereum/context.ts';
 import { useAsync } from '@/hooks/use-async.ts';
 
 export function SignMessage() {
-  const { getWeb3 } = useEthereum();
+  const { account, getWeb3 } = useEthereum();
   const web3 = getWeb3();
 
   const [message, setMessage] = useState('');
 
   const asyncFetch = useCallback(async () => {
-    if (!web3 || !message) throw new Error('Signer not found or message is empty.');
+    if (!web3 || !account.address || !message) throw new Error('Signer not found or message is empty.');
 
-    const accounts = await web3.eth.getAccounts();
-    const signature = await web3.eth.personal.sign(message, accounts[0], '');
-    const recoveredAddress = accounts[0];
+    const signature = await web3.ZKsync.L2.eth.personal.sign(message, account.address, '');
+    const recoveredAddress = account.address;
     return {
       signature,
       recoveredAddress,

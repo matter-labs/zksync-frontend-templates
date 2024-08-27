@@ -11,7 +11,7 @@ export function WriteContractPrepared() {
 
   const getContractInstance = useCallback(async () => {
     if (!web3) throw new Error('Provider not found');
-    return web3.zkSync.erc20(daiContractConfig.address);
+    return web3.ZKsync.erc20(daiContractConfig.address);
   }, [web3]);
 
   const asyncPrepareFetch = useCallback(async () => {
@@ -22,7 +22,7 @@ export function WriteContractPrepared() {
 
     if (!web3 || !spender) throw new Error('Provider not found');
 
-    const gasPrice = await web3.eth.getGasPrice();
+    const gasPrice = await web3.ZKsync.L2.eth.getGasPrice();
 
     const gasLimit = await contract.methods
       .approve(spender, amount)

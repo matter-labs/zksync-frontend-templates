@@ -14,7 +14,7 @@ export function Token() {
     async (address: string) => {
       if (!web3) throw new Error('Web3 not found');
 
-      const contract = new web3.eth.Contract(IERC20ABI, address);
+      const contract = new web3.ZKsync.L2.eth.Contract(IERC20ABI, address);
       const [symbol, name, decimals, supply] = await Promise.all([
         contract.methods.symbol().call(),
         contract.methods.name().call(),

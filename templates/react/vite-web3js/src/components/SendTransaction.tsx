@@ -14,7 +14,7 @@ export function SendTransaction() {
   const asyncFetch = useCallback(async () => {
     if (!web3 || !value) throw new Error('Provider or value not found');
 
-    return web3.eth.sendTransaction(
+    return web3.ZKsync.L2.eth.sendTransaction(
       {
         to: address,
         value: web3.utils.toWei(value, 'ether'),
