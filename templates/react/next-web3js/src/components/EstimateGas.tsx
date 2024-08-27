@@ -11,16 +11,17 @@ export function SendTransactionPrepared() {
   const [address, setAddress] = useState<string | null>(null);
   const [value, setValue] = useState<string | null>(null);
   const web3 = getWeb3();
+  const l2 = web3?.ZKsync.L2;
   const { result: preparedTransaction, execute: prepareTransaction, inProgress: prepareInProgress, error: prepareError } = useAsync(async () => {
     if (!address || !value) return;
-    if (!web3) return;
+    if (!l2) return;
     const transaction = {
       to: address,
       value: web3.utils.toWei(value, "ether"),
       from: account.address as string,
     };
-    const gasPrice = await web3.eth.getGasPrice();
-    const gasLimit = await web3.eth.estimateGas({
+    const gasPrice = await l2.eth.getGasPrice();
+    const gasLimit = await l2.eth.estimateGas({
       ...transaction,
       gasPrice,
     });
@@ -33,9 +34,9 @@ export function SendTransactionPrepared() {
   });
 
   const { result: transaction, execute: sendTransaction, inProgress, error } = useAsync(async () => {
-    if (!web3) return;
+    if (!l2) return;
     if (!preparedTransaction) return;
-    const result = await web3.eth.sendTransaction(preparedTransaction);
+    const result = await l2.eth.sendTransaction(preparedTransaction);
     return result;
   });
 

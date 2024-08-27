@@ -15,7 +15,7 @@ export function SendTransaction() {
 
   const { result: transaction, execute: sendTransaction, inProgress, error } = useAsync(async () => {
     if(web3 && value){
-        const result = await web3.eth.sendTransaction({
+        const result = await web3.ZKsync.L2.eth.sendTransaction({
             to: address,
             value: web3.utils.toWei(value, 'ether'),
             from: account.address as string,

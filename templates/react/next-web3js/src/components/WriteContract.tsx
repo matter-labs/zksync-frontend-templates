@@ -15,7 +15,7 @@ export function WriteContract() {
 
     
 
-    const contract = new web3.eth.Contract(daiContractConfig.abi, daiContractConfig.address);
+    const contract = new web3.ZKsync.L2.eth.Contract(daiContractConfig.abi, daiContractConfig.address);
 
     // random address for testing, replace with contract address that you want to allow to spend your tokens
     const spender = "0xa1cf087DB965Ab02Fb3CFaCe1f5c63935815f044"

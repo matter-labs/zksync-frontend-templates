@@ -15,7 +15,7 @@ export function WatchPendingTransactions() {
     const onBlock = async () => {
       if (!web3)
       return;
-      const blockSubscription = await web3.eth.subscribe("newHeads");
+      const blockSubscription = await web3.ZKsync.L2.eth.subscribe("newHeads");
 
       blockSubscription.on("data", (block) => {
         console.log(block);

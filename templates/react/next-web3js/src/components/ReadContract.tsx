@@ -30,7 +30,7 @@ function TotalSupply() {
     const web3 = getWeb3();
     if (web3)
     {
-      const contract = new web3.eth.Contract( daiContractConfig.abi, daiContractConfig.address);
+      const contract = new web3.ZKsync.L2.eth.Contract( daiContractConfig.abi, daiContractConfig.address);
       const totalSupply = await contract.methods.totalSupply().call()
       return totalSupply;
     }
@@ -69,7 +69,7 @@ function BalanceOf() {
     const web3 = getWeb3();
     if (web3)
     {
-      const contract = new web3.eth.Contract( daiContractConfig.abi, daiContractConfig.address);
+      const contract = new web3.ZKsync.L2.eth.Contract( daiContractConfig.abi, daiContractConfig.address);
       const b = await contract.methods.balanceOf(address).call();
       return b
 

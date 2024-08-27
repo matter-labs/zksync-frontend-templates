@@ -89,15 +89,16 @@ interface EthereumContextValue {
   
     const connect = async () => {
       if (!getEthereumContext()) throw new Error("No injected wallets found");
-      web3 = new Web3((window as any).ethereum);
+      web3 = new Web3();
 
 
       
 
       const zkSyncPlugin = new ZKsyncPlugin(getEthereumContext());
       web3.registerPlugin(zkSyncPlugin);
-      const accounts = await web3.eth.requestAccounts();
-      const chain = await web3.eth.getChainId();
+      const l2 = web3.ZKsync.L2;
+      const accounts = await l2.eth.requestAccounts();
+      const chain = await l2.eth.getChainId();
       if (accounts.length > 0) {
         onAccountChange(accounts);
         onNetworkChange(web3.utils.toHex(chain));
