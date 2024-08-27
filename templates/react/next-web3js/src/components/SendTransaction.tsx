@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react';
-import { DEFAULT_RETURN_FORMAT } from 'web3';
+import { FMT_BYTES, FMT_NUMBER } from 'web3';
 import { useAsync } from '../hooks/useAsync';
 import { useEthereum } from './Context';
 
@@ -19,7 +19,7 @@ export function SendTransaction() {
             to: address,
             value: web3.utils.toWei(value, 'ether'),
             from: account.address as string,
-        }, DEFAULT_RETURN_FORMAT, { ignoreGasPricing: true, 
+        }, { bytes: FMT_BYTES.HEX, number: FMT_NUMBER.STR }, { ignoreGasPricing: true, 
           checkRevertBeforeSending: false,});
         return result;   
     }

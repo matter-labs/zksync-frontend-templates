@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react';
-
+import { FMT_BYTES, FMT_NUMBER } from 'web3';
 import { useAsync } from '../hooks/useAsync';
 import { useEthereum } from './Context';
 
@@ -36,7 +36,7 @@ export function SendTransactionPrepared() {
   const { result: transaction, execute: sendTransaction, inProgress, error } = useAsync(async () => {
     if (!l2) return;
     if (!preparedTransaction) return;
-    const result = await l2.eth.sendTransaction(preparedTransaction);
+    const result = await l2.eth.sendTransaction(preparedTransaction, { bytes: FMT_BYTES.HEX, number: FMT_NUMBER.STR });
     return result;
   });
 
