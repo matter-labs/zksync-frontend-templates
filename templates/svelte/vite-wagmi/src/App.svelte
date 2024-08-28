@@ -4,12 +4,12 @@
   import BlockNumber from "./components/BlockNumber.svelte";
   import Connect from "./components/Connect.svelte";
   import Connected from "./components/Connected.svelte";
+  import EstimateGas from "./components/EstimateGas.svelte";
   import FindBalance from "./components/FindBalance.svelte";
   import NetworkSwitcher from "./components/NetworkSwitcher.svelte";
   import ReadTokenBalance from "./components/ReadTokenBalance.svelte";
   import ReadTokenSupply from "./components/ReadTokenSupply.svelte";
   import SendTransaction from "./components/SendTransaction.svelte";
-  import SendTransactionPrepared from "./components/SendTransactionPrepared.svelte";
   import SignMessage from "./components/SignMessage.svelte";
   import SignTypedData from "./components/SignTypedData.svelte";
   import Token from "./components/Token.svelte";
@@ -62,8 +62,8 @@
     <SendTransaction />
     <br />
     <hr />
-    <h2>Send Transaction (Prepared)</h2>
-    <SendTransactionPrepared />
+    <h2>Estimate Gas and Send</h2>
+    <EstimateGas />
     <br />
     <hr />
     <h2>Sign Message</h2>

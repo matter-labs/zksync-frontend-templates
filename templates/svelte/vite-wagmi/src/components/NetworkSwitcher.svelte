@@ -1,27 +1,42 @@
-<script lang="ts" setup>
-  import { switchNetwork as wagmiSwitchNetwork } from "@wagmi/core";
+<script lang="ts">
+  import { switchChain } from "@wagmi/core";
+  import { wagmiConfig, wagmiStore } from "../wagmi";
+  import { get } from "svelte/store";
   import { useAsync } from "../composables/useAsync";
-  import { wagmiStore } from "../wagmi";
+  import type { Chain } from "viem";
 
-  $: ({ network } = $wagmiStore);
+  $: ({ account } = get(wagmiStore));
 
-  const { execute: switchNetwork, state: asyncState } =
-    useAsync(wagmiSwitchNetwork);
+  const chains: readonly Chain[] = wagmiConfig.chains;
+
+  const { execute: switchNetwork, state: asyncState } = useAsync(switchChain);
   $: ({ inProgress, error } = $asyncState);
+
+  const handleSwitchNetwork = async (chainId: number) => {
+    if (account.isConnected) {
+      try {
+        await switchNetwork(wagmiConfig, { chainId });
+      } catch (err) {
+        console.error("Error switching network:", err);
+      }
+    }
+  };
+
+  $: currentChain = chains.find((chain) => chain.id === account.chainId) || null;
 </script>
 
 <div>
   <div>
-    Connected to {network.chain?.name ?? network.chain?.id}
-    {#if network.chain?.unsupported}
-      <span>(unsupported)</span>
-    {/if}
+    Connected to {currentChain?.name ?? currentChain?.id}
   </div>
   <br />
   <div>
     Switch to:
-    {#each network.chains as item (item.id)}
-      <button on:click={() => switchNetwork({ chainId: item.id })}>
+    {#each chains as item (item.id)}
+      <button
+        on:click={() => handleSwitchNetwork(item.id)}
+        disabled={!account.isConnected || currentChain?.id === item.id}
+      >
         {item.name}
       </button>
     {/each}

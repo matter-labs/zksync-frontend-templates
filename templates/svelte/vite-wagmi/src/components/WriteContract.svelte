@@ -4,22 +4,22 @@
   import { stringify } from "../utils/formatters";
   import {
     writeContract as wagmiWriteContract,
-    waitForTransaction,
+    waitForTransactionReceipt,
   } from "@wagmi/core";
+  import { wagmiConfig } from "../wagmi";
 
   let amount: string | null = null;
 
   const { state: transactionState, execute: writeContract } = useAsync(
     async () => {
-      // random address for testing, replace with contract address that you want to allow to spend your tokens
       const spender = "0xa1cf087DB965Ab02Fb3CFaCe1f5c63935815f044";
 
-      const result = await wagmiWriteContract({
+      const result = await wagmiWriteContract(wagmiConfig, {
         ...daiContractConfig,
         functionName: "approve",
         args: [spender, BigInt(amount!)],
       });
-      waitForReceipt(result.hash);
+      waitForReceipt(result);
       return result;
     }
   );
@@ -27,7 +27,7 @@
 
   const { state: receiptState, execute: waitForReceipt } = useAsync(
     async (transactionHash) => {
-      return await waitForTransaction({ hash: transactionHash });
+      return await waitForTransactionReceipt(wagmiConfig, { hash: transactionHash });
     }
   );
   $: ({
@@ -47,7 +47,7 @@
   {#if inProgress}
     <div>Transaction pending...</div>
   {:else if transaction}
-    <div>Transaction Hash: {transaction?.hash}</div>
+    <div>Transaction Hash: {transaction}</div>
     <div>
       Transaction Receipt:
       {#if receiptInProgress}

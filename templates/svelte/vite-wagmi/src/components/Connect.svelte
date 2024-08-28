@@ -1,20 +1,27 @@
 <script lang="ts">
-  import { wagmiStore } from "../wagmi";
-  import { connect, disconnect, getConfig } from "@wagmi/core";
+  import { wagmiConfig, wagmiStore } from "../wagmi";
+  import { connect, disconnect, type Connector } from "@wagmi/core";
 
-  const config = getConfig();
   $: ({ account } = $wagmiStore);
+
+  const handleConnect = async (connector: Connector) => {
+    await connect(wagmiConfig, { connector });
+  };
+
+  const handleDisconnect = async () => {
+    await disconnect(wagmiConfig);
+  };
 </script>
 
 <div>
   {#if account.isConnected}
-    <button on:click={disconnect}>
+    <button on:click={handleDisconnect}>
       Disconnect from {account.connector?.name}
     </button>
   {:else}
-    {#each config.connectors as item (item.id)}
-      <button on:click={() => connect({ connector: item })}>
-        {item.name}
+    {#each wagmiConfig.connectors as item (item.id)}
+      <button on:click={() => handleConnect(item)}>
+        Connect with {item.name}
       </button>
     {/each}
   {/if}
