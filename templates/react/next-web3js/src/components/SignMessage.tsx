@@ -7,11 +7,11 @@ import { useEthereum } from './Context';
 
 export function SignMessage() {
   const [message, setMessage] = useState('');
-  const { account, getWeb3 } = useEthereum();
-  const web3 = getWeb3();
+  const { account, getZKsync } = useEthereum();
+  const zkSync = getZKsync();
   const { result, execute: signMessage, inProgress, error } = useAsync(async () => {
-    if (web3 && message) {
-      const signature = await web3.ZKsync.L2.eth.personal.sign(message, account.address, "");
+    if (zkSync && message && account.address) {
+      const signature = await zkSync.L2.eth.personal.sign(message, account.address, "");
     const recoveredAddress = account.address;
       return {
         signature,

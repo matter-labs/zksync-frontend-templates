@@ -8,14 +8,14 @@ import { useEthereum } from './Context';
 
 export function WriteContract() {
   const [amount, setAmount] = useState('');
-  const { getWeb3, account } = useEthereum();
-  const web3 = getWeb3();
+  const { account, getZKsync } = useEthereum();
+  const zkSync = getZKsync();
   const { result: transaction, execute: writeContract, inProgress, error } = useAsync(async () => {
-    if (!web3) return;
+    if (!zkSync) return;
 
     
 
-    const contract = new web3.ZKsync.L2.eth.Contract(daiContractConfig.abi, daiContractConfig.address);
+    const contract = new zkSync.L2.eth.Contract(daiContractConfig.abi, daiContractConfig.address);
 
     // random address for testing, replace with contract address that you want to allow to spend your tokens
     const spender = "0xa1cf087DB965Ab02Fb3CFaCe1f5c63935815f044"

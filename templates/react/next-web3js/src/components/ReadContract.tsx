@@ -20,17 +20,17 @@ export function ReadContract() {
 
 function TotalSupply() {
 
-  const { getWeb3 } = useEthereum();
+  const { getZKsync } = useEthereum();
   const {
     result: supply,
     execute: fetchTotalSupply,
     inProgress,
     error,
   } = useAsync(async () => {
-    const web3 = getWeb3();
-    if (web3)
+    const zkSync = getZKsync();
+    if (zkSync)
     {
-      const contract = new web3.ZKsync.L2.eth.Contract( daiContractConfig.abi, daiContractConfig.address);
+      const contract = new zkSync.L2.eth.Contract( daiContractConfig.abi, daiContractConfig.address);
       const totalSupply = await contract.methods.totalSupply().call()
       return totalSupply;
     }
@@ -55,8 +55,7 @@ function TotalSupply() {
 }
 
 function BalanceOf() {
-  const { getWeb3 } = useEthereum();
-  const { account } = useEthereum();
+  const { account, getZKsync } = useEthereum();
 
   const [address, setAddress] = useState(account.address);
 
@@ -66,10 +65,10 @@ function BalanceOf() {
     inProgress,
     error
   } = useAsync(async () => {
-    const web3 = getWeb3();
-    if (web3)
+    const zkSync = getZKsync();
+    if (zkSync)
     {
-      const contract = new web3.ZKsync.L2.eth.Contract( daiContractConfig.abi, daiContractConfig.address);
+      const contract = new zkSync.L2.eth.Contract( daiContractConfig.abi, daiContractConfig.address);
       const b = await contract.methods.balanceOf(address).call();
       return b
 

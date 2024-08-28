@@ -5,7 +5,7 @@ import { chains, useEthereum } from './Context';
 
 export function NetworkSwitcher() {
   const { switchNetwork: switchToChainByID, network } = useEthereum();
-  const { execute: switchNetwork, inProgress, error } = useAsync(switchToChainByID);
+  const { execute: switchNetwork, error } = useAsync(switchToChainByID);
 
   return (
     <div>

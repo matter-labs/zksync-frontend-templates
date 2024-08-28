@@ -41,11 +41,11 @@ const message = {
 } as const
 
 export function SignTypedData() {
-  const { account, getWeb3 } = useEthereum();
-    const web3 = getWeb3();
+  const { account, getZKsync } = useEthereum();
+    const zkSync = getZKsync();
   const { result, execute: signTypedData, inProgress, error } = useAsync(async () => {
-    if (web3){
-        const signature = await web3.ZKsync.L2.eth.signTypedData(account.address, {domain, types, message, 
+    if (zkSync && account.address){
+        const signature = await zkSync.L2.eth.signTypedData(account.address, {domain, types, message, 
             primaryType: 'Mail',});
 
         return {
