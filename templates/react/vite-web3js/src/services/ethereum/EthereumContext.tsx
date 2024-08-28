@@ -1,12 +1,12 @@
 import { type ReactNode, useState, useEffect, useCallback } from 'react';
-import { Web3, ProviderError } from 'web3';
+import { hexToNumber, numberToHex, toHex } from 'web3-utils';
 import { ZKsyncPlugin } from 'web3-plugin-zksync';
 import type { Chain } from '@/types/web3.ts';
 import { Account, Network } from './types.ts';
 import { chains } from '../constants.ts';
 import { EthereumContext } from './context.ts';
 
-let web3: Web3 | null = null;
+let zkSyncPlugin: ZKsyncPlugin | null = null;
 
 export const EthereumContextProvider = ({ children }: { children: ReactNode }) => {
   const [account, setAccount] = useState<Account>({ isConnected: false, address: null });
@@ -16,7 +16,7 @@ export const EthereumContextProvider = ({ children }: { children: ReactNode }) =
 
   const onNetworkChange = useCallback((chainId: string) => {
     const currentChain = chains.find((chain: Chain) => chain.id === chainId);
-    const strChainId = String(web3?.utils.hexToNumber(chainId));
+    const strChainId = String(hexToNumber(chainId));
 
     setNetwork(
       currentChain ?? {
@@ -61,22 +61,19 @@ export const EthereumContextProvider = ({ children }: { children: ReactNode }) =
     const ctx = getEthereumContext();
     if (!ctx) throw new Error('No injected wallets found');
 
-    web3 = new Web3();
-    const zkSyncPlugin = new ZKsyncPlugin(ctx);
-    web3.registerPlugin(zkSyncPlugin);
-    const l2 = web3.ZKsync.L2;
+    zkSyncPlugin = new ZKsyncPlugin(ctx);
 
-    const accounts = await l2.eth.requestAccounts();
+    const accounts = await zkSyncPlugin.L2.eth.requestAccounts();
 
     if (accounts.length === 0) {
       throw new Error('No accounts found');
     }
 
-    const chainId = await l2.eth.getChainId();
+    const chainId = await zkSyncPlugin.L2.eth.getChainId();
 
     onAccountChange(accounts);
 
-    if (chainId) onNetworkChange(web3.utils.toHex(chainId));
+    if (chainId) onNetworkChange(toHex(chainId));
   }, [onAccountChange, onNetworkChange]);
 
   useEffect(() => {
@@ -95,7 +92,7 @@ export const EthereumContextProvider = ({ children }: { children: ReactNode }) =
 
     if (!chain) throw new Error('Unsupported chain');
 
-    const hexChainId = web3?.utils.numberToHex(chainId);
+    const hexChainId = numberToHex(chainId);
 
     const ctx = getEthereumContext();
 
@@ -106,7 +103,7 @@ export const EthereumContextProvider = ({ children }: { children: ReactNode }) =
           params: [{ chainId: hexChainId }],
         });
       } catch (error) {
-        if ((error as ProviderError)?.code === 4902) {
+        if ((error as any)?.code === 4902) { // 4902 - chain not added
           ctx?.request({
             method: 'wallet_addEthereumChain',
             params: [
@@ -128,7 +125,7 @@ export const EthereumContextProvider = ({ children }: { children: ReactNode }) =
     }
   }, []);
 
-  const getWeb3 = () => web3;
+  const getZKsync = () => zkSyncPlugin;
 
   return (
     <EthereumContext.Provider
@@ -138,7 +135,7 @@ export const EthereumContextProvider = ({ children }: { children: ReactNode }) =
         switchNetwork,
         connect,
         disconnect: () => onAccountChange([]),
-        getWeb3,
+        getZKsync,
       }}
     >
       {children}

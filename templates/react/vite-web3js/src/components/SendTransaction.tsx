@@ -1,5 +1,6 @@
 import { useCallback, useState, type FormEvent } from 'react';
-import { DEFAULT_RETURN_FORMAT } from 'web3';
+import { DEFAULT_RETURN_FORMAT } from 'web3-types';
+import { toWei } from 'web3-utils';
 import { useEthereum } from '@/services/ethereum/context.ts';
 import { useAsync } from '@/hooks/use-async.ts';
 
@@ -7,23 +8,23 @@ export function SendTransaction() {
   const [address, setAddress] = useState<string | null>(null);
   const [value, setValue] = useState<string | null>(null);
 
-  const { getWeb3, account } = useEthereum();
+  const { account, getZKsync } = useEthereum();
 
-  const web3 = getWeb3();
+  const zkSync = getZKsync();
 
   const asyncFetch = useCallback(async () => {
-    if (!web3 || !value) throw new Error('Provider or value not found');
+    if (!zkSync || !value) throw new Error('Provider or value not found');
 
-    return web3.ZKsync.L2.eth.sendTransaction(
+    return zkSync.L2.eth.sendTransaction(
       {
         to: address,
-        value: web3.utils.toWei(value, 'ether'),
+        value: toWei(value, 'ether'),
         from: account.address as string,
       },
       DEFAULT_RETURN_FORMAT,
       { ignoreGasPricing: true, checkRevertBeforeSending: false }
     );
-  }, [account, address, value, web3]);
+  }, [account, address, value, zkSync]);
 
   const { result: transaction, execute: sendTransaction, inProgress, error } = useAsync(asyncFetch);
 

@@ -5,16 +5,16 @@ import { IERC20ABI } from 'web3-plugin-zksync/lib/contracts/IERC20';
 import { useAsync } from '@/hooks/use-async.ts';
 
 export function Token() {
-  const { getWeb3 } = useEthereum();
-  const web3 = getWeb3();
+  const { getZKsync } = useEthereum();
+  const zkSync = getZKsync();
 
   const [tokenAddress, setTokenAddress] = useState<string>(daiContractConfig.address);
 
   const asyncFetch = useCallback(
     async (address: string) => {
-      if (!web3) throw new Error('Web3 not found');
+      if (!zkSync) throw new Error('Web3 not found');
 
-      const contract = new web3.ZKsync.L2.eth.Contract(IERC20ABI, address);
+      const contract = new zkSync.L2.eth.Contract(IERC20ABI, address);
       const [symbol, name, decimals, supply] = await Promise.all([
         contract.methods.symbol().call(),
         contract.methods.name().call(),
@@ -29,7 +29,7 @@ export function Token() {
         supply: supply,
       };
     },
-    [web3]
+    [zkSync]
   );
 
   const { result: token, execute: fetchToken, inProgress, error } = useAsync(asyncFetch);

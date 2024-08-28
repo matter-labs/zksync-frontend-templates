@@ -4,15 +4,15 @@ import { useAsync } from '@/hooks/use-async.ts';
 import { daiContractConfig } from '@/services/contracts.ts';
 
 export function WriteContract() {
-  const { getWeb3, account } = useEthereum();
-  const web3 = getWeb3();
+  const { account, getZKsync } = useEthereum();
+  const zkSync = getZKsync();
 
   const [amount, setAmount] = useState('');
 
   const asyncFetch = useCallback(async () => {
-    if (!web3) throw new Error('Provider not found');
+    if (!zkSync) throw new Error('Provider not found');
 
-    const contract = new web3.ZKsync.L2.eth.Contract(daiContractConfig.abi, daiContractConfig.address);
+    const contract = new zkSync.L2.eth.Contract(daiContractConfig.abi, daiContractConfig.address);
 
     // random address for testing, replace with contract address that you want to allow to spend your tokens
     const spender = '0xa1cf087DB965Ab02Fb3CFaCe1f5c63935815f044';
@@ -24,7 +24,7 @@ export function WriteContract() {
       transactionHash: receipt.transactionHash,
       receipt,
     };
-  }, [account.address, amount, web3]);
+  }, [account.address, amount, zkSync]);
 
   const { result: transaction, execute: writeContract, inProgress, error } = useAsync(asyncFetch);
 

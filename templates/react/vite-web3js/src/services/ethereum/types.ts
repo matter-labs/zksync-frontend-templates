@@ -1,5 +1,5 @@
 import type { Chain } from '@/types/web3.ts';
-import { Web3 } from 'web3';
+import { ZKsyncPlugin } from 'web3-plugin-zksync';
 
 export type EthereumContextValue = {
   account: { isConnected: true; address: string } | { isConnected: false; address: null };
@@ -7,7 +7,7 @@ export type EthereumContextValue = {
   switchNetwork: (chainId: string) => Promise<void>;
   connect: () => void;
   disconnect: () => void;
-  getWeb3: () => Web3 | null;
+  getZKsync: () => ZKsyncPlugin | null;
 };
 
 export type Account =

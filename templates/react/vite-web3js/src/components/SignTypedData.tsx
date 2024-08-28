@@ -41,13 +41,13 @@ const message = {
 } as const;
 
 export function SignTypedData() {
-  const { account, getWeb3 } = useEthereum();
-  const web3 = getWeb3();
+  const { account, getZKsync } = useEthereum();
+  const zkSync = getZKsync();
 
   const asyncFetch = useCallback(async () => {
-    if (!web3 || !account.address) throw new Error('Signer not found or message is empty.');
+    if (!zkSync || !account.address) throw new Error('Signer not found or message is empty.');
 
-    const signature = await web3.ZKsync.L2.eth.signTypedData(account.address, {
+    const signature = await zkSync.L2.eth.signTypedData(account.address, {
       domain,
       types,
       message,
@@ -58,7 +58,7 @@ export function SignTypedData() {
       signature,
       recoveredAddress: account.address,
     };
-  }, [web3]);
+  }, [zkSync]);
 
   const { result, execute: signTypedData, inProgress, error } = useAsync(asyncFetch);
 

@@ -4,15 +4,15 @@ import { daiContractConfig } from '@/services/contracts.ts';
 import { useAsync } from '@/hooks/use-async.ts';
 
 export function WriteContractPrepared() {
-  const { getWeb3, account } = useEthereum();
-  const web3 = getWeb3();
+  const { account, getZKsync } = useEthereum();
+  const zkSync = getZKsync();
 
   const [amount, setAmount] = useState<string | null>(null);
 
   const getContractInstance = useCallback(async () => {
-    if (!web3) throw new Error('Provider not found');
-    return web3.ZKsync.erc20(daiContractConfig.address);
-  }, [web3]);
+    if (!zkSync) throw new Error('Provider not found');
+    return zkSync.erc20(daiContractConfig.address);
+  }, [zkSync]);
 
   const asyncPrepareFetch = useCallback(async () => {
     const contract = await getContractInstance();
@@ -20,9 +20,9 @@ export function WriteContractPrepared() {
     // random address for testing, replace with contract address that you want to allow to spend your tokens
     const spender = '0xa1cf087DB965Ab02Fb3CFaCe1f5c63935815f044';
 
-    if (!web3 || !spender) throw new Error('Provider not found');
+    if (!zkSync || !spender) throw new Error('Provider not found');
 
-    const gasPrice = await web3.ZKsync.L2.eth.getGasPrice();
+    const gasPrice = await zkSync.L2.eth.getGasPrice();
 
     const gasLimit = await contract.methods
       .approve(spender, amount)
@@ -35,7 +35,7 @@ export function WriteContractPrepared() {
         gasLimit,
       },
     };
-  }, [account.address, amount, getContractInstance, web3]);
+  }, [account.address, amount, getContractInstance, zkSync]);
 
   const {
     result: preparedTransaction,

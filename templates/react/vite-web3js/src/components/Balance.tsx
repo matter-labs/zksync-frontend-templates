@@ -18,12 +18,12 @@ export function Balance() {
 }
 
 function AccountBalance() {
-  const { getWeb3, account } = useEthereum();
+  const { account, getZKsync } = useEthereum();
   const {
     result: balance,
     execute: fetchBalance,
     error,
-  } = useAsync((address) => getWeb3()!.ZKsync.L2.eth.getBalance(address));
+  } = useAsync((address) => getZKsync()!.L2.eth.getBalance(address));
 
   useEffect(() => {
     if (account?.address) {
@@ -44,13 +44,13 @@ function AccountBalance() {
 
 function FindBalance() {
   const [address, setAddress] = useState('');
-  const { getWeb3 } = useEthereum();
+  const { getZKsync } = useEthereum();
 
   const fetchBalanceFunc = async (address: string) => {
-    const web3 = getWeb3();
-    if (!web3) throw new Error('Provider not found!');
+    const zkSync = getZKsync();
+    if (!zkSync) throw new Error('Provider not found!');
 
-    return web3.ZKsync.L2.eth.getBalance(address);
+    return zkSync.L2.eth.getBalance(address);
   };
 
   const { result: balance, execute: fetchBalance, inProgress, error } = useAsync(fetchBalanceFunc);

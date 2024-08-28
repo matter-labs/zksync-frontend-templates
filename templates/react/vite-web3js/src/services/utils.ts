@@ -1,5 +1,5 @@
-import { Web3 } from 'web3';
+import { fromWei } from 'web3-utils';
 
 export function formatBalance(balance: bigint) {
-  return Web3.utils.fromWei(balance, 'ether');
+  return fromWei(balance, 'ether');
 }
