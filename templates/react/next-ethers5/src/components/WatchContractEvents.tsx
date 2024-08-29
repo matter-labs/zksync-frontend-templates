@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react';
 import { Contract } from 'zksync-ethers';
 import type { BigNumber } from 'ethers';
-
 import { daiContractConfig } from './contracts'
 import { useEthereum } from './Context';
 
@@ -31,7 +30,7 @@ export function WatchContractEvents() {
     return () => {
       contract.off('Transfer', handleTransfer);
     };
-  }, []);
+  }, [getProvider]);
 
   const logs = events
     .slice()

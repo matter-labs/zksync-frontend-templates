@@ -1,5 +1,3 @@
-'use client'
-
 import { BaseError } from 'viem'
 import { useWriteContract, useWaitForTransactionReceipt } from 'wagmi'
 

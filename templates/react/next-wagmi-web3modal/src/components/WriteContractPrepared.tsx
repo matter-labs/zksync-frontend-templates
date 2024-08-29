@@ -1,67 +1,75 @@
 'use client'
 
-import { useState } from 'react'
-import { BaseError } from 'viem'
-import {
-  useContractWrite,
-  usePrepareContractWrite,
-  useWaitForTransaction,
-} from 'wagmi'
-
-import { daiContractConfig } from './contracts'
-import { useDebounce } from '../hooks/useDebounce'
-import { stringify } from '../utils/stringify'
+import { useState, useEffect } from 'react';
+import { BaseError } from 'viem';
+import { useWriteContract, useWaitForTransactionReceipt, useSimulateContract } from 'wagmi';
+import { stringify } from '../utils/stringify';
+import { daiContractConfig } from './contracts';
+import { useDebounce } from '../hooks/useDebounce';
 
 export function WriteContractPrepared() {
-  const [amount, setAmount] = useState('')
-  const debouncedAmount = useDebounce(amount)
+  const [amount, setAmount] = useState<string>('');
+  const debouncedAmount = useDebounce(amount);
+  const [isSimulated, setIsSimulated] = useState(false);
 
-  // random address for testing, replace with contract address that you want to allow to spend your tokens
-  const spender = "0xa1cf087DB965Ab02Fb3CFaCe1f5c63935815f044"
+  // Random address for testing, replace with the contract address that you want to allow to spend your tokens
+  const spender = "0xa1cf087DB965Ab02Fb3CFaCe1f5c63935815f044";
 
-  const { config } = usePrepareContractWrite({
-    ...daiContractConfig,
+  const { writeContract, data: hash, error: writeError, isPending } = useWriteContract();
+
+  const { isLoading: isConfirming, isSuccess, data: receipt } = useWaitForTransactionReceipt({
+    hash,
+  });
+
+  const { data: simulateData, error: simulateError } = useSimulateContract({
+    abi: daiContractConfig.abi,
+    address: daiContractConfig.address,
     functionName: 'approve',
-    enabled: Boolean(debouncedAmount),
-    args: [spender, BigInt(debouncedAmount)],
-  })
-  const { write, data, error, isLoading, isError } = useContractWrite(config)
-  const {
-    data: receipt,
-    isLoading: isPending,
-    isSuccess,
-  } = useWaitForTransaction({ hash: data?.hash })
+    args: [spender, BigInt(debouncedAmount || '0')],
+  });
+
+  useEffect(() => {
+    if (debouncedAmount && simulateData && !simulateError && !isSimulated) {
+      setIsSimulated(true);
+      writeContract({
+        address: daiContractConfig.address,
+        abi: daiContractConfig.abi,
+        functionName: 'approve',
+        args: [spender, BigInt(debouncedAmount)],
+      });
+    }
+  }, [debouncedAmount, simulateData, simulateError, isSimulated, writeContract]);
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsSimulated(false);
+  };
+
+  const isDisabled = isPending || !amount || isConfirming;
 
   return (
     <>
-      <h3>Approve allowance</h3>
-      <form
-        onSubmit={(e) => {
-          e.preventDefault()
-          write?.()
-        }}
-      >
+      <h3>Approve Allowance</h3>
+      <form onSubmit={handleSubmit}>
         <input
-          placeholder="allowance amount"
+          placeholder="Allowance Amount"
           type="number"
           onChange={(e) => setAmount(e.target.value)}
+          value={amount}
         />
-        <button disabled={!write} type="submit">
-          Approve
+        <button disabled={isDisabled} type="submit">
+          {isPending || isConfirming ? 'Processing...' : 'Approve'}
         </button>
       </form>
-
-      {isLoading && <div>Check wallet...</div>}
-      {isPending && <div>Transaction pending...</div>}
-      {isSuccess && (
+      {simulateError && <div>Simulation Error: {(simulateError as BaseError)?.message}</div>}
+      {writeError && <div>Write Error: {(writeError as BaseError)?.message}</div>}
+      {(isPending || isConfirming) && <div>Transaction in progress...</div>}
+      {isSuccess && receipt && (
         <>
-          <div>Transaction Hash: {data?.hash}</div>
-          <div>
-            Transaction Receipt: <pre>{stringify(receipt, null, 2)}</pre>
-          </div>
+          <div>Transaction Hash: {hash}</div>
+          <div>Transaction Receipt: <pre>{stringify(receipt, null, 2)}</pre></div>
         </>
       )}
-      {isError && <div>{(error as BaseError)?.shortMessage}</div>}
     </>
-  )
+  );
 }

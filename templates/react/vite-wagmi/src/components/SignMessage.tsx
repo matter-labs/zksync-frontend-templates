@@ -1,5 +1,3 @@
-'use client'
-
 import { useEffect, useState } from 'react'
 import { recoverMessageAddress, Address } from 'viem'
 import { useSignMessage } from 'wagmi'

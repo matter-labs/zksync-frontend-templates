@@ -1,7 +1,4 @@
-'use client'
-
 import { useState, useEffect } from 'react';
-
 import { useEthereum } from './Context';
 
 export function BlockNumber() {

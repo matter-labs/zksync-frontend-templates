@@ -1,6 +1,7 @@
-import { createWeb3Modal, defaultWagmiConfig } from "@web3modal/wagmi/react";
+import { createWeb3Modal } from "@web3modal/wagmi/react";
+import { defaultWagmiConfig } from '@web3modal/wagmi/react/config'
 
-import { type Chain, zkSync, zkSyncSepoliaTestnet } from "wagmi/chains";
+import { type Chain, zksync, zksyncSepoliaTestnet } from 'wagmi/chains'
 
 const walletConnectProjectId = process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID!;
 
@@ -11,53 +12,49 @@ const metadata = {
   icons: ["https://avatars.githubusercontent.com/u/37784886"],
 };
 
-export const chains: Chain[] = [
-  zkSync,
-  zkSyncSepoliaTestnet,
-  ...(
-      process.env.NODE_ENV === "development" ?
-      [
-        {
-          id: 270,
-          name: "Dockerized local node",
-          network: "zksync-dockerized-node",
-          nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
-          rpcUrls: {
-            default: {
-              http: ['http://localhost:3050'],
-            },
-            public: {
-              http: ['http://localhost:3050'],
-            },
-          },
-          blockExplorers: {
-            default: {
-              name: 'Local Explorer',
-              url: 'http://localhost:3010',
-            },
-          },
-          testnet: true
-        },
-        {
-          id: 260,
-          name: "In-memory local node",
-          network: "zksync-in-memory-node",
-          nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
-          rpcUrls: {
-            default: {
-              http: ['http://127.0.0.1:8011'],
-            },
-            public: {
-              http: ['http://127.0.0.1:8011'],
-            },
-          },
-          testnet: true
-        },
-      ]
-      : []
-    ),
+export const dockerizedLocalNode: Chain = {
+  id: 270,
+  name: "Dockerized local node",
+  nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
+  rpcUrls: {
+    default: {
+      http: ['http://localhost:3050'],
+    },
+    public: {
+      http: ['http://localhost:3050'],
+    },
+  },
+  blockExplorers: {
+    default: {
+      name: 'Local Explorer',
+      url: 'http://localhost:3010',
+    },
+  },
+  testnet: true
+} as const satisfies Chain;
+
+export const inMemoryLocalNode: Chain = {
+  id: 260,
+  name: "In-memory local node",
+  nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
+  rpcUrls: {
+    default: {
+      http: ['http://127.0.0.1:8011'],
+    },
+    public: {
+      http: ['http://127.0.0.1:8011'],
+    },
+  },
+  testnet: true
+} as const satisfies Chain;
+
+const chains: [Chain, ...Chain[]] = [
+  zksync,
+  zksyncSepoliaTestnet,
+  ...(process.env.NODE_ENV === "development" ? [dockerizedLocalNode, inMemoryLocalNode] : []),
 ];
-export const defaultChain = process.env.NODE_ENV === "development" ? zkSyncSepoliaTestnet : zkSync;
+
+export const defaultChain = process.env.NODE_ENV === "development" ? zksyncSepoliaTestnet : zksync;
 
 export const config = defaultWagmiConfig(
   {
@@ -67,11 +64,10 @@ export const config = defaultWagmiConfig(
   }
 );
 
-const modal = createWeb3Modal( // Initiate modal instance
+createWeb3Modal( // Initiate modal instance
   {
     wagmiConfig: config,
     projectId: walletConnectProjectId,
-    chains,
     defaultChain, 
     themeMode: "light"
   }

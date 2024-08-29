@@ -1,4 +1,4 @@
-import React, { useState, useEffect, createContext, useContext } from 'react';
+import  { useState, useEffect, createContext, useContext } from 'react';
 import { Signer, Web3Provider } from 'zksync-ethers';
 
 type Chain = {
@@ -17,19 +17,12 @@ const zkSync: Chain = {
 const zkSyncSepoliaTestnet: Chain = {
   id: 300,
   name: "zkSync Sepolia Testnet",
-  rpcUrl: "https://rpc.ankr.com/eth_sepolia",
+  rpcUrl: "https://sepolia.era.zksync.dev",
   blockExplorerUrl: "https://sepolia.etherscan.io"
-}
-const zkSyncGoerliTestnet: Chain = {
-  id: 280,
-  name: "zkSync Goerli Testnet",
-  rpcUrl: "https://testnet.era.zksync.dev",
-  blockExplorerUrl: "https://goerli.explorer.zksync.io"
 }
 export const chains: Chain[] = [
   zkSync,
   zkSyncSepoliaTestnet,
-  zkSyncGoerliTestnet,
   ...(
     import.meta.env.MODE === "development" ?
     [

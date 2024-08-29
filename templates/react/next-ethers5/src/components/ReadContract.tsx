@@ -1,11 +1,10 @@
-'use client'
+'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Contract } from 'zksync-ethers';
-
 import { useAsync } from '../hooks/useAsync';
 import { useEthereum } from './Context';
-import { daiContractConfig } from './contracts'
+import { daiContractConfig } from './contracts';
 
 export function ReadContract() {
   return (
@@ -16,33 +15,31 @@ export function ReadContract() {
         <TotalSupply />
       </div>
     </div>
-  )
+  );
 }
 
 function TotalSupply() {
   const { getProvider } = useEthereum();
-  const {
-    result: supply,
-    execute: fetchTotalSupply,
-    inProgress,
-    error,
-  } = useAsync(async () => {
+
+  const fetchTotalSupply = useCallback(async () => {
     const provider = getProvider();
     if (!provider) throw new Error("Provider is not available");
 
     const contract = new Contract(daiContractConfig.address, daiContractConfig.abi, provider);
     return await contract.totalSupply();
-  });
+  }, [getProvider]);
+
+  const { result: supply, execute, inProgress, error } = useAsync(fetchTotalSupply);
 
   useEffect(() => {
-    fetchTotalSupply();
-  }, []);
+    execute();
+  }, [execute]);
 
   return (
     <div>
       <div>
         Total Supply: {supply?.toString()}
-        <button onClick={fetchTotalSupply}>
+        <button onClick={execute}>
           {inProgress ? 'fetching...' : 'refetch'}
         </button>
       </div>
@@ -52,24 +49,19 @@ function TotalSupply() {
 }
 
 function BalanceOf() {
-  const { getProvider } = useEthereum();
-  const { account } = useEthereum();
-
+  const { getProvider, account } = useEthereum();
   const [address, setAddress] = useState(account.address);
 
-  const {
-    result: balance,
-    execute: fetchBalance,
-    inProgress,
-    error
-  } = useAsync(async () => {
+  const fetchBalance = useCallback(async () => {
     const contract = new Contract(daiContractConfig.address, daiContractConfig.abi, getProvider()!);
     return contract.balanceOf(address);
-  });
+  }, [getProvider, address]);
+
+  const { result: balance, execute, inProgress, error } = useAsync(fetchBalance);
 
   useEffect(() => {
-    fetchBalance();
-  }, []);
+    execute();
+  }, [execute]);
 
   return (
     <div>
@@ -78,12 +70,12 @@ function BalanceOf() {
       </div>
       <div>
         <input
-          value={address!}
+          value={address ?? ''}
           onChange={(e) => setAddress(e.target.value)}
           type="text"
           placeholder="wallet address"
         />
-        <button onClick={fetchBalance}>
+        <button onClick={execute}>
           {inProgress ? 'fetching...' : 'refetch'}
         </button>
       </div>

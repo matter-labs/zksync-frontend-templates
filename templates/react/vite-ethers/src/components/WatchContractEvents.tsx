@@ -1,8 +1,5 @@
-'use client'
-
 import { useState, useEffect } from 'react';
 import { Contract } from 'zksync-ethers';
-
 import { daiContractConfig } from './contracts'
 import { useEthereum } from './Context';
 

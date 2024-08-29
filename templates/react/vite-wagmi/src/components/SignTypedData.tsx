@@ -1,5 +1,3 @@
-'use client'
-
 import { useState } from 'react'
 import { recoverTypedDataAddress, Address } from 'viem'
 import { useAccount, useSignTypedData } from 'wagmi'

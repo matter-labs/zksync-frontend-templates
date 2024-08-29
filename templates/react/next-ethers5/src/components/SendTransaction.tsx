@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import { parseEther } from 'ethers/lib/utils';
-
 import { useAsync } from '../hooks/useAsync';
 import { useEthereum } from './Context';
 

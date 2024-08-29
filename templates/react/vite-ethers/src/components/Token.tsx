@@ -1,8 +1,5 @@
-'use client'
-
 import { useState } from 'react';
 import { Contract } from 'zksync-ethers';
-
 import { useAsync } from '../hooks/useAsync';
 import { erc20ABI, daiContractConfig } from './contracts'
 import { useEthereum } from './Context';
@@ -22,8 +19,8 @@ export function Token() {
     return {
       symbol,
       name,
-      decimals,
-      supply,
+      decimals: decimals.toString(), 
+      supply: supply.toString(),
     };
   };
 

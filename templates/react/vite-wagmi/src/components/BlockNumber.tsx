@@ -1,5 +1,3 @@
-'use client'
-
 import { useBlockNumber } from 'wagmi'
 
 export function BlockNumber() {

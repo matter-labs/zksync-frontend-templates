@@ -2,7 +2,6 @@
 
 import { useState, FormEvent } from 'react';
 import { verifyMessage } from 'ethers/lib/utils';
-
 import { useAsync } from '../hooks/useAsync';
 import { useEthereum } from './Context';
 

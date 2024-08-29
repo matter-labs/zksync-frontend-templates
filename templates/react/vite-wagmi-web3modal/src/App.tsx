@@ -1,5 +1,4 @@
 import { useAccount } from 'wagmi'
-
 import { Account } from './components/Account'
 import { Balance } from './components/Balance'
 import { BlockNumber } from './components/BlockNumber'
@@ -7,7 +6,6 @@ import { NetworkSwitcher } from './components/NetworkSwitcher'
 import { ReadContract } from './components/ReadContract'
 import { ReadContracts } from './components/ReadContracts'
 import { SendTransaction } from './components/SendTransaction'
-import { SendTransactionPrepared } from './components/SendTransactionPrepared'
 import { SignMessage } from './components/SignMessage'
 import { SignTypedData } from './components/SignTypedData'
 import { Token } from './components/Token'
@@ -15,6 +13,7 @@ import { WatchContractEvents } from './components/WatchContractEvents'
 import { WatchPendingTransactions } from './components/WatchPendingTransactions'
 import { WriteContract } from './components/WriteContract'
 import { WriteContractPrepared } from './components/WriteContractPrepared'
+import { EstimateGas } from './components/EstimateGas'
 
 export function App() {
   const { isConnected } = useAccount()
@@ -61,8 +60,8 @@ export function App() {
           <SendTransaction />
           <br />
           <hr />
-          <h2>Send Transaction (Prepared)</h2>
-          <SendTransactionPrepared />
+          <h2>Estimate Gas and Send</h2>
+          <EstimateGas />
           <br />
           <hr />
           <h2>Sign Message</h2>

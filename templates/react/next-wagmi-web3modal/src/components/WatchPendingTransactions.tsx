@@ -7,7 +7,7 @@ import { useWatchPendingTransactions } from 'wagmi'
 export function WatchPendingTransactions() {
   const [hashes, setHashes] = useState<Hex[]>([])
   useWatchPendingTransactions({
-    listener: (hashes) => setHashes((x) => [...x, ...hashes]),
+    onTransactions: (hashes) => setHashes((x) => [...x, ...hashes]),
   })
 
   return (

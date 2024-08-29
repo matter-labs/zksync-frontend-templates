@@ -1,3 +1,5 @@
+'use client'
+
 import { FormEvent, useState } from 'react';
 import { Address, parseEther } from 'viem';
 import { useSendTransaction, useWaitForTransactionReceipt } from 'wagmi';
