@@ -1,7 +1,5 @@
-'use client';
-
 import { JsonRpcSigner } from 'ethers';
-import React, { useState, useEffect, createContext, useContext } from 'react';
+import  { useState, useEffect, createContext, useContext } from 'react';
 import { BrowserProvider } from 'zksync-ethers';
 
 type Chain = {

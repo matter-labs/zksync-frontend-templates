@@ -1,5 +1,3 @@
-'use client'
-
 import { useAsync } from '../hooks/useAsync';
 import { chains, useEthereum } from './Context';
 

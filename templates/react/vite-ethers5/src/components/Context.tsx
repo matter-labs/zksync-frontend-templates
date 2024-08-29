@@ -1,4 +1,4 @@
-import React, { useState, useEffect, createContext, useContext } from 'react';
+import  { useState, useEffect, createContext, useContext } from 'react';
 import { Signer, Web3Provider } from 'zksync-ethers';
 
 type Chain = {

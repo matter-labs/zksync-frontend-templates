@@ -15,6 +15,7 @@ import { WatchContractEvents } from './components/WatchContractEvents'
 import { WatchPendingTransactions } from './components/WatchPendingTransactions'
 import { WriteContract } from './components/WriteContract'
 import { WriteContractPrepared } from './components/WriteContractPrepared'
+import { Token } from './components/Token'
 
 export function App() {
   const { isConnected } = useAccount()
@@ -71,6 +72,10 @@ export function App() {
           <hr />
           <h2>Sign Typed Data</h2>
           <SignTypedData />
+          <br />
+          <hr />
+          <h2>Token</h2>
+          <Token />
           <br />
           <hr />
           <h2>Watch Contract Events</h2>

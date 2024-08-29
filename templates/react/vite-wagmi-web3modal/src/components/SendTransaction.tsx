@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { parseEther } from 'viem'
+import { Address, parseEther } from 'viem'
 import { useSendTransaction, useWaitForTransactionReceipt } from 'wagmi'
 
 import { stringify } from '../utils/stringify'
@@ -14,7 +14,7 @@ export function SendTransaction() {
     isError: isReceiptError,
     error: receiptError,
     isSuccess,
-  } = useWaitForTransactionReceipt({ hash: transactionHash as `0x${string}` | undefined })
+  } = useWaitForTransactionReceipt({ hash: transactionHash as Address | undefined })
 
   async function handleSendTransaction(e: any) {
     e.preventDefault()
@@ -25,7 +25,7 @@ export function SendTransaction() {
     setIsPreparingTransaction(true);
     try {
       const transactionResponse = await sendTransactionAsync({
-        to: address as `0x${string}`,
+        to: address as Address,
         value: parseEther(value),
       })
 

@@ -1,7 +1,4 @@
-'use client'
-
 import { verifyTypedData } from 'ethers/lib/utils';
-
 import { useAsync } from '../hooks/useAsync';
 import { defaultChain, useEthereum } from './Context';
 

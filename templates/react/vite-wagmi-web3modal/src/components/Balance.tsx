@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import { useAccount, useBalance, type UseBalanceParameters } from 'wagmi'
-import { formatUnits } from 'viem' 
+import { useAccount, useBalance } from 'wagmi'
+import { Address, formatUnits } from 'viem' 
 
 export function Balance() {
   return (
@@ -37,7 +37,7 @@ export function AccountBalance() {
 export function FindBalance() {
   const [address, setAddress] = useState('')
   const { data, isLoading, refetch } = useBalance({
-    address: address as UseBalanceParameters['address'],
+    address: address as Address,
   })
 
   const [value, setValue] = useState('')

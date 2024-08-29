@@ -1,5 +1,3 @@
-'use client'
-
 import { erc20Abi } from 'viem'
 
 export const daiContractConfig = {

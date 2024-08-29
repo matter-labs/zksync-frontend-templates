@@ -1,7 +1,5 @@
-'use client'
-
 import { FormEvent, useState } from 'react';
-import { parseEther } from 'viem';
+import { Address, parseEther } from 'viem';
 import { useSendTransaction, useWaitForTransactionReceipt } from 'wagmi';
 import { estimateGas } from '@wagmi/core'
 import { config } from '../wagmi'; 
@@ -18,13 +16,13 @@ export function EstimateGas() {
     if (to && value) {
       try {
         const gasEstimate = await estimateGas(config, {
-          to: to as `0x${string}`,
+          to: to as Address,
           value: parseEther(value),
         });
         setEstimatedGas(gasEstimate);
 
         const hash = await sendTransactionAsync({
-          to: to as `0x${string}`,
+          to: to as Address,
           value: parseEther(value),
           gas: gasEstimate,
         });
@@ -39,7 +37,7 @@ export function EstimateGas() {
 
   const [transactionHash, setTransactionHash] = useState<string | undefined>(undefined);
   const { isFetching: isConfirming, isSuccess: isConfirmed, error: receiptError } = useWaitForTransactionReceipt({
-    hash: transactionHash as `0x${string}` | undefined,
+    hash: transactionHash as Address | undefined,
   });
 
   return (

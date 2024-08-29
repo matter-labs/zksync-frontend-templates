@@ -1,7 +1,6 @@
 import { useState } from 'react'
-import type { Abi, Log } from 'viem'
+import type { Abi, Address, Log } from 'viem'
 import { useWatchContractEvent } from 'wagmi'
-
 import { daiContractConfig } from './contracts'
 import { stringify } from '../utils/stringify'
 
@@ -12,7 +11,7 @@ export function WatchContractEvents() {
     eventName: 'Transfer',
     listener: (logs) => setTransferLog((x) => [...x, ...logs]),
   } as {
-    address?: `0x${string}` | `0x${string}`[] | undefined;
+    address?: Address | Address[] | undefined;
     abi?: readonly unknown[] | Abi | undefined;
     args?: {} | undefined;
     eventName?: string | undefined;

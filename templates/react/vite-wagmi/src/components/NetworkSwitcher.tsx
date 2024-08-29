@@ -1,5 +1,3 @@
-'use client'
-
 import { useAccount, useSwitchChain } from 'wagmi'
 
 export function NetworkSwitcher() {

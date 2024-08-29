@@ -1,6 +1,5 @@
 import { BaseError } from 'viem'
 import { useWriteContract, useWaitForTransactionReceipt } from 'wagmi'
-
 import { daiContractConfig } from './contracts'
 import { stringify } from '../utils/stringify'
 

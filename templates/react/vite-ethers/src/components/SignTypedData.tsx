@@ -1,7 +1,4 @@
-'use client'
-
 import { ethers, type TypedDataField } from 'ethers';
-
 import { useAsync } from '../hooks/useAsync';
 import { defaultChain, useEthereum } from './Context';
 
