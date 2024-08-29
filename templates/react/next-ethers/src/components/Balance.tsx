@@ -1,6 +1,6 @@
-'use client'
+'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { ethers } from 'ethers';
 
 import { useAsync } from '../hooks/useAsync';
@@ -17,25 +17,30 @@ export function Balance() {
         <FindBalance />
       </div>
     </>
-  )
+  );
 }
 
 export function AccountBalance() {
   const { getProvider, account } = useEthereum();
-  const { result: balance, execute: fetchBalance, error } = useAsync(address => getProvider()!.getBalance(address));
+
+  const fetchBalance = useCallback((address: string) => {
+    return getProvider()!.getBalance(address);
+  }, [getProvider]);
+
+  const { result: balance, execute, error } = useAsync(fetchBalance);
 
   useEffect(() => {
     if (account?.address) {
-      fetchBalance(account.address);
+      execute(account.address);
     }
-  }, [account]);
+  }, [account, execute]);
 
   return (
     <div>
       <div>
         Connected wallet balance:
-        {balance ? ethers.formatEther(balance) : ""}
-        <button onClick={() => fetchBalance(account?.address)}>refetch</button>
+        {balance ? ethers.formatEther(balance) : "0"}
+        <button onClick={() => account?.address && execute(account?.address)}>refetch</button>
       </div>
       {error && <div>Error: {error.message}</div>}
     </div>
@@ -46,13 +51,13 @@ export function FindBalance() {
   const [address, setAddress] = useState('');
   const { getProvider } = useEthereum();
   
-  const fetchBalanceFunc = async (address: string) => {
+  const fetchBalanceFunc = useCallback(async (address: string) => {
     const provider = getProvider();
     if (!provider) throw new Error("Provider not found");
     return provider.getBalance(address);
-  };
+  }, [getProvider]);
 
-  const { result: balance, execute: fetchBalance, inProgress, error } = useAsync(fetchBalanceFunc);
+  const { result: balance, execute, inProgress, error } = useAsync(fetchBalanceFunc);
 
   return (
     <div>
@@ -64,11 +69,11 @@ export function FindBalance() {
           type="text" 
           placeholder="wallet address"
         />
-        <button onClick={() => fetchBalance(address)}>
+        <button onClick={() => execute(address)} disabled={!address}>
           {inProgress ? 'fetching...' : 'fetch'}
         </button>
       </div>
-      <div>{balance ? ethers.formatEther(balance) : ""}</div>
+      <div>{balance ? ethers.formatEther(balance) : "0"}</div>
       {error && <div>Error: {error.message}</div>}
     </div>
   );

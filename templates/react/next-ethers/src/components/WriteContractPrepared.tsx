@@ -1,8 +1,7 @@
 'use client'
 
-import { useState, useEffect } from 'react';
+import { useState, useCallback } from 'react';
 import { Contract } from 'zksync-ethers';
-
 import { useAsync } from '../hooks/useAsync';
 import { daiContractConfig } from './contracts';
 import { useEthereum } from './Context';
@@ -11,11 +10,13 @@ export function WriteContractPrepared() {
   const [amount, setAmount] = useState<string | null>(null);
   const { getSigner, getProvider } = useEthereum();
 
-  const getContractInstance = async () => {
+  const getContractInstance = useCallback(async () => {
     return new Contract(daiContractConfig.address, daiContractConfig.abi, await getSigner()!);
-  }
+  }, [getSigner]);
 
-  const { result: preparedTransaction, execute: prepareTransaction, inProgress: prepareInProgress, error: prepareError } = useAsync(async () => {
+  const prepareAndSendTransaction = useCallback(async () => {
+    if (!amount) return null;
+
     const contract = await getContractInstance();
     
     // random address for testing, replace with contract address that you want to allow to spend your tokens
@@ -24,41 +25,42 @@ export function WriteContractPrepared() {
     const gasPrice = await getProvider()!.getGasPrice();
     const gasLimit = await contract.getFunction("approve").estimateGas(spender, amount);
 
-    return {
+    const preparedTransaction = {
       args: [spender, amount],
       overrides: {
         gasPrice,
         gasLimit
       }
     };
-  });
 
-  const { result: transaction, execute: sendTransaction, inProgress, error } = useAsync(async () => {
-    const contract = await getContractInstance();
-    const result = await contract.approve(...preparedTransaction!.args, preparedTransaction!.overrides);
-    waitForReceipt(result.hash);
+    const result = await contract.approve(...preparedTransaction.args, preparedTransaction.overrides);
     return result;
-  });
+  }, [amount, getContractInstance, getProvider]);
 
-  const { result: receipt, execute: waitForReceipt, inProgress: receiptInProgress, error: receiptError } = useAsync(async (transactionHash) => {
+  const { result: transaction, execute: executePrepareAndSendTransaction, inProgress, error } = useAsync(prepareAndSendTransaction);
+
+  const { result: receipt, execute: waitForReceipt, inProgress: receiptInProgress, error: receiptError } = useAsync(async (transactionHash: string) => {
     return await getProvider()!.waitForTransaction(transactionHash);
   });
 
-  useEffect(() => {
-    if (!amount) return;
-    prepareTransaction();
-  }, [amount]);
-
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
-    sendTransaction();
-  };
+    const result = await executePrepareAndSendTransaction();
+    if (result) {
+      waitForReceipt(result.hash);
+    }
+  }, [executePrepareAndSendTransaction, waitForReceipt]);
 
   return (
     <div>
       <form onSubmit={handleSubmit}>
-        <input value={amount ?? ""} onChange={e => setAmount(e.target.value)} type="number" placeholder="allowance amount" />
-        <button disabled={prepareInProgress || !preparedTransaction} type="submit">Approve</button>
+        <input 
+          value={amount ?? ""} 
+          onChange={e => setAmount(e.target.value)} 
+          type="number" 
+          placeholder="allowance amount" 
+        />
+        <button disabled={inProgress || !amount} type="submit">Approve</button>
       </form>
 
       {inProgress ? (
@@ -79,7 +81,6 @@ export function WriteContractPrepared() {
         )
       )}
 
-      {prepareError && <div>Preparing Transaction Error: {prepareError.message}</div>}
       {error && <div>Error: {error.message}</div>}
       {receiptError && <div>Receipt Error: {receiptError.message}</div>}
     </div>

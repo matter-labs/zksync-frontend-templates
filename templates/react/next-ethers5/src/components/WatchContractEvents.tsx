@@ -31,7 +31,7 @@ export function WatchContractEvents() {
     return () => {
       contract.off('Transfer', handleTransfer);
     };
-  }, []);
+  }, [getProvider]);
 
   const logs = events
     .slice()

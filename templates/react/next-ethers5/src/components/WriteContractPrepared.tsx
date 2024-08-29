@@ -1,8 +1,7 @@
-'use client'
+'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { Contract } from 'zksync-ethers';
-
 import { useAsync } from '../hooks/useAsync';
 import { daiContractConfig } from './contracts';
 import { useEthereum } from './Context';
@@ -11,17 +10,22 @@ export function WriteContractPrepared() {
   const [amount, setAmount] = useState<string | null>(null);
   const { getSigner, getProvider } = useEthereum();
 
-  const getContractInstance = () => {
-    return new Contract(daiContractConfig.address, daiContractConfig.abi, getSigner()!);
-  }
+  const getContractInstance = useCallback(() => {
+    const signer = getSigner();
+    if (!signer) throw new Error("Signer not available");
+    return new Contract(daiContractConfig.address, daiContractConfig.abi, signer);
+  }, [getSigner]);
 
-  const { result: preparedTransaction, execute: prepareTransaction, inProgress: prepareInProgress, error: prepareError } = useAsync(async () => {
+  const prepareTransaction = useCallback(async () => {
     const contract = getContractInstance();
     
     // random address for testing, replace with contract address that you want to allow to spend your tokens
-    const spender = "0xa1cf087DB965Ab02Fb3CFaCe1f5c63935815f044"
+    const spender = "0xa1cf087DB965Ab02Fb3CFaCe1f5c63935815f044";
 
-    const gasPrice = await getProvider()!.getGasPrice();
+    const provider = getProvider();
+    if (!provider) throw new Error("Provider not available");
+
+    const gasPrice = await provider.getGasPrice();
     const gasLimit = await contract.estimateGas.approve(spender, amount);
 
     return {
@@ -31,28 +35,40 @@ export function WriteContractPrepared() {
         gasLimit
       }
     };
+  }, [amount, getContractInstance, getProvider]);
+
+  const { result: preparedTransaction, execute: executePrepareTransaction, inProgress: prepareInProgress, error: prepareError } = useAsync(prepareTransaction);
+
+  const { result: receipt, execute: waitForReceipt, inProgress: receiptInProgress, error: receiptError } = useAsync(async (transactionHash: string) => {
+    const provider = getProvider();
+    if (!provider) throw new Error("Provider not available");
+
+    return await provider.waitForTransaction(transactionHash);
   });
 
-  const { result: transaction, execute: sendTransaction, inProgress, error } = useAsync(async () => {
+  const sendTransaction = useCallback(async () => {
+    if (!preparedTransaction) throw new Error("Prepared transaction is not available");
+
     const contract = getContractInstance();
-    const result = await contract.approve(...preparedTransaction!.args, preparedTransaction!.overrides);
+    const result = await contract.approve(...preparedTransaction.args, preparedTransaction.overrides);
     waitForReceipt(result.hash);
     return result;
-  });
+  }, [getContractInstance, preparedTransaction, waitForReceipt]);
 
-  const { result: receipt, execute: waitForReceipt, inProgress: receiptInProgress, error: receiptError } = useAsync(async (transactionHash) => {
-    return await getProvider()!.waitForTransaction(transactionHash);
-  });
+  const { result: transaction, execute: executeSendTransaction, inProgress, error } = useAsync(sendTransaction);
 
   useEffect(() => {
     if (!amount) return;
-    prepareTransaction();
-  }, [amount]);
+    executePrepareTransaction();
+  }, [amount, executePrepareTransaction]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
-    sendTransaction();
-  };
+    const result = await executeSendTransaction();
+    if (result) {
+      waitForReceipt(result.hash);
+    }
+  }, [executeSendTransaction, waitForReceipt]);
 
   return (
     <div>

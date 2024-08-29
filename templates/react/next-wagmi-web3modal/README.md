@@ -2,6 +2,24 @@ This is a [zkSync](https://zksync.io) + [wagmi](https://wagmi.sh) + [Web3Modal](
 
 # Getting Started
 
+## Requirements
+- A wallet extension like MetaMask installed in your browser.
+- A WalletConnect project ID to connect.
+- Node.js and npm installed.
+- To use the `dockerized local node` or `in memory local node` setups, you will need to run the respective services in Docker. For detailed instructions on setting up and running these nodes, refer to the [Documentation](https://docs.zksync.io/build/test-and-debug).
+
+## Setup
+
+1. Copy the `.env.example` file to `.env`:
+
+```bash
+cp .env.example .env
+```
+2. Update the .env file with your WalletConnect project ID.
+
+## Installation
+Install dependencies with `npm install`.
+
 Run `npm run dev` in your terminal, and then open [localhost:3000](http://localhost:3000) in your browser.
 
 Once the webpage has loaded, changes made to files inside the `src/` directory (e.g. `src/pages/index.tsx`) will automatically update the webpage.

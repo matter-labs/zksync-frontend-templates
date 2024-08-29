@@ -27,7 +27,7 @@ export function WatchPendingTransactions() {
         provider.off("block", onBlock);
       }
     };
-  }, []);
+  }, [getProvider]);
 
   return (
     <div>

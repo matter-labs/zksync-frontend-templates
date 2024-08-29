@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, createContext, useContext } from 'react';
+import React, { useState, createContext, useContext } from 'react';
 import { Signer, Web3Provider } from 'zksync-ethers';
 
 type Chain = {
@@ -19,19 +19,12 @@ const zkSync: Chain = {
 const zkSyncSepoliaTestnet: Chain = {
   id: 300,
   name: "zkSync Sepolia Testnet",
-  rpcUrl: "https://rpc.ankr.com/eth_sepolia",
+  rpcUrl: "https://sepolia.era.zksync.dev",
   blockExplorerUrl: "https://sepolia.etherscan.io"
-}
-const zkSyncGoerliTestnet: Chain = {
-  id: 280,
-  name: "zkSync Goerli Testnet",
-  rpcUrl: "https://testnet.era.zksync.dev",
-  blockExplorerUrl: "https://goerli.explorer.zksync.io"
 }
 export const chains: Chain[] = [
   zkSync,
   zkSyncSepoliaTestnet,
-  zkSyncGoerliTestnet,
   ...(
     process.env.NODE_ENV === "development" ?
     [
@@ -69,6 +62,7 @@ const EthereumContext = createContext<EthereumContextValue | null>(null);
 export const EthereumProvider = ({ children }: { children: React.ReactNode }) => {
   const [account, setAccount] = useState<{ isConnected: true; address: string; } | { isConnected: false; address: null; }>({ isConnected: false, address: null });
   const [network, setNetwork] = useState<Chain | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   const getEthereumContext = () => (window as any).ethereum;
 
@@ -89,18 +83,22 @@ export const EthereumProvider = ({ children }: { children: React.ReactNode }) =>
   }
 
   const connect = async () => {
-    if (!getEthereumContext()) throw new Error("No injected wallets found");
+    try {
+      if (!getEthereumContext()) throw new Error("No injected wallets found");
 
-    web3Provider = new Web3Provider((window as any).ethereum, "any");
-    const accounts = await web3Provider?.send("eth_requestAccounts", []);
-    if (accounts.length > 0) {
-      onAccountChange(accounts);
-      getEthereumContext()?.on("accountsChanged", onAccountChange);
-      web3Provider?.on("network", onNetworkChange);
-    } else {
-      throw new Error("No accounts found");
-    }
+      web3Provider = new Web3Provider((window as any).ethereum, "any");
+      const accounts = await web3Provider?.send("eth_requestAccounts", []);
+      if (accounts.length > 0) {
+        onAccountChange(accounts);
+        getEthereumContext()?.on("accountsChanged", onAccountChange);
+        web3Provider?.on("network", onNetworkChange);
+      } else {
+        throw new Error("No accounts found");
+      }
+    } catch (err: any) {
+      setError(err.message);
   }
+}
 
   const disconnect = () => {
     setAccount({
@@ -111,14 +109,6 @@ export const EthereumProvider = ({ children }: { children: React.ReactNode }) =>
     getEthereumContext()?.off("accountsChanged", onAccountChange);
     web3Provider?.off("network", onNetworkChange);
   }
-
-  useEffect(() => {
-    connect();
-
-    return () => { // Clean-up on component unmount
-      disconnect();
-    }
-  }, []);
 
   const switchNetwork = async (chainId: number) => {
     const chain = chains.find((chain: any) => chain.id === chainId);
@@ -164,6 +154,7 @@ export const EthereumProvider = ({ children }: { children: React.ReactNode }) =>
       getSigner
     }}>
       {children}
+      {error && <div>Error: {error}</div>}
     </EthereumContext.Provider>
   );
 }
