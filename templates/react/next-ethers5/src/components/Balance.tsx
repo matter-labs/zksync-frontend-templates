@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { ethers } from 'ethers';
-
 import { useAsync } from '../hooks/useAsync';
 import { useEthereum } from './Context';
 
@@ -23,7 +22,6 @@ export function Balance() {
 export function AccountBalance() {
   const { getProvider, account } = useEthereum();
 
-  // Memoize the fetchBalance function
   const fetchBalance = useCallback((address: string) => {
     return getProvider()!.getBalance(address);
   }, [getProvider]);

@@ -1,9 +1,9 @@
 'use client'
 
 import { verifyTypedData } from 'ethers/lib/utils';
-
 import { useAsync } from '../hooks/useAsync';
 import { defaultChain, useEthereum } from './Context';
+import { TypedDataField } from 'ethers';
 
 const domain = {
   name: 'Ether Mail',
@@ -12,7 +12,7 @@ const domain = {
   verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
 } as const
 
-const types = {
+const types: Record<string, TypedDataField[]> = {
   Person: [
     { name: 'name', type: 'string' },
     { name: 'wallet', type: 'address' },

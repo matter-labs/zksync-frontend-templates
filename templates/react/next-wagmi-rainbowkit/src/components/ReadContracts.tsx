@@ -1,7 +1,6 @@
 'use client'
 
 import { useAccount, useReadContracts } from 'wagmi'
-
 import { daiContractConfig } from './contracts'
 import { stringify } from '../utils/stringify'
 

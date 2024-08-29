@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { Contract } from 'zksync-ethers';
-
 import { useAsync } from '../hooks/useAsync';
 import { useEthereum } from './Context';
 import { daiContractConfig } from './contracts';

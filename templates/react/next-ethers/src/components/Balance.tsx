@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { ethers } from 'ethers';
-
 import { useAsync } from '../hooks/useAsync';
 import { useEthereum } from './Context';
 

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, createContext, useContext } from 'react';
+import  { useState, createContext, useContext } from 'react';
 import { Signer, Web3Provider } from 'zksync-ethers';
 
 type Chain = {

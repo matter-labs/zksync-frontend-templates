@@ -1,7 +1,6 @@
 'use client'
 
 import { useEffect, useState } from 'react';
-
 import { useEthereum } from './Context';
 
 export function WatchPendingTransactions() {
