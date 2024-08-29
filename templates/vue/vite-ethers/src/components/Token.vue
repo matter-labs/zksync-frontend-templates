@@ -9,7 +9,7 @@
     </form>
     <div v-if="inProgress">Fetching token...</div>
     <div v-else-if="token">
-      <pre>{{ stringify(token, null, 4) }}</pre>
+      <pre>{{stringify(token, (key, value) => typeof value === 'bigint' ? value.toString() : value, 4)}}</pre>
     </div>
     <div v-else-if="error">Error: {{ error?.message }}</div>
   </div>

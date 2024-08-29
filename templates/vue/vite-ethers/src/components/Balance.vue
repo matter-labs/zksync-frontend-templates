@@ -16,7 +16,7 @@ import { ethers } from 'ethers';
 import { useAsync } from '@/composables/useAsync';
 import { getProvider, account } from "@/ethers";
 
-const { result: balance, execute: fetchBalance, inProgress, error} = useAsync((address) => getProvider()!.getBalance(address));
+const { result: balance, execute: fetchBalance, error} = useAsync((address) => getProvider()!.getBalance(address));
 const getAccountBalance = () => fetchBalance(account.value.address);
 
 watch(account, ({ address }) => {

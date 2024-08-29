@@ -18,11 +18,12 @@ import { readContract } from '@wagmi/core';
 import { daiContractConfig } from '@/utils/contracts';
 import { useAsync } from '@/composables/useAsync';
 import { account } from '@/wagmi';
+import { wagmiConfig } from '../wagmi';
 
 const address = ref(account.value.address);
 
 const { result: balance, execute: fetchBalance, inProgress, error} = useAsync(async () => {
-  return await readContract({
+  return await readContract(wagmiConfig,{
     ...daiContractConfig,
     functionName: 'balanceOf',
     args: [address.value!],

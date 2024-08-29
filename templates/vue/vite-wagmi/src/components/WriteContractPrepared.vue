@@ -1,58 +1,80 @@
 <template>
   <div>
-    <form @submit.prevent="sendTransaction">
-      <input v-model="amount" type="number" placeholder="allowance amount" />
-      <button :disabled="prepareInProgress || !preparedWriteContract" type="submit">Approve</button>
+    <form @submit.prevent="handleSubmit">
+      <input v-model="amount" type="number" placeholder="Allowance Amount" />
+      <button :disabled="isSimulating || isPending || !amount" type="submit">
+        {{ isSimulating ? 'Simulating...' : isPending ? 'Confirming...' : 'Approve' }}
+      </button>
     </form>
-
-    <div v-if="inProgress">Transaction pending...</div>
-    <div v-else-if="transaction">
-      <div>Transaction Hash: {{ transaction?.hash }}</div>
-      <div>
-        Transaction Receipt:
-        <span v-if="receiptInProgress">pending...</span>
-        <pre>{{ stringify(receipt, null, 2)}}</pre>
+    <div v-if="simulateError">Simulation Error: {{ simulateError.message }}</div>
+    <div v-if="isPending">Check wallet...</div>
+    <div v-if="transactionHash">
+      <div>Transaction Hash: {{ transactionHash }}</div>
+      <div v-if="receipt">
+        Transaction Receipt: <pre>{{ stringify(receipt, null, 2) }}</pre>
       </div>
     </div>
-
-    <div v-if="prepareError">Preparing Transaction Error: {{ prepareError?.message }}</div>
-    <div v-if="error">Error: {{ error?.message }}</div>
-    <div v-if="receiptError">Receipt Error: {{ receiptError?.message }}</div>
+    <div v-if="error">Error: {{ error.message }}</div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { ref, watch } from "vue"
-import { prepareWriteContract as wagmiPrepareWriteContract, writeContract as wagmiWriteContract, waitForTransaction } from '@wagmi/core';
-
+import { ref } from 'vue';
+import { BaseError } from 'viem';
+import { simulateContract, writeContract as wagmiWriteContract, waitForTransactionReceipt } from '@wagmi/core';
 import { stringify } from '@/utils/formatters';
 import { daiContractConfig } from '@/utils/contracts';
-import { useAsync } from '@/composables/useAsync';
-import { account } from '@/wagmi';
+import { wagmiConfig } from '../wagmi';
 
-const amount = ref<string | null>(null);
+const amount = ref<string>('');
+const isSimulating = ref(false);
+const isPending = ref(false);
+const transactionHash = ref<string | null>(null);
+const receipt = ref<any>(null);
+const simulateError = ref<Error | null>(null);
+const error = ref<Error | null>(null);
 
-const { result: preparedWriteContract, execute: prepareTransaction, inProgress: prepareInProgress, error: prepareError} = useAsync(async () => {
-  // random address for testing, replace with contract address that you want to allow to spend your tokens
-  const spender = "0xa1cf087DB965Ab02Fb3CFaCe1f5c63935815f044"
+// random address for testing, replace with contract address that you want to allow to spend your tokens
+const spender: `0x${string}` = '0xa1cf087DB965Ab02Fb3CFaCe1f5c63935815f044';
 
-  return await wagmiPrepareWriteContract({
-    ...daiContractConfig,
-    functionName: 'approve',
-    args: [spender, BigInt(amount.value!)]
-  });
-});
-const { result: transaction, execute: sendTransaction, inProgress, error} = useAsync(async () => {
-  const result =  await wagmiWriteContract(preparedWriteContract.value!)
-  waitForReceipt(result.hash);
-  return result;
-});
-const { result: receipt, execute: waitForReceipt, inProgress: receiptInProgress, error: receiptError} = useAsync(async (transactionHash) => {
-  return await waitForTransaction({ hash: transactionHash });
-});
+const handleSubmit = async () => {
+  if (!amount.value) return;
 
-watch([() => account.value.address, amount], ([_address, _amount]) => {
-  if (!_address || !_amount) return;
-  prepareTransaction();
-}, { immediate: true });
+  try {
+    isSimulating.value = true;
+    const simulation = await simulateContract(wagmiConfig, {
+      abi: daiContractConfig.abi,
+      address: daiContractConfig.address,
+      functionName: 'approve',
+      args: [spender, BigInt(amount.value)],
+    });
+
+    isSimulating.value = false;
+
+    if (simulation.result) {
+      isPending.value = true;
+      const result = await wagmiWriteContract(wagmiConfig, {
+        abi: daiContractConfig.abi,
+        address: daiContractConfig.address,
+        functionName: 'approve',
+        args: [spender, BigInt(amount.value)],
+      });
+
+      transactionHash.value = result;
+
+      const transactionReceipt = await waitForTransactionReceipt(wagmiConfig, { hash: result });
+      receipt.value = transactionReceipt;
+    }
+  } catch (e: any) {
+    if (isSimulating.value) {
+      simulateError.value = e instanceof BaseError ? e : null;
+    } else {
+      error.value = e instanceof BaseError ? e : null;
+    }
+  } finally {
+    isSimulating.value = false;
+    isPending.value = false;
+  }
+};
+
 </script>

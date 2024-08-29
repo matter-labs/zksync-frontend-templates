@@ -20,13 +20,15 @@ import { watchContractEvent } from '@wagmi/core';
 
 import { stringify } from '@/utils/formatters';
 import { daiContractConfig } from '@/utils/contracts';
+import { wagmiConfig } from '../wagmi'; 
 
 const events = ref<Log[]>([]);
 
-watchContractEvent({
-  ...daiContractConfig,
-  eventName: 'Transfer'
-}, (logs) => {
-  events.value.push(...logs);
-});
+watchContractEvent(wagmiConfig,{
+    ...daiContractConfig,
+    eventName: 'Transfer',
+    onLogs(logs) {
+      events.value.push(...logs);
+    },
+  });
 </script>

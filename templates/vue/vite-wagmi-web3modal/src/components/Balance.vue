@@ -2,7 +2,7 @@
   <div>
     <div>
       Connected wallet balance:
-      {{ balance?.formatted }}
+      {{ formattedBalance }}
       <button @click="getAccountBalance">refetch</button>
     </div>
     <div v-if="error">Error: {{ error?.message }}</div>
@@ -10,14 +10,24 @@
 </template>
 
 <script lang="ts" setup>
-import { watch } from "vue"
-import { fetchBalance as wagmiFetchBalance } from '@wagmi/core';
-
+import { ref, watch } from "vue";
+import { getBalance as wagmiFetchBalance } from '@wagmi/core';
+import { wagmiConfig } from '../wagmi'; 
+import { formatUnits } from 'viem'; 
 import { useAsync } from '@/composables/useAsync';
 import { account } from '@/wagmi';
 
-const { result: balance, execute: fetchBalance, inProgress, error} = useAsync(wagmiFetchBalance);
-const getAccountBalance = () => fetchBalance({ address: account.value.address! });
+const { execute: fetchBalance, error } = useAsync(wagmiFetchBalance);
+
+const formattedBalance = ref<string | null>(null);
+
+const getAccountBalance = () => {
+  fetchBalance(wagmiConfig, { address: account.value.address! }).then(result => {
+    if (result) {
+      formattedBalance.value = formatUnits(result.value, result.decimals); 
+    }
+  });
+};
 
 watch(account, ({ address }) => {
   if (!address) return;

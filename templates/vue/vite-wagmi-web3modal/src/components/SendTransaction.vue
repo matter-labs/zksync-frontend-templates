@@ -8,7 +8,7 @@
 
     <div v-if="inProgress">Transaction pending...</div>
     <div v-else-if="transaction">
-      <div>Transaction Hash: {{ transaction?.hash }}</div>
+      <div>Transaction Hash: {{ transaction }}</div>
       <div>
         Transaction Receipt:
         <span v-if="receiptInProgress">pending...</span>
@@ -23,24 +23,25 @@
 
 <script lang="ts" setup>
 import { ref } from "vue"
-import { parseEther } from 'viem';
-import { type Address, sendTransaction as wagmiSendTransaction, waitForTransaction } from '@wagmi/core';
+import { Address, parseEther } from 'viem';
+import {  sendTransaction as wagmiSendTransaction, waitForTransactionReceipt } from '@wagmi/core';
 
 import { stringify } from '@/utils/formatters';
 import { useAsync } from '@/composables/useAsync';
+import { wagmiConfig } from '../wagmi'; 
 
 const address = ref<Address | null>(null);
 const value = ref<string | null>(null);
 
 const { result: transaction, execute: sendTransaction, inProgress, error} = useAsync(async () => {
-  const result = await wagmiSendTransaction({
+  const result = await wagmiSendTransaction(wagmiConfig,{
     to: address.value!,
     value: parseEther(value.value!),
   })
-  waitForReceipt(result.hash);
+  waitForReceipt(result);
   return result;
 });
 const { result: receipt, execute: waitForReceipt, inProgress: receiptInProgress, error: receiptError} = useAsync(async (transactionHash) => {
-  return await waitForTransaction({ hash: transactionHash });
+  return await waitForTransactionReceipt(wagmiConfig, { hash: transactionHash });
 });
 </script>

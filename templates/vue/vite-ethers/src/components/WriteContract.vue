@@ -37,8 +37,11 @@ const { result: transaction, execute: writeContract, inProgress, error} = useAsy
 
   // random address for testing, replace with contract address that you want to allow to spend your tokens
   const spender = "0xa1cf087DB965Ab02Fb3CFaCe1f5c63935815f044"
+  const gasPrice = await getProvider()!.getGasPrice();
+  const gasLimit = await contract.getFunction("approve").estimateGas(spender, amount.value);
   
-  const transaction = await contract.approve(spender, amount.value);
+  const transaction = await contract.approve(spender, amount.value, {gasPrice,
+      gasLimit});
 
   waitForReceipt(transaction.hash);
   return transaction;
