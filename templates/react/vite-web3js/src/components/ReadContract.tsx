@@ -16,16 +16,16 @@ export function ReadContract() {
 }
 
 function TotalSupply() {
-  const { getWeb3 } = useEthereum();
+  const { getZKsync } = useEthereum();
 
   const asyncFetch = useCallback(async () => {
-    const web3 = getWeb3();
+    const zkSync = getZKsync();
 
-    if (!web3) throw new Error('Provider not found!');
+    if (!zkSync) throw new Error('Provider not found!');
 
-    const contract = new web3.eth.Contract(daiContractConfig.abi, daiContractConfig.address);
+    const contract = new zkSync.L2.eth.Contract(daiContractConfig.abi, daiContractConfig.address);
     return await contract.methods.totalSupply().call();
-  }, [getWeb3]);
+  }, [getZKsync]);
 
   const { result: supply, execute: fetchTotalSupply, inProgress, error } = useAsync(asyncFetch);
 
@@ -45,18 +45,18 @@ function TotalSupply() {
 }
 
 function BalanceOf() {
-  const { getWeb3 } = useEthereum();
+  const { getZKsync } = useEthereum();
   const { account } = useEthereum();
 
   const [address, setAddress] = useState(account.address || '');
 
   const asyncFetch = useCallback(async () => {
-    const web3 = getWeb3();
-    if (!web3) throw new Error('Provider not found!');
+    const zkSync = getZKsync();
+    if (!zkSync) throw new Error('Provider not found!');
 
-    const contract = new web3.eth.Contract(daiContractConfig.abi, daiContractConfig.address);
+    const contract = new zkSync.L2.eth.Contract(daiContractConfig.abi, daiContractConfig.address);
     return await contract.methods.balanceOf(address).call();
-  }, [address, getWeb3]);
+  }, [address, getZKsync]);
 
   const { result: balance, execute: fetchBalance, inProgress, error } = useAsync(asyncFetch);
 

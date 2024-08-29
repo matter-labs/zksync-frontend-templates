@@ -1,25 +1,26 @@
 import { FormEvent, useCallback, useEffect, useState } from 'react';
+import { toWei } from 'web3-utils';
 import { useEthereum } from '@/services/ethereum/context.ts';
 import { useAsync } from '@/hooks/use-async.ts';
 
 export function SendTransactionPrepared() {
-  const { getWeb3, account } = useEthereum();
-  const web3 = getWeb3();
+  const { account, getZKsync } = useEthereum();
+  const zkSync = getZKsync();
 
   const [address, setAddress] = useState<string | null>(null);
   const [value, setValue] = useState<string | null>(null);
 
   const asyncPrepareFetch = useCallback(async () => {
-    if (!web3 || !address || !value) throw new Error('Provider, address or value not found!');
+    if (!zkSync || !address || !value) throw new Error('Provider, address or value not found!');
 
     const transaction = {
       to: address,
-      value: web3.utils.toWei(value, 'ether'),
+      value: toWei(value, 'ether'),
       from: account.address as string,
     };
 
-    const gasPrice = await web3.eth.getGasPrice();
-    const gasLimit = await web3.eth.estimateGas({
+    const gasPrice = await zkSync.L2.eth.getGasPrice();
+    const gasLimit = await zkSync.L2.eth.estimateGas({
       ...transaction,
       gasPrice,
     });
@@ -29,7 +30,7 @@ export function SendTransactionPrepared() {
       gasPrice,
       gasLimit,
     };
-  }, [account.address, address, value, web3]);
+  }, [account.address, address, value, zkSync]);
 
   const {
     result: preparedTransaction,
@@ -39,10 +40,10 @@ export function SendTransactionPrepared() {
   } = useAsync(asyncPrepareFetch);
 
   const asyncSendFetch = useCallback(async () => {
-    if (!web3 || !preparedTransaction) throw new Error('Provider not found or empty transaction!');
+    if (!zkSync || !preparedTransaction) throw new Error('Provider not found or empty transaction!');
 
-    return web3.eth.sendTransaction(preparedTransaction);
-  }, [preparedTransaction, web3]);
+    return zkSync.L2.eth.sendTransaction(preparedTransaction);
+  }, [preparedTransaction, zkSync]);
 
   const {
     result: transaction,

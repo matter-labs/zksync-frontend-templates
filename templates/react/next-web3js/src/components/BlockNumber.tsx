@@ -5,16 +5,16 @@ import { useState, useEffect } from 'react';
 import { useEthereum } from './Context';
 
 export function BlockNumber() {
-  const { getWeb3 } = useEthereum();
+  const { getZKsync } = useEthereum();
   const [blockNumber, setBlockNumber] = useState<bigint | null>(null);
 
   useEffect(() => {
-    const web3 = getWeb3();
+    const zkSync = getZKsync();
 
-    if (!web3) return;
+    if (!zkSync) return;
 
     const onBlock = async () => {
-        const subscription = await web3.eth.subscribe("newHeads");
+        const subscription = await zkSync.L2.eth.subscribe("newHeads");
         subscription.on('data', (block) => {
             if (block && block.number) {
                 setBlockNumber(block.number as bigint);
@@ -28,7 +28,7 @@ export function BlockNumber() {
         }
     onBlock();
     
-    }, [getWeb3]);
+    }, [getZKsync]);
 
   return (
     <div>

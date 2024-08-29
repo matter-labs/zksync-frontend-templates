@@ -4,14 +4,14 @@ import { useEthereum } from '@/services/ethereum/context.ts';
 import { daiContractConfig } from '@/services/contracts.ts';
 
 export function WatchContractEvents() {
-  const { getWeb3 } = useEthereum();
+  const { getZKsync } = useEthereum();
   const [events, setEvents] = useState<Transaction[]>([]);
 
   useEffect(() => {
-    const web3 = getWeb3();
-    if (!web3) return;
+    const zkSync = getZKsync();
+    if (!zkSync) return;
 
-    const contract = new web3.eth.Contract(daiContractConfig.abi, daiContractConfig.address);
+    const contract = new zkSync.L2.eth.Contract(daiContractConfig.abi, daiContractConfig.address);
     const transferEvent = contract.events.Transfer();
 
     transferEvent.on('data', (event) => {
@@ -33,7 +33,7 @@ export function WatchContractEvents() {
         ]);
       });
     };
-  }, [getWeb3]);
+  }, [getZKsync]);
 
   const logs = events
     .slice()

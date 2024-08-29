@@ -7,14 +7,14 @@ import { ERC20TokenAbi, daiContractConfig } from './contracts'
 import { useEthereum } from './Context';
 
 export function Token() {
-  const { getWeb3 } = useEthereum();
+  const { getZKsync } = useEthereum();
   const [tokenAddress, setTokenAddress] = useState<string>(daiContractConfig.address);
-  const web3 = getWeb3();
+  const zkSync = getZKsync();
   const fetchTokenData = async (address: string) => {
-    if (!web3) {
-      throw new Error('Web3 not found');
+    if (!zkSync) {
+      throw new Error('ZKsync not found');
     }
-    const contract = new web3.eth.Contract(ERC20TokenAbi, address);
+    const contract = new zkSync.L2.eth.Contract(ERC20TokenAbi, address);
     const [symbol, name, decimals, supply] = await Promise.all([
       contract.methods.symbol().call(),
       contract.methods.name().call(),

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 
-import { daiContractConfig, ERC20TokenAbi } from './contracts'
+import { daiContractConfig } from './contracts'
 import { useEthereum } from './Context';
 
 type TransferLog = {
@@ -12,13 +12,13 @@ type TransferLog = {
 };
 
 export function WatchContractEvents() {
-  const { getWeb3 } = useEthereum();
+  const { getZKsync } = useEthereum();
   const [events, setEvents] = useState<TransferLog[]>([]);
   useEffect(() => {
-    const web3 = getWeb3();
-    if (!web3) return;
+    const zkSync = getZKsync();
+    if (!zkSync) return;
     
-    const contract = new web3.eth.Contract(daiContractConfig.abi, daiContractConfig.address);
+    const contract = new zkSync.L2.eth.Contract(daiContractConfig.abi, daiContractConfig.address);
     const transferEvent = contract.events.Transfer();
     transferEvent.on('data', (event) => {
         const { from, to, value } = event.returnValues;

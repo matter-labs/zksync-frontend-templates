@@ -1,7 +1,5 @@
 'use client'
 
-// import { ethers, type TypedDataField } from 'ethers';
-
 import { useAsync } from '../hooks/useAsync';
 import { defaultChain, useEthereum } from './Context';
 
@@ -43,17 +41,16 @@ const message = {
 } as const
 
 export function SignTypedData() {
-  const { getWeb3 } = useEthereum();
-    const web3 = getWeb3();
+  const { account, getZKsync } = useEthereum();
+    const zkSync = getZKsync();
   const { result, execute: signTypedData, inProgress, error } = useAsync(async () => {
-    if (web3){
-        const accounts = await web3.eth.getAccounts();
-        const signature = await web3.eth.signTypedData(accounts[0], {domain, types, message, 
+    if (zkSync && account.address){
+        const signature = await zkSync.L2.eth.signTypedData(account.address, {domain, types, message, 
             primaryType: 'Mail',});
 
         return {
             signature,
-            recoveredAddress: accounts[0],
+            recoveredAddress: account.address,
             };
     }
     throw new Error('Signer not found or message is empty.');

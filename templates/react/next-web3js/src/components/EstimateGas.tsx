@@ -1,26 +1,27 @@
 'use client'
 
 import { useState, useEffect } from 'react';
+import { toWei } from 'web3-utils';
 
 import { useAsync } from '../hooks/useAsync';
 import { useEthereum } from './Context';
 
 export function SendTransactionPrepared() {
-  const { getWeb3, account } = useEthereum();
+  const { account, getZKsync } = useEthereum();
   
   const [address, setAddress] = useState<string | null>(null);
   const [value, setValue] = useState<string | null>(null);
-  const web3 = getWeb3();
+  const zkSync = getZKsync();
   const { result: preparedTransaction, execute: prepareTransaction, inProgress: prepareInProgress, error: prepareError } = useAsync(async () => {
     if (!address || !value) return;
-    if (!web3) return;
+    if (!zkSync) return;
     const transaction = {
       to: address,
-      value: web3.utils.toWei(value, "ether"),
+      value: toWei(value, "ether"),
       from: account.address as string,
     };
-    const gasPrice = await web3.eth.getGasPrice();
-    const gasLimit = await web3.eth.estimateGas({
+    const gasPrice = await zkSync.L2.eth.getGasPrice();
+    const gasLimit = await zkSync.L2.eth.estimateGas({
       ...transaction,
       gasPrice,
     });
@@ -33,9 +34,9 @@ export function SendTransactionPrepared() {
   });
 
   const { result: transaction, execute: sendTransaction, inProgress, error } = useAsync(async () => {
-    if (!web3) return;
+    if (!zkSync) return;
     if (!preparedTransaction) return;
-    const result = await web3.eth.sendTransaction(preparedTransaction);
+    const result = await zkSync.L2.eth.sendTransaction(preparedTransaction);
     return result;
   });
 

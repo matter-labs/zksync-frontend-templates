@@ -3,17 +3,17 @@ import { useEthereum } from '@/services/ethereum/context.ts';
 import { BlockHeaderOutput } from 'web3';
 
 export function WatchPendingTransactions() {
-  const { getWeb3 } = useEthereum();
+  const { getZKsync } = useEthereum();
   const [transactionHashes, setTransactionHashes] = useState<string[]>([]);
 
   useEffect(() => {
-    const web3 = getWeb3();
-    if (!web3) return;
+    const zkSync = getZKsync();
+    if (!zkSync) return;
 
     const onBlock = async () => {
-      if (!web3) return;
+      if (!zkSync) return;
 
-      const newHeadsSubscription = await web3.eth.subscribe('newHeads');
+      const newHeadsSubscription = await zkSync.L2.eth.subscribe('newHeads');
 
       function handleSubscriptionSet(block: BlockHeaderOutput) {
         if (block && block.hash) {
@@ -27,7 +27,7 @@ export function WatchPendingTransactions() {
     };
 
     void onBlock();
-  }, [getWeb3]);
+  }, [getZKsync]);
 
   return (
     <div>

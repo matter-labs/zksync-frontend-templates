@@ -4,18 +4,18 @@ import { useEffect, useState } from 'react';
 import { useEthereum } from './Context';
 
 export function WatchPendingTransactions() {
-  const { getWeb3 } = useEthereum();
+  const { getZKsync } = useEthereum();
   const [transactionHashes, setTransactionHashes] = useState<string[]>([]);
 
   useEffect(() => {
-    const web3 = getWeb3();
-    if (!web3) return;
+    const zkSync = getZKsync();
+    if (!zkSync) return;
 
 
     const onBlock = async () => {
-      if (!web3)
+      if (!zkSync)
       return;
-      const blockSubscription = await web3.eth.subscribe("newHeads");
+      const blockSubscription = await zkSync.L2.eth.subscribe("newHeads");
 
       blockSubscription.on("data", (block) => {
         console.log(block);

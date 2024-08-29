@@ -1,6 +1,6 @@
 'use client'
 
-import { Web3 } from 'web3';
+import { numberToHex, toHex, hexToNumberString } from 'web3-utils';
 import { ZKsyncPlugin } from 'web3-plugin-zksync';
 import React, { useState, useEffect, createContext, useContext } from 'react';
 
@@ -47,8 +47,8 @@ const zkSync: Chain = {
       ),
   ];
   export const defaultChain = process.env.NODE_ENV === "development" ? zkSyncSepoliaTestnet : zkSync;
-  
-let web3: Web3 | null = null;
+
+let zkSyncPlugin: ZKsyncPlugin | null = null;
 
 interface EthereumContextValue {
     account: { isConnected: true; address: string; } | { isConnected: false; address: null; };
@@ -56,7 +56,7 @@ interface EthereumContextValue {
     switchNetwork: (chainId: string) => Promise<void>;
     connect: () => void;
     disconnect: () => void;
-    getWeb3: () => Web3 | null;
+    getZKsync: () => ZKsyncPlugin | null;
   }
   
   const EthereumContext = createContext<EthereumContextValue | null>(null);
@@ -79,7 +79,7 @@ interface EthereumContextValue {
     }
   
     const onNetworkChange = async (chainId: string) => {
-      const chainIdStr = web3?.utils.hexToNumberString(chainId);
+      const chainIdStr = hexToNumberString(chainId);
       if (typeof chainIdStr === 'string') {
         const currentChain = chains.find((chain: any) => chain.id === chainIdStr);
         setNetwork(currentChain ?? { id: chainIdStr, name: null, rpcUrl: null, unsupported: true });
@@ -89,18 +89,14 @@ interface EthereumContextValue {
   
     const connect = async () => {
       if (!getEthereumContext()) throw new Error("No injected wallets found");
-      web3 = new Web3((window as any).ethereum);
+      zkSyncPlugin = new ZKsyncPlugin(getEthereumContext());
 
-
-      
-
-      const zkSyncPlugin = new ZKsyncPlugin(getEthereumContext());
-      web3.registerPlugin(zkSyncPlugin);
-      const accounts = await web3.eth.requestAccounts();
-      const chain = await web3.eth.getChainId();
+      const l2 = zkSyncPlugin.L2;
+      const accounts = await l2.eth.requestAccounts();
+      const chain = await l2.eth.getChainId();
       if (accounts.length > 0) {
         onAccountChange(accounts);
-        onNetworkChange(web3.utils.toHex(chain));
+        onNetworkChange(toHex(chain));
         getEthereumContext()?.on("accountsChanged", onAccountChange);
         getEthereumContext()?.on("chainChanged", onNetworkChange);
       } else {
@@ -132,8 +128,8 @@ interface EthereumContextValue {
       const chain = chains.find((chain: any) => chain.id === chainId);
       if (!chain) throw new Error("Unsupported chain");
     
-      const hexChainId = web3?.utils.numberToHex(chainId);
-      if (web3)
+      const hexChainId = numberToHex(chainId);
+      if (zkSyncPlugin)
       try {
         getEthereumContext()?.request({
             method: 'wallet_switchEthereumChain',
@@ -158,8 +154,8 @@ interface EthereumContextValue {
         }
       }
     }
-  
-    const getWeb3 = () => web3;
+
+    const getZKsync = () => zkSyncPlugin;
     // const getProvider = () => MetaMaskProvider;
     return (
       <EthereumContext.Provider value={{
@@ -168,7 +164,7 @@ interface EthereumContextValue {
         switchNetwork,
         connect,
         disconnect,
-        getWeb3,
+        getZKsync,
       }}>
         {children}
       </EthereumContext.Provider>

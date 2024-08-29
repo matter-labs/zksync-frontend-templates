@@ -8,11 +8,11 @@ import { useEthereum } from './Context';
 
 export function WriteContractPrepared() {
   const [amount, setAmount] = useState<string | null>(null);
-  const { getWeb3, account } = useEthereum();
-  const web3 = getWeb3();
+  const { account, getZKsync } = useEthereum();
+  const zkSync = getZKsync();
   const getContractInstance = async () => {
-    if (!web3) return;
-    return new web3.eth.Contract(daiContractConfig.abi, daiContractConfig.address);
+    if (!zkSync) return;
+    return new zkSync.L2.eth.Contract(daiContractConfig.abi, daiContractConfig.address);
   }
 
   const { result: preparedTransaction, execute: prepareTransaction, inProgress: prepareInProgress, error: prepareError } = useAsync(async () => {
@@ -20,8 +20,8 @@ export function WriteContractPrepared() {
     
     // random address for testing, replace with contract address that you want to allow to spend your tokens
     const spender = "0xa1cf087DB965Ab02Fb3CFaCe1f5c63935815f044"
-    if (!web3) return;
-    const gasPrice = await web3.eth.getGasPrice();
+    if (!zkSync) return;
+    const gasPrice = await zkSync.L2.eth.getGasPrice();
     if (!contract) return;
     const gasLimit = await contract.methods.approve(spender, amount).estimateGas({from: account.address as string});
 
