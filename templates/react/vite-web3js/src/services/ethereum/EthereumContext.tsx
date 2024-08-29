@@ -15,8 +15,8 @@ export const EthereumContextProvider = ({ children }: { children: ReactNode }) =
   const getEthereumContext = () => window.ethereum;
 
   const onNetworkChange = useCallback((chainId: string) => {
-    const currentChain = chains.find((chain: Chain) => chain.id === chainId);
     const strChainId = String(hexToNumber(chainId));
+    const currentChain = chains.find((chain: Chain) => chain.id === strChainId);
 
     setNetwork(
       currentChain ?? {
