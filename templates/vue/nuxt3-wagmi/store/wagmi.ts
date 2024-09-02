@@ -1,20 +1,16 @@
-import { type Chain, zkSync, zkSyncSepoliaTestnet } from '@wagmi/core/chains'
-import { getAccount, getNetwork, watchAccount, watchNetwork, configureChains, createConfig } from '@wagmi/core';
-import { InjectedConnector } from '@wagmi/core/connectors/injected';
-import { MetaMaskConnector } from '@wagmi/core/connectors/metaMask';
-import { CoinbaseWalletConnector } from '@wagmi/core/connectors/coinbaseWallet';
-import { publicProvider } from '@wagmi/core/providers/public';
+import { type Chain, zksync, zksyncSepoliaTestnet } from '@wagmi/core/chains'
+import { getAccount, watchAccount, createConfig, http, injected } from '@wagmi/core'
+import { coinbaseWallet, metaMask } from '@wagmi/connectors'
 
 export const chains: Chain[] = [
-  zkSync,
-  zkSyncSepoliaTestnet,
+  zksync,
+  zksyncSepoliaTestnet,
   ...(
       import.meta.env.MODE === "development" ?
       [
         {
           id: 270,
           name: "Dockerized local node",
-          network: "zksync-dockerized-node",
           nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
           rpcUrls: {
             default: {
@@ -35,7 +31,6 @@ export const chains: Chain[] = [
         {
           id: 260,
           name: "In-memory local node",
-          network: "zksync-in-memory-node",
           nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
           rpcUrls: {
             default: {
@@ -51,49 +46,26 @@ export const chains: Chain[] = [
       : []
     ),
 ];
-export const defaultChain = import.meta.env.MODE === "development" ? zkSyncSepoliaTestnet : zkSync;
+export const defaultChain = import.meta.env.MODE === "development" ? zksyncSepoliaTestnet : zksync;
 
-export const useWagmi = defineStore("wagmi", () => {
-  const { publicClient, webSocketPublicClient } = configureChains(
-    chains,
-    [
-      publicProvider(),
-    ],
-  )
-  
-  const wagmiConfig = createConfig({
-    autoConnect: true,
-    connectors: [
-      new MetaMaskConnector({ chains }),
-      new CoinbaseWalletConnector({
-        chains,
-        options: {
-          appName: 'wagmi',
-        },
-      }),
-      new InjectedConnector({
-        chains,
-        options: {
-          name: 'Injected',
-          shimDisconnect: true,
-        },
-      }),
-    ],
-    publicClient,
-    webSocketPublicClient,
-  })
+export const wagmiConfig = createConfig({
+ chains: chains.length > 0 ? (chains as [Chain, ...Chain[]]) : [defaultChain], 
+  connectors: [injected(), coinbaseWallet(), metaMask()],
+  transports: {
+    [zksync.id]: http(),
+    [zksyncSepoliaTestnet.id]: http(),
+    270: http(),  
+    260: http(),
+  },
+})
 
-  const account = ref(getAccount());
-  const network = ref(getNetwork());
-  watchAccount((updatedAccount) => {
-    account.value = updatedAccount;
-  });
-  watchNetwork((updatedNetwork) => {
-    network.value = updatedNetwork;
+export const useWagmi = defineStore("wagmi", () => {  
+  const account = ref(getAccount(wagmiConfig));
+  watchAccount(wagmiConfig, {
+    onChange(updatedAccount) {
+      account.value = updatedAccount;
+    },
   });
 
-  return {
-    account,
-    network,
-  }
+  return { account };
 });

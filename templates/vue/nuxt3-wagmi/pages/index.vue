@@ -43,8 +43,8 @@
       <SendTransaction />
       <br />
       <hr />
-      <h2>Send Transaction (Prepared)</h2>
-      <SendTransactionPrepared />
+      <h2>Estimate Gas and Send</h2>
+      <EstimateGas />
       <br />
       <hr />
       <h2>Sign Message</h2>

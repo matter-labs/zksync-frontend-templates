@@ -11,14 +11,16 @@
   },
   "devDependencies": {
     "@nuxt/devtools": "latest",
-    "nuxt": "^3.8.0",
-    "vue": "^3.3.7",
-    "vue-router": "^4.2.5"
+    "nuxt": "^3.12.4",
+    "typescript": "^5.5.4",
+    "vue": "^3.4.38",
+    "vue-router": "^4.4.3"
   },
   "dependencies": {
-    "@pinia/nuxt": "^0.5.1",
-    "@wagmi/core": "^1.4.12",
-    "pinia": "^2.1.7",
-    "viem": "^1.20.3"
+    "@pinia/nuxt": "^0.5.3",
+    "@wagmi/connectors": "^5.1.5",
+    "@wagmi/core": "^2.13.4",
+    "pinia": "^2.2.1",
+    "viem": "^2.19.4"
   }
 }

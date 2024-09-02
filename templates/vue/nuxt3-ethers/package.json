@@ -11,14 +11,14 @@
   },
   "devDependencies": {
     "@nuxt/devtools": "latest",
-    "nuxt": "^3.8.0",
-    "vue": "^3.3.7",
-    "vue-router": "^4.2.5"
+    "nuxt": "^3.12.4",
+    "vue": "^3.4.37",
+    "vue-router": "^4.4.3"
   },
   "dependencies": {
-    "@pinia/nuxt": "^0.5.1",
-    "ethers": "^6.9.2",
-    "pinia": "^2.1.7",
-    "zksync-ethers": "^6.0.0"
+    "@pinia/nuxt": "^0.5.3",
+    "ethers": "^6.13.2",
+    "pinia": "^2.2.1",
+    "zksync-ethers": "^6.11.2"
   }
 }

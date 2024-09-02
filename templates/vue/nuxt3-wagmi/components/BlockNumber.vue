@@ -8,7 +8,14 @@
 import { watchBlockNumber } from '@wagmi/core';
 
 const blockNumber = ref<bigint | null>(null);
-watchBlockNumber({ listen: true }, (block) => {
-  blockNumber.value = block;
+watchBlockNumber(
+  {
+    ...wagmiConfig, 
+    listen: true, 
+  },
+  {  
+    onBlockNumber(block) {
+     blockNumber.value = block;
+  },
 });
 </script>

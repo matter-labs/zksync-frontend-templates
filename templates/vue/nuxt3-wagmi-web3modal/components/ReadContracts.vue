@@ -11,11 +11,13 @@
 
 <script lang="ts" setup>
 import { readContracts } from '@wagmi/core';
+import { stringify } from '@/utils/formatters';
+import { wagmiConfig } from '../store/wagmi.js';
 
 const { account } = storeToRefs(useWagmi());
 
 const { result: results, execute: fetchContracts, inProgress, error} = useAsync(async () => {
-  return await readContracts({
+  return await readContracts(wagmiConfig, {
     contracts: [
       {
         ...daiContractConfig,

@@ -15,7 +15,7 @@ import { readContracts } from '@wagmi/core';
 const { account } = storeToRefs(useWagmi());
 
 const { result: results, execute: fetchContracts, inProgress, error} = useAsync(async () => {
-  return await readContracts({
+  return await readContracts(wagmiConfig, {
     contracts: [
       {
         ...daiContractConfig,

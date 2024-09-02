@@ -22,23 +22,41 @@
 </template>
 
 <script lang="ts" setup>
-import { Contract } from 'zksync-ethers';
+import { ref } from 'vue';
+import { Contract, Provider, types } from 'zksync-ethers';
+import { stringify } from '@/utils/formatters';
+import { daiContractConfig } from '@/utils/contracts';
+import { useAsync } from '@/composables/useAsync';
 
 const { getSigner, getProvider } = useEthers()
 const amount = ref<string | null>(null);
 
-const { result: transaction, execute: writeContract, inProgress, error} = useAsync(async () => {
-  const contract = new Contract(daiContractConfig.address, daiContractConfig.abi, await getSigner()!);
+const { result: transaction, execute: writeContract, inProgress, error } = useAsync(async () => {
+  const signer = await getSigner();
+  if (!signer) throw new Error("Signer not available");
+
+  const contract = new Contract(daiContractConfig.address, daiContractConfig.abi, signer);
 
   // random address for testing, replace with contract address that you want to allow to spend your tokens
-  const spender = "0xa1cf087DB965Ab02Fb3CFaCe1f5c63935815f044"
+  const spender = "0xa1cf087DB965Ab02Fb3CFaCe1f5c63935815f044";
   
-  const transaction = await contract.approve(spender, amount.value);
+  if (!amount.value) throw new Error("Allowance amount is not set");
+
+  const provider = Provider.getDefaultProvider(types.Network.Sepolia);
+  const gasPrice = await provider.getGasPrice();
+  const gasLimit = await contract.getFunction("approve").estimateGas(spender, amount.value);
+
+  const transaction = await contract.approve(spender, amount.value, {
+    gasLimit,
+    gasPrice,
+  });
 
   waitForReceipt(transaction.hash);
   return transaction;
 });
-const { result: receipt, execute: waitForReceipt, inProgress: receiptInProgress, error: receiptError} = useAsync(async (transactionHash) => {
-  return await getProvider()!.waitForTransaction(transactionHash);
+
+const { result: receipt, execute: waitForReceipt, inProgress: receiptInProgress, error: receiptError } = useAsync(async (transactionHash) => {
+  const provider = getProvider();
+  return await provider?.waitForTransaction(transactionHash);
 });
 </script>
