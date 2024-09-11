@@ -1,29 +1,16 @@
 import { writable } from "svelte/store";
-import { type Chain, zkSync, zkSyncSepoliaTestnet } from "@wagmi/core/chains";
-import {
-  getAccount,
-  getNetwork,
-  watchAccount,
-  watchNetwork,
-  configureChains,
-  createConfig,
-  type GetAccountResult,
-  type GetNetworkResult,
-} from "@wagmi/core";
-import { InjectedConnector } from "@wagmi/core/connectors/injected";
-import { MetaMaskConnector } from "@wagmi/core/connectors/metaMask";
-import { CoinbaseWalletConnector } from "@wagmi/core/connectors/coinbaseWallet";
-import { publicProvider } from "@wagmi/core/providers/public";
+import { type Chain, zksync, zksyncSepoliaTestnet } from "@wagmi/core/chains";
+import { getAccount, watchAccount, createConfig, http, injected, type GetAccountReturnType } from '@wagmi/core';
+import { coinbaseWallet, metaMask } from '@wagmi/connectors'
 
 export const chains: Chain[] = [
-  zkSync,
-  zkSyncSepoliaTestnet,
+  zksync,
+  zksyncSepoliaTestnet,
   ...(import.meta.env.MODE === "development"
     ? [
         {
           id: 270,
           name: "Dockerized local node",
-          network: "zksync-dockerized-node",
           nativeCurrency: { name: "Ether", symbol: "ETH", decimals: 18 },
           rpcUrls: {
             default: {
@@ -44,7 +31,6 @@ export const chains: Chain[] = [
         {
           id: 260,
           name: "In-memory local node",
-          network: "zksync-in-memory-node",
           nativeCurrency: { name: "Ether", symbol: "ETH", decimals: 18 },
           rpcUrls: {
             default: {
@@ -60,43 +46,26 @@ export const chains: Chain[] = [
     : []),
 ];
 export const defaultChain =
-  import.meta.env.MODE === "development" ? zkSyncSepoliaTestnet : zkSync;
+  import.meta.env.MODE === "development" ? zksyncSepoliaTestnet : zksync;
+
+export const wagmiConfig = createConfig({
+ chains: chains.length > 0 ? (chains as [Chain, ...Chain[]]) : [defaultChain], 
+  connectors: [injected(), coinbaseWallet(), metaMask()],
+  transports: {
+    [zksync.id]: http(),
+    [zksyncSepoliaTestnet.id]: http(),
+    270: http(),  
+    260: http(),
+  },
+})
 
 type WagmiStore = {
-  account: GetAccountResult;
-  network: GetNetworkResult;
+  account: GetAccountReturnType;
 };
 
 export function createWagmiStore() {
-  const { publicClient, webSocketPublicClient } = configureChains(chains, [
-    publicProvider(),
-  ]);
-
-  const wagmiConfig = createConfig({
-    autoConnect: true,
-    connectors: [
-      new MetaMaskConnector({ chains }),
-      new CoinbaseWalletConnector({
-        chains,
-        options: {
-          appName: "wagmi",
-        },
-      }),
-      new InjectedConnector({
-        chains,
-        options: {
-          name: "Injected",
-          shimDisconnect: true,
-        },
-      }),
-    ],
-    publicClient,
-    webSocketPublicClient,
-  });
-
   const wagmi = writable<WagmiStore>({
-    account: getAccount(),
-    network: getNetwork(),
+    account: getAccount(wagmiConfig),
   });
 
   function setField<K extends keyof WagmiStore>(
@@ -106,16 +75,16 @@ export function createWagmiStore() {
     wagmi.update((current) => ({ ...current, [field]: value }));
   }
 
-  watchAccount((updatedAccount) => {
+  watchAccount(wagmiConfig, {
+    onChange(updatedAccount) {
     setField("account", updatedAccount);
-  });
-  watchNetwork((updatedNetwork) => {
-    setField("network", updatedNetwork);
+    }
   });
 
   return {
     ...wagmi,
   };
 }
+
 
 export const wagmiStore = createWagmiStore();

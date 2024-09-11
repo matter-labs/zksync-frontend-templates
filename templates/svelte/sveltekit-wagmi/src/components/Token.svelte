@@ -1,26 +1,73 @@
 <script lang="ts">
-  import { fetchToken as wagmiFetchToken } from "@wagmi/core";
-  import { daiContractConfig } from "../utils/contracts";
-  import { useAsync } from "../composables/useAsync";
-  import { stringify } from "../utils/formatters";
+  import { writable } from 'svelte/store';
+  import { readContracts } from '@wagmi/core';
+  import { erc20Abi } from "viem";
+  import { get } from 'svelte/store';
+  import { wagmiConfig } from '../stores/wagmi';
+  import { daiContractConfig } from '../utils/contracts';
 
-  let tokenAddress = daiContractConfig.address;
+  type TokenResult = [number, string, string, bigint];
 
-  const { state, execute: fetchToken } = useAsync(wagmiFetchToken);
-  $: ({ result: token, inProgress, error } = $state);
-  const fetchCurrentToken = () => fetchToken({ address: tokenAddress });
+  let tokenAddress = writable(daiContractConfig.address);
+  let token = writable<TokenResult | null>(null); 
+  let inProgress = writable(false);
+  let error = writable<Error | null>(null);
+
+  const fetchToken = async () => {
+    inProgress.set(true);
+    error.set(null);
+
+    try {
+      const result = await readContracts(wagmiConfig, {
+        allowFailure: false, 
+        contracts: [
+          {
+            address: get(tokenAddress), 
+            abi: erc20Abi,
+            functionName: 'decimals',
+          },
+          {
+            address: get(tokenAddress), 
+            abi: erc20Abi,
+            functionName: 'name',
+          },
+          {
+            address: get(tokenAddress), 
+            abi: erc20Abi,
+            functionName: 'symbol',
+          },
+          {
+            address: get(tokenAddress), 
+            abi: erc20Abi,
+            functionName: 'totalSupply',
+          },
+        ],
+      });
+
+      token.set(result);
+    } catch (err) {
+      error.set(err as Error);
+    } finally {
+      inProgress.set(false);
+    }
+  };
+
+  const fetchCurrentToken = () => {
+    fetchToken();
+  };
 </script>
 
+<form on:submit|preventDefault={fetchCurrentToken}>
+  <input bind:value={$tokenAddress} placeholder="token address" />
+  <button type="submit">fetch</button>
+</form>
+
 <div>
-  <form on:submit|preventDefault={fetchCurrentToken}>
-    <input bind:value={tokenAddress} placeholder="token address" />
-    <button type="submit">fetch</button>
-  </form>
-  {#if inProgress}
-    <div>Fetching token...</div>
-  {:else if token}
-    <pre>{stringify(token, null, 4)}</pre>
-  {:else if error}
-    <div>Error: {error?.message}</div>
+  {#if $inProgress}
+    Fetching token...
+  {:else if $token}
+    <pre>{JSON.stringify($token, (key, value) => typeof value === 'bigint' ? value.toString() : value, 4)}</pre>
+  {:else if $error}
+    Error: {$error.message}
   {/if}
 </div>

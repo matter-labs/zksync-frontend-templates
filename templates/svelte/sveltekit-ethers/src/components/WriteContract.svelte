@@ -10,28 +10,48 @@
 
   const { state: transactionState, execute: writeContract } = useAsync(
     async () => {
-      const contract = new Contract(
-        daiContractConfig.address,
-        daiContractConfig.abi,
-        await getSigner()!,
-      );
+      try {
+        const signer = await getSigner();
+        if (!signer) {
+          throw new Error("Failed to get signer");
+        }
 
-      // random address for testing, replace with contract address that you want to allow to spend your tokens
-      const spender = "0xa1cf087DB965Ab02Fb3CFaCe1f5c63935815f044";
+        const contract = new Contract(
+          daiContractConfig.address,
+          daiContractConfig.abi,
+          signer
+        );
 
-      const transaction = await contract.approve(spender, amount);
+        // Replace with the contract address that you want to allow to spend your tokens
+        const spender = "0xa1cf087DB965Ab02Fb3CFaCe1f5c63935815f044";
 
-      waitForReceipt(transaction.hash);
-      return transaction;
-    },
+        const gasPrice = await getProvider()!.getGasPrice();
+        const gasLimit = await contract
+          .getFunction("approve")
+          .estimateGas(spender, amount);
+
+        const transaction = await contract.approve(spender, amount, {
+          gasPrice,
+          gasLimit,
+        });
+
+        waitForReceipt(transaction.hash);
+        return transaction;
+      } catch (error) {
+        console.error("Error sending transaction:", error);
+        throw error;
+      }
+    }
   );
+
   $: ({ result: transaction, inProgress, error } = $transactionState);
 
   const { state: receiptState, execute: waitForReceipt } = useAsync(
     async (transactionHash) => {
       return await getProvider()!.waitForTransaction(transactionHash);
-    },
+    }
   );
+
   $: ({
     result: receipt,
     inProgress: receiptInProgress,

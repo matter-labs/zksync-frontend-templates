@@ -2,7 +2,7 @@
   import { recoverTypedDataAddress } from "viem";
   import { signTypedData as wagmiSignTypedData } from "@wagmi/core";
   import { useAsync } from "../composables/useAsync";
-  import { defaultChain } from "../stores/wagmi";
+  import { defaultChain, wagmiConfig } from "../stores/wagmi";
 
   const domain = {
     name: "Ether Mail",
@@ -36,7 +36,7 @@
   } as const;
 
   const { state, execute: signTypedData } = useAsync(async () => {
-    const signature = await wagmiSignTypedData({
+    const signature = await wagmiSignTypedData(wagmiConfig, {
       domain,
       types,
       message,

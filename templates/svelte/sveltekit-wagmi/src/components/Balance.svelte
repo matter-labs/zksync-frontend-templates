@@ -1,24 +1,36 @@
 <script lang="ts">
-  import { wagmiStore } from "../stores/wagmi";
-  import { useAsync } from "../composables/useAsync";
-  import { fetchBalance as wagmiFetchBalance } from "@wagmi/core";
+  import { wagmiConfig, wagmiStore } from "../stores/wagmi";
+  import { getBalance } from "@wagmi/core";
+  import { formatUnits } from "viem";
+  import { writable, get } from "svelte/store";
 
-  const { state: asyncState, execute: fetchBalance } =
-    useAsync(wagmiFetchBalance);
-  $: ({ result: balance, error, inProgress } = $asyncState);
+  const formattedBalance = writable<string | null>(null);
+  const error = writable<Error | null>(null);
 
-  const getAccountBalance = () =>
-    fetchBalance({ address: $wagmiStore.account.address! });
-  $: $wagmiStore.account.address && getAccountBalance();
+  const getAccountBalance = async () => {
+    const account = get(wagmiStore).account;
+    if (account && account.address) {
+      try {
+        const result = await getBalance(wagmiConfig, { address: account.address });
+        if (result) {
+          formattedBalance.set(formatUnits(result.value, result.decimals));
+        }
+      } catch (err) {
+        error.set(err as Error);
+      }
+    }
+  };
+
+  $: get(wagmiStore).account.address && getAccountBalance();
 </script>
 
 <div>
   <div>
     Connected wallet balance:
-    {balance?.formatted}
+    {$formattedBalance}
     <button on:click={getAccountBalance}>refetch</button>
   </div>
-  {#if error}
-    Error: {error?.message}
+  {#if $error}
+    <div>Error: {$error.message}</div>
   {/if}
 </div>
