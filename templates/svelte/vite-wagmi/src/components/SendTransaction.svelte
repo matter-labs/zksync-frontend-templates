@@ -1,33 +1,37 @@
 <script lang="ts">
-  import { parseEther } from "viem";
+  import { parseEther, type Address } from "viem";
   import { useAsync } from "../composables/useAsync";
   import { stringify } from "../utils/formatters";
   import {
-    type Address,
     sendTransaction as wagmiSendTransaction,
-    waitForTransaction,
+    waitForTransactionReceipt,
   } from "@wagmi/core";
+  import { wagmiConfig } from "../wagmi";
+  import { get, writable } from 'svelte/store';
 
-  let address: Address | null = "0x";
-  let value: string | null = "";
+  let address = writable<string>("");
+  let value = writable<string>("");
 
-  const { state: transactionState, execute: sendTransaction } = useAsync(
-    async () => {
-      const result = await wagmiSendTransaction({
-        to: address!,
-        value: parseEther(value!),
+  const { state: transactionState, execute: sendTransaction } = useAsync(async () => {
+    const addressValue = get(address);
+    if (addressValue.startsWith("0x")) {
+      const result = await wagmiSendTransaction(wagmiConfig, {
+        to: addressValue as Address,
+        value: parseEther(get(value)),
       });
-      waitForReceipt(result.hash);
+      waitForReceipt(result);
       return result;
+    } else {
+      throw new Error("Invalid address format");
     }
-  );
+  });
+
   $: ({ result: transaction, inProgress, error } = $transactionState);
 
-  const { state: receiptState, execute: waitForReceipt } = useAsync(
-    async (transactionHash) => {
-      return await waitForTransaction({ hash: transactionHash });
-    }
-  );
+  const { state: receiptState, execute: waitForReceipt } = useAsync(async (transactionHash) => {
+    return await waitForTransactionReceipt(wagmiConfig, { hash: transactionHash });
+  });
+
   $: ({
     result: receipt,
     inProgress: receiptInProgress,
@@ -37,8 +41,8 @@
 
 <div>
   <form on:submit|preventDefault={sendTransaction}>
-    <input bind:value={address} placeholder="address" />
-    <input bind:value placeholder="value (ether)" />
+    <input bind:value={$address} placeholder="address" />
+    <input bind:value={$value} placeholder="value (ether)" />
     <button type="submit">Send</button>
   </form>
 
@@ -46,7 +50,7 @@
     <div>Transaction pending...</div>
   {:else if transaction}
     <div>
-      <div>Transaction Hash: {transaction?.hash}</div>
+      <div>Transaction Hash: {transaction}</div>
       <div>
         Transaction Receipt:
         {#if receiptInProgress}

@@ -1,17 +1,32 @@
 <script lang="ts">
-  import { watchPendingTransactions, type Hash } from "@wagmi/core";
+  import { onDestroy } from 'svelte';
+  import { writable, derived } from 'svelte/store';
+  import { watchPendingTransactions } from '@wagmi/core';
+  import type { Hash } from 'viem';
+  import { wagmiConfig } from '../wagmi';
 
-  let transactionHashes: Hash[] = [];
+  let transactionHashes = writable<Hash[]>([]);
 
-  watchPendingTransactions({}, (hashes) => {
-    transactionHashes = [...transactionHashes, ...hashes];
+  let reversedTransactionHashes = derived(transactionHashes, $transactionHashes =>
+    [...$transactionHashes].reverse()
+  );
+
+  const unwatch = watchPendingTransactions(wagmiConfig, {
+    onTransactions(newHashes) {
+      transactionHashes.update(existingHashes => 
+        Array.from(new Set([...existingHashes, ...newHashes]))
+      );
+    },
+  });
+
+  onDestroy(() => {
+    unwatch();
   });
 </script>
 
 <div>
   <details>
-    <summary>{transactionHashes.length} transaction hashes</summary>
-
-    {transactionHashes.reverse().join("\n")}
+    <summary>{$reversedTransactionHashes.length} transaction hashes</summary>
+    <pre>{$reversedTransactionHashes.join('\n')}</pre>
   </details>
 </div>

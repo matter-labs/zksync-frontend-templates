@@ -1,13 +1,31 @@
 <script lang="ts">
   import { watchBlockNumber } from "@wagmi/core";
+  import { wagmiConfig } from "../wagmi";
+  import { onDestroy } from "svelte";
 
   let blockNumber: bigint | null = null;
 
-  watchBlockNumber({ listen: true }, (block) => {
-    blockNumber = block;
+  const unsubscribe = watchBlockNumber(
+    {
+      ...wagmiConfig,
+      listen: true,
+    },
+    {
+      onBlockNumber(block) {
+        blockNumber = block;
+      },
+    }
+  );
+
+  onDestroy(() => {
+    unsubscribe();
   });
 </script>
 
 <div>
-  {blockNumber?.toString()}
+  {#if blockNumber !== null}
+    {blockNumber.toString()}
+  {:else}
+    Loading...
+  {/if}
 </div>

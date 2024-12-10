@@ -3,9 +3,10 @@
   import { useAsync } from "../composables/useAsync";
   import { daiContractConfig } from "../utils/contracts";
   import { onMount } from "svelte";
+  import { wagmiConfig } from "../wagmi";
 
   const { state, execute: fetchTotalSupply } = useAsync(async () => {
-    return await readContract({
+    return await readContract(wagmiConfig, {
       ...daiContractConfig,
       functionName: "totalSupply",
     });
